@@ -11,7 +11,9 @@ import java.time.LocalDate;
 
 import java.time.format.DateTimeFormatter;
 
+//ALL operations on the text file (.txt) should be HERE (read/save)
 public class TextDB {
+    
     public static final String DELIMITER = "|";
 
     // Add cosntant header to filter the header row out
