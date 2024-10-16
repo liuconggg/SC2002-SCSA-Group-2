@@ -1,0 +1,7 @@
+Doctor ID|Date|Session 1|Session 2|Session 3|Session 4|Session 5|Session 6|Session 7|Session 8
+D0001|18/04/2024|Available|P0001|Available|P0005|P0004|Available|P0002|Unavailable
+D0001|24/04/2024|Available|Unavailable|Available|P0005|P0004|Unavailable|P0002|P0001
+D0003|04/02/2024|Unavailable|P0001|Available|Unavailable|Unavailable|Unavailable|P0002|Available
+D0004|20/10/2024|Unavailable|Available|Available|P0005|P0004|P0004|P0002|P0001
+D0005|10/04/2024|Available|Unavailable|Available|P0005|P0004|P0001|P0002|Unavailable
+D0006|18/04/2024|Unavailable|Unavailable|Available|P0005|P0004|Available|P0002|P0001

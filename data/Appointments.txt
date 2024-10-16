@@ -1,0 +1,7 @@
+Appointment ID|Patient ID|Doctor ID|Date and Time|Status
+1|P0001|D0001|01/08/2024 19:00|Cancelled
+2|P0001|D0002|09/05/2024 12:00|Cancelled
+3|P0001|D0003|01/09/2024 13:00|Cancelled
+4|P0001|D0004|10/10/2024 09:00|Cancelled
+55|P0001|D0005|08/07/2024 10:00|Cancelled
+6|P0001|D0001|18/12/2023 22:00|Cancelled

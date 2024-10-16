@@ -1,0 +1,21 @@
+ID|Password|Name|Role
+D0001|123|Alex Johnson|Doctor
+D0002|24|Emily Davis|Doctor
+D0003|password|Michael Smith|Doctor
+D0004|password|Sophia Brown|Doctor
+D0005|password|Daniel Wilson|Doctor
+A0001|password|Administrator 1|Administrator
+A0002|password|Administrator 2|Administrator
+A0003|password|Administrator 3|Administrator
+AH0004|password|Administrator 4|Administrator
+AH0005|password|Administrator 5|Administrator
+P0001|1234|Koh Test 1|Patient
+P0002|456|Patient 5|Patient
+P0003|999|Patient 2|Patient
+P0004|password|Patient 6|Patient
+P0005|password|Patient 10|Patient
+PH0001|password|Pharmacist 1|Pharmacist
+PH0002|password|Pharmacist 2|Pharmacist
+PH0003|password|Pharmacist 3|Pharmacist
+PH0004|password|Pharmacist 4|Pharmacist
+PH0005|password|Pharmacist 5|Pharmacist
