@@ -1,8 +1,8 @@
 public class Administrator extends User {
 
 
-	public Administrator(String hospitalID, String password, String name, String role){
-		super(hospitalID, password, name, role);
+	public Administrator(String hospitalID, String password, String name, int age, String gender){
+		super(hospitalID, password, name, age, gender);
 	}
 
 

@@ -1,16 +1,15 @@
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Schedule {
 
 	private String doctorID;
-	private LocalDateTime date;
+	private LocalDate date;
 	private String[] session = new String[8];
 
 	public Schedule(){}
-	public Schedule(String doctorID, LocalDateTime date, String[] session){
+	public Schedule(String doctorID, LocalDate date, String[] session){
 		this.doctorID = doctorID;
 		this.date = date;
 		this.session = session;
@@ -28,7 +27,7 @@ public class Schedule {
 		this.doctorID = doctorID;
 	}
 
-	public LocalDateTime getDate() {
+	public LocalDate getDate() {
 		return this.date;
 	}
 
@@ -36,7 +35,7 @@ public class Schedule {
 	 * 
 	 * @param date
 	 */
-	public void setDate(LocalDateTime date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 

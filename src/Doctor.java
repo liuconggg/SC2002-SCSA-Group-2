@@ -3,8 +3,8 @@ import java.util.ArrayList;
 public class Doctor extends User {
 
 	public Doctor(){}
-	public Doctor (String hospitalID, String password, String name, String role){
-		super(hospitalID, password, name, role);
+	public Doctor (String hospitalID, String password, String name, int age, String gender){
+		super(hospitalID, password, name, age, gender);
 	}
 
 

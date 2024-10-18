@@ -25,16 +25,16 @@ public class App {
     public static void main(String[] args) throws Exception {
         String id, password;
         int choice;
-       // String[] userFiles = { "data\\Patients.txt", "data\\Doctors.txt" };
+        String[] userFiles = { "data\\Patients.txt", "data\\Doctors.txt" };
         Scanner sc = new Scanner(System.in);
-        ArrayList<User> users = TextDB.readUsers("data\\User.txt");
+        ArrayList<User> users = TextDB.readUsers(userFiles);
         ArrayList<Appointment> appts = TextDB.readAppointments("data\\Appointments.txt");
         ArrayList<Schedule> schedules = TextDB.readSchedule("data\\Schedules.txt");
 
         System.out.println("Hospital Management System");
         User userLoggedIn = null;
 
-        while (true) {  //Need to display error message for failing to log in
+        while (true) {
             System.out.print("Hospital ID:");
             id = sc.nextLine();
             System.out.print("Password:");
@@ -81,6 +81,7 @@ public class App {
                     switch (choice) {
                         case 1: // View personal medical record
                             break;
+                            
                         case 2: // Update personal information
                             boolean changing = true;
                             int action;
@@ -93,21 +94,21 @@ public class App {
                                 System.out.print("Your Choice:");
                                 action = sc.nextInt();
                                 sc.nextLine();
-                                switch (action) { //Need to modify the code to save the user data
+                                switch (action) {
                                     case 1:
                                         System.out.print("Enter your new name: ");
                                         String newName = sc.nextLine();
-                                        //patient.setName(newName);
+                                        patient.setName(newName);
                                         break;
                                     case 2:
                                         System.out.print("Enter your new phone number: ");
                                         String newPhoneNumber = sc.nextLine();
-                                        //patient.setPhoneNumber(newPhoneNumber);
+                                        patient.setPhoneNumber(newPhoneNumber);
                                         break;
                                     case 3:
                                         System.out.print("Enter your new email address: ");
                                         String newEmail = sc.nextLine();
-                                        //patient.setEmail(newEmail);
+                                        patient.setEmail(newEmail);
                                         break;
                                     case 4:
                                         TextDB.saveUsers(users); // Save changes upon exiting

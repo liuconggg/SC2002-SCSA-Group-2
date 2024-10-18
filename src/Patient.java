@@ -2,9 +2,68 @@ import java.util.ArrayList;
 
 public class Patient extends User {
 
+	private String dateOfBirth;
+	private String phoneNumber;
+	private String email;
+	private String bloodType;
+
 	public Patient(){}
-	public Patient(String hospitalID, String password, String name, String role){
-		super(hospitalID, password, name, role);
+	public Patient(String hospitalID, String password, String name, int age, String gender, String dateOfBirth, String phoneNumber, String email, String bloodType){
+		super(hospitalID, password, name, age, gender );
+		this.dateOfBirth = dateOfBirth;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
+		this.bloodType = bloodType;
+	}
+
+	public String getDateOfBirth() {
+		return this.dateOfBirth;
+	}
+
+	/**
+	 * 
+	 * @param dateOfBirth
+	 */
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getPhoneNumber() {
+		return this.phoneNumber;
+	}
+
+	/**
+	 * 
+	 * @param phoneNumber
+	 */
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getEmail() {
+		return this.email;
+	}
+
+	/**
+	 * 
+	 * @param email
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+
+	public String getBloodType() {
+		// TODO - implement Patient.getBloodType
+ 		return this.bloodType;
+	}
+
+	// /**
+	//  * 
+	//  * @param bloodType
+	//  */
+	public void setBloodType(String bloodType) {
+		this.bloodType = bloodType;
 	}
 
 	public void displayMenu() {

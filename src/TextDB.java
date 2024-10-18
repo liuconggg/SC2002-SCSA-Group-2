@@ -11,70 +11,139 @@ import java.time.LocalDate;
 
 import java.time.format.DateTimeFormatter;
 
-//ALL operations on the text file (.txt) should be HERE (read/save)
 public class TextDB {
-    
     public static final String DELIMITER = "|";
+    
+    //Add cosntant header to filter the header row out
+    public static final String HEADER = "ID|Password|Name|Age|Gender"; // Common Header in all user text file
 
-    // Add cosntant header to filter the header row out
-    public static final String USER_HEADER = "ID|Password|Name|Role"; // Common Header in all user text file
-    public static final String PATIENT_HEADER = "Patient ID|Name";
-    public static final String DOCTOR_HEADER = "Doctor ID|Name";
+    //The respective files header (to write the header of the file)
+    public static final String PATIENT_HEADER = "Patient ID|Password|Name|Age|Gender|Date of Birth|Phone Number|Email|Blood Type";
+    public static final String DOCTOR_HEADER = "Doctor ID|Password|Name|Age|Gender";
     public static final String APPT_HEADER = "Appointment ID|Patient ID|Doctor ID|Date and Time|Status";
     public static final String SCHEDULE_HEADER = "Doctor ID|Date|Session 1|Session 2|Session 3|Session 4|Session 5|Session 6|Session 7|Session 8";
 
-    // Read User.txt file
-    public static ArrayList<User> readUsers(String fileName) throws IOException {
-        ArrayList<User> users = new ArrayList<User>();
-        Scanner sc = new Scanner(new FileInputStream(fileName));
-        // Read user file
-        try {
-            while (sc.hasNextLine()) {
-                String st = sc.nextLine();
-                if (!(st.contains(USER_HEADER))) {
-                    StringTokenizer star = new StringTokenizer(st, DELIMITER);
-                    String id = star.nextToken().trim();
-                    String password = star.nextToken();
-                    String name = star.nextToken().trim();
-                    String role = star.nextToken().trim();
+    // Read all user files (Patients, Doctors, Pharmacists, Administrators)
+    public static ArrayList<User> readUsers(String[] fileNames) throws IOException {
+        ArrayList<User> data = new ArrayList<User>();
+        Scanner sc;
 
-                    // User user = new User(id, password, name, role);
-                    if (role.equals("Patient")) users.add(new Patient(id, password, name, role));
-                    else if (role.equals("Doctor")) users.add(new Doctor(id, password, name, role));
-                    else if (role.equals("Pharmacist")) users.add(new Pharmacist(id, password, name, role));
-                    else users.add(new Administrator(id, password, name, role));
+        for (String file : fileNames) {
+            sc = new Scanner(new FileInputStream(file));
+            try {
+                while (sc.hasNextLine()) {
+                    String st = sc.nextLine();
+                    if (!(st.contains(HEADER))) { // ignore HEADER
 
+                        StringTokenizer star = new StringTokenizer(st, DELIMITER);
+                        String hospitalID = star.nextToken().trim();
+                        String password = star.nextToken();
+                        String name = star.nextToken().trim();
+                        int age = Integer.parseInt(star.nextToken().trim());
+                        String gender = star.nextToken().trim();
+
+                        if (file.equals("data\\Patients.txt")) { // Create Patient Object
+
+                            String dob = star.nextToken().trim();
+                            String phoneNumber = star.nextToken().trim();
+                            String email = star.nextToken().trim();
+                            String bloodType = star.nextToken().trim();
+                            Patient patient = new Patient(hospitalID, password, name, age, gender, dob, phoneNumber,
+                                    email, bloodType);
+                            data.add(patient);
+                        } else if (file.contains("data\\Doctors.txt")) { // Create Doctor Object
+                            Doctor doctor = new Doctor(hospitalID, password, name, age, gender);
+
+                            data.add(doctor);
+                        }
+
+                        // else if (file.contains("pharmacist")){ //Create Pharmacist Object
+
+                        // }
+
+                        // else { //Create Administrator Object
+
+                        // }
+                    }
                 }
+            } finally {
+                sc.close();
             }
-        } finally {
-            sc.close();
         }
 
-        return users;
+        return data;
 
     }
 
-
-    // Save or update User.txt file
+    // Save or update all user files (Patients, Doctors, Pharmacists,
+    // Administrators)
     public static void saveUsers(ArrayList<User> users) throws IOException {
+        ArrayList<Patient> patients = new ArrayList<Patient>();
+        ArrayList<Doctor> doctors = new ArrayList<Doctor>();
+        ArrayList<Pharmacist> pharmacists = new ArrayList<Pharmacist>();
+        ArrayList<Administrator> administrators = new ArrayList<Administrator>();
+
+        PrintWriter out;
         StringBuilder st;
-        PrintWriter out = new PrintWriter(new FileWriter("data\\User.txt", false)); //Allow overwrite of users
-        out.println(USER_HEADER);
+        for (User user : users) { // Store the users into their respective arrays
+            if (user instanceof Patient)
+                patients.add((Patient) user);
+            else if (user instanceof Doctor)
+                doctors.add((Doctor) user);
+            else if (user instanceof Pharmacist)
+                pharmacists.add((Pharmacist) user);
+            else
+                administrators.add((Administrator) user);
+        }
 
-        try{
-            for(User user: users){
+        out = new PrintWriter(new FileWriter("data\\Patients.txt", false)); // Overwrite the users into the respective
+                                                                            // txt file
+
+        try {
+            out.println(PATIENT_HEADER); // Print header first
+
+            for (Patient patient : patients) {
                 st = new StringBuilder();
-                st.append(user.getHospitalID());
+                st.append(patient.getHospitalID().trim());
                 st.append(DELIMITER);
-                st.append(user.getPassword());
+                st.append(patient.getPassword());
                 st.append(DELIMITER);
-                st.append(user.getName());
+                st.append(patient.getName().trim());
                 st.append(DELIMITER);
-                st.append(user.getRole());
-
+                st.append(patient.getAge());
+                st.append(DELIMITER);
+                st.append(patient.getGender());
+                st.append(DELIMITER);
+                st.append(patient.getDateOfBirth().trim());
+                st.append(DELIMITER);
+                st.append(patient.getPhoneNumber().trim());
+                st.append(DELIMITER);
+                st.append(patient.getEmail().trim());
+                st.append(DELIMITER);
+                st.append(patient.getBloodType().trim());
                 out.println(st);
             }
-        } finally{
+
+            out.close();
+
+            out = new PrintWriter(new FileWriter("data\\Doctors.txt", false)); // Overwrite the users into the
+                                                                               // respective txt file
+
+            out.println(DOCTOR_HEADER); // Print header first
+            for (Doctor doctor : doctors) {
+                st = new StringBuilder();
+                st.append(doctor.getHospitalID().trim());
+                st.append(DELIMITER);
+                st.append(doctor.getPassword().trim());
+                st.append(DELIMITER);
+                st.append(doctor.getName().trim());
+                st.append(DELIMITER);
+                st.append(doctor.getAge());
+                st.append(DELIMITER);
+                st.append(doctor.getGender());
+                out.println(st);
+            }
+        } finally {
             out.close();
         }
 
@@ -82,7 +151,7 @@ public class TextDB {
 
     // Read Appointments.txt file
     public static ArrayList<Appointment> readAppointments(String fileName) throws IOException {
-        ArrayList<Appointment> usersAppt = new ArrayList<Appointment>();
+        ArrayList<Appointment> dataAppt = new ArrayList<Appointment>();
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         Scanner sc;
 
@@ -97,9 +166,12 @@ public class TextDB {
                     String doctorID = star.nextToken().trim();
                     LocalDateTime dateTime = LocalDateTime.parse(star.nextToken().trim(), timeFormatter);
                     String status = star.nextToken().trim();
-
+                
                     Appointment appt = new Appointment(appointmentID, patientID, doctorID, dateTime, status);
-                    usersAppt.add(appt);
+                    dataAppt.add(appt);
+
+
+
 
                 }
             }
@@ -107,17 +179,16 @@ public class TextDB {
             sc.close();
         }
 
-        return usersAppt;
+        return dataAppt;
 
     }
-
     // Save or update Appointments.txt file
     public static void saveAppointments(ArrayList<Appointment> appointments) throws IOException {
         PrintWriter out;
         StringBuilder st;
 
         out = new PrintWriter(new FileWriter("data\\Appointments.txt", false)); // Overwrite the appointments
-        out.println(APPT_HEADER);
+        out.println(APPT_HEADER); // Print header first
 
         try {
             for (Appointment appt : appointments) {
@@ -139,9 +210,10 @@ public class TextDB {
         }
     }
 
-    // Read Doctor Schedule
+
+    //Read Doctor Schedule
     public static ArrayList<Schedule> readSchedule(String fileName) throws IOException {
-        ArrayList<Schedule> usersSchedule = new ArrayList<Schedule>();
+        ArrayList<Schedule> dataSchedule = new ArrayList<Schedule>();
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         Scanner sc;
 
@@ -152,21 +224,25 @@ public class TextDB {
                 String st = sc.nextLine();
                 if (!(st.contains(SCHEDULE_HEADER))) { // NOT HEADER
                     StringTokenizer star = new StringTokenizer(st, DELIMITER);
-                    if (star.countTokens() > 0) {
+                    if(star.countTokens() > 0){
                         String doctorID = star.nextToken().trim();
-                        LocalDateTime date = LocalDateTime.parse(star.nextToken().trim(), timeFormatter); //LocalDate -> LocalDateTime (double check if there is error)
+                        LocalDate date = LocalDate.parse(star.nextToken().trim(), timeFormatter);
                         String[] sessions = new String[8];
                         int counter = 0;
-
-                        // Store the sessions availability into 1 String array
-                        while (star.hasMoreTokens() && counter < 8) {
+                        
+                        //Store the sessions availability into 1 String array
+                        while(star.hasMoreTokens() && counter <8){
                             sessions[counter] = star.nextToken().trim();
                             counter++;
                         }
-
+                        
                         Schedule schedule = new Schedule(doctorID, date, sessions);
-                        usersSchedule.add(schedule);
+                        dataSchedule.add(schedule);
                     }
+                  
+
+
+
 
                 }
             }
@@ -174,7 +250,7 @@ public class TextDB {
             sc.close();
         }
 
-        return usersSchedule;
+        return dataSchedule;
 
     }
 }

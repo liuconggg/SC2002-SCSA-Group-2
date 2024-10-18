@@ -1,9 +1,10 @@
-public abstract class User {
+public class User {
 
 	private String hospitalID;
 	private String password;
 	private String name;
-	private String role;
+	private int age;
+	private String gender;
 
 	/**
 	 * 
@@ -13,11 +14,12 @@ public abstract class User {
 
 	 public User(){}
 
-	 public User(String hospitalID, String password, String name, String role){
+	 public User(String hospitalID, String password, String name, int age, String gender){
 		this.hospitalID = hospitalID;
 		this.password = password;
 		this.name = name;
-		this.role = role;
+		this.age = age;
+		this.gender = gender;
 	 }
 
 
@@ -57,15 +59,33 @@ public abstract class User {
 		this.name = name;
 	}
 
-	public String getRole(){
-		return this.role;
+	public int getAge() {
+		return this.age;
 	}
 
-	public void setRole(String role){
-		this.role = role;
+	/**
+	 * 
+	 * @param age
+	 */
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public String getGender() {
+		return this.gender;
+	}
+
+	/**
+	 * 
+	 * @param Gender
+	 */
+	public void setGender(String Gender) {
+		this.gender = Gender;
 	}
 
 
-	public abstract void displayMenu();
+	public void displayMenu(){
+		System.out.println("Please log in!");
+	}
 
 }
