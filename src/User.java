@@ -19,8 +19,8 @@ public class User {
 		this.password = password;
 		this.name = name;
 		this.age = age;
-		this.gender = gender;
-	 }
+		this.gender = gender;	 
+	}
 
 
 	public String getHospitalID() {

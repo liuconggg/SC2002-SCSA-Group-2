@@ -2,7 +2,7 @@ public class Pharmacist extends User {
 
 
 	public Pharmacist (String hospitalID, String password, String name, int age, String gender){
-		super(hospitalID, password, name ,age ,gender);
+		super(hospitalID, password, name , age, gender);
 	}
 
 

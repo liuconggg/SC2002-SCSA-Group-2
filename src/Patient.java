@@ -9,7 +9,7 @@ public class Patient extends User {
 
 	public Patient(){}
 	public Patient(String hospitalID, String password, String name, int age, String gender, String dateOfBirth, String phoneNumber, String email, String bloodType){
-		super(hospitalID, password, name, age, gender );
+		super(hospitalID, password, name,age, gender);
 		this.dateOfBirth = dateOfBirth;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
