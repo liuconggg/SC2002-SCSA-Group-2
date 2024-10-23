@@ -23,12 +23,12 @@ public class CsvDB {
 
     // Store the file names
     // public static final String userCSV = "data\\User.csv";
-    public static final String patientCSV = "data\\Patient.csv";
-    public static final String doctorCSV = "data\\Doctor.csv";
-    public static final String administratorCSV = "data\\Administrator.csv";
-    public static final String pharmacistCSV = "data\\Pharmacist.csv";
-    public static final String appointmentCSV = "data\\Appointment.csv";
-    public static final String scheduleCSV = "data\\Schedule.csv";
+    public static final String patientCSV = "data/Patient.csv";
+    public static final String doctorCSV = "data/Doctor.csv";
+    public static final String administratorCSV = "data/Administrator.csv";
+    public static final String pharmacistCSV = "data/Pharmacist.csv";
+    public static final String appointmentCSV = "data/Appointment.csv";
+    public static final String scheduleCSV = "data/Schedule.csv";
 
     // Read Patient.csv, Doctor.csv, Pharmacist.csv, Administrator.csv files
     public static ArrayList<User> readUsers() throws IOException {
