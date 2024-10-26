@@ -1,4 +1,4 @@
-public class User {
+public abstract class User {
 
 	private String hospitalID;
 	private String password;
@@ -84,8 +84,6 @@ public class User {
 	}
 
 
-	public void displayMenu(){
-		System.out.println("Please log in!");
-	}
+	public abstract void displayMenu();
 
 }
