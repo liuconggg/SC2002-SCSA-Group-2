@@ -27,4 +27,8 @@ public class Pharmacist extends User implements Inventory {
 		}
 	}
 
+	@Override public void updateInventory(ArrayList<Medication> inventory, String medicationName, int quantity) {
+
+	}
+
 }

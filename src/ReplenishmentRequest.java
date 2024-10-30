@@ -1,4 +1,4 @@
-public class ReplenishRequest {
+public class ReplenishmentRequest {
 
 	private String requestID;
 	private String medicationID;
@@ -33,7 +33,7 @@ public class ReplenishRequest {
 		return this.status;
 	}
 
-	public ReplenishRequest() {
+	public ReplenishmentRequest() {
 		// TODO - implement ReplenishRequest.ReplenishRequest
 		throw new UnsupportedOperationException();
 	}
@@ -45,7 +45,7 @@ public class ReplenishRequest {
 	 * @param quantity
 	 * @param status
 	 */
-	public ReplenishRequest(String requestID, String medicationID, int quantity, String status) {
+	public ReplenishmentRequest(String requestID, String medicationID, int quantity, String status) {
 		// TODO - implement ReplenishRequest.ReplenishRequest
 		throw new UnsupportedOperationException();
 	}

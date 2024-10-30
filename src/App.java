@@ -73,17 +73,14 @@ public class App {
             // Display user menu and functions logic here
             while (userLoggedIn != null) {
                 // Display Patient Menu
-                if (userLoggedIn instanceof Patient) {
+                if (userLoggedIn instanceof Patient) { // User is a Patient instance
                     patientFunctions();
                 } else if (userLoggedIn instanceof Doctor) { // User is a Doctor instance
                     doctorFunctions();
-
                 } else if (userLoggedIn instanceof Pharmacist) { // User is a Pharmacist instance
                     pharmacistFunctions();
-
-                } else { // User is a Administrator instance
-                    Administrator admin = (Administrator) userLoggedIn;
-                    admin.displayMenu();
+                } else if (userLoggedIn instanceof Administrator) { // User is a Administrator instance
+                    administratorFunctions();
                 }
             }
 
@@ -288,6 +285,35 @@ public class App {
                 break;
             case 3:
                 pharmacist.viewInventory(inventory);
+                sc.nextLine();
+                System.out.println("Press Enter to continue");
+                sc.nextLine();
+                break;
+            case 4:
+                break;
+            case 5:
+                userLoggedIn = null;
+                loggedOut = true;
+                System.out.println("You have logged out");
+                sc.nextLine();
+                break;
+        }
+    }
+
+    // All Administrator functions and logic
+    public static void administratorFunctions() {
+        Administrator administrator = (Administrator) userLoggedIn;
+        administrator.displayMenu();
+        System.out.print("Enter your choice: ");
+        int choice = sc.nextInt();
+
+        switch (choice) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                administrator.viewInventory(inventory);
                 sc.nextLine();
                 System.out.println("Press Enter to continue");
                 sc.nextLine();
