@@ -19,11 +19,13 @@ public class App {
 
     private static ArrayList<User> users;
     private static ArrayList<Appointment> appts;
+    private static ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords;
     private static ArrayList<Schedule> schedules;
     private static Scanner sc = new Scanner(System.in);
     private static User userLoggedIn = null;
     private static boolean loggedOut = false;
     private static ArrayList<Medication> inventory;
+    private static ArrayList<ReplenishmentRequest> replenishmentRequests;
 
     public static void main(String[] args) throws Exception {
 
@@ -31,7 +33,6 @@ public class App {
         users = CsvDB.readUsers();
         appts = CsvDB.readAppointments();
         schedules = CsvDB.readSchedules();
-        inventory = CsvDB.readMedications();
 
         System.out.println("Hospital Management System");
         userLoggedIn = null;
@@ -278,21 +279,55 @@ public class App {
     public static void pharmacistFunctions() {
         Pharmacist pharmacist = (Pharmacist) userLoggedIn;
         pharmacist.displayMenu();
-        System.out.print("Enter your choice: ");
+        System.out.print("\nEnter your choice: ");
         int choice = sc.nextInt();
 
         switch (choice) {
             case 1:
+                try {
+                    apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
+                    pharmacist.viewAppointmentOutcome(apptOutcomeRecords);
+                    sc.nextLine();
+                    System.out.println("\nPress Enter to continue");
+                    sc.nextLine();
+                } catch (IOException e) {
+                    System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
+                }
                 break;
             case 2:
+                try {
+                    apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
+                    inventory = CsvDB.readMedications();
+                    pharmacist.prescribeAndUpdate(apptOutcomeRecords, inventory);
+                    sc.nextLine();
+                    System.out.println("\nPress Enter to continue");
+                    sc.nextLine();
+                } catch (IOException e) {
+                    System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
+                }
                 break;
             case 3:
-                pharmacist.viewInventory(inventory);
-                sc.nextLine();
-                System.out.println("Press Enter to continue");
-                sc.nextLine();
+                try {
+                    inventory = CsvDB.readMedications();
+                    pharmacist.viewInventory(inventory);
+                    sc.nextLine();
+                    System.out.println("\nPress Enter to continue");
+                    sc.nextLine();
+                } catch (IOException e) {
+                    System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
+                }
                 break;
             case 4:
+                try {
+                    inventory = CsvDB.readMedications();
+                    replenishmentRequests = CsvDB.readRequest();
+                    pharmacist.submitReplenishmentRequest(inventory, replenishmentRequests, pharmacist);
+                    sc.nextLine();
+                    System.out.println("\nPress Enter to continue");
+                    sc.nextLine();
+                } catch (IOException e) {
+                    System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
+                }
                 break;
             case 5:
                 userLoggedIn = null;
