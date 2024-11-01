@@ -86,7 +86,7 @@ public class Patient extends User {
 		return appts.getAppointmentsByPatientID(patientID, appointments);
 	}
 
-	public Patient getPatientById(String patientID, ArrayList<User> users){
+	public static Patient getPatientById(String patientID, ArrayList<User> users){
 		Patient patientFound = null;
 		for(User pat:users){
 			if (pat.getHospitalID().equals(patientID) && pat instanceof Patient){

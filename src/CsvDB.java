@@ -23,12 +23,12 @@ public class CsvDB {
 
     // Store the file names
     // public static final String userCSV = "data\\User.csv";
-    public static final String patientCSV = "../HMS/data/Patient.csv";
-    public static final String doctorCSV = "../HMS/data/Doctor.csv";
-    public static final String administratorCSV = "../HMS/data/Administrator.csv";
-    public static final String pharmacistCSV = "../HMS/data/Pharmacist.csv";
-    public static final String appointmentCSV = "../HMS/data/Appointment.csv";
-    public static final String scheduleCSV = "../HMS/data/Schedule.csv";
+    public static final String patientCSV = "../data/Patient.csv";
+    public static final String doctorCSV = "../data/Doctor.csv";
+    public static final String administratorCSV = "../data/Administrator.csv";
+    public static final String pharmacistCSV = "../data/Pharmacist.csv";
+    public static final String appointmentCSV = "../data/Appointment.csv";
+    public static final String scheduleCSV = "../data/Schedule.csv";
 
     // Read Patient.csv, Doctor.csv, Pharmacist.csv, Administrator.csv files
     public static ArrayList<User> readUsers() throws IOException {
@@ -186,13 +186,13 @@ public class CsvDB {
             out.close();
         }
     }
-
     // Read Schedule.csv file
     public static ArrayList<Schedule> readSchedules() throws IOException {
         ArrayList<Schedule> schedules = new ArrayList<Schedule>();
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         BufferedReader reader = new BufferedReader(new FileReader(scheduleCSV));
         String line;
+
         try {
             while ((line = reader.readLine()) != null) {
                 if (!(line.contains(SCHEDULE_HEADER))) {
@@ -209,5 +209,30 @@ public class CsvDB {
         }
 
         return schedules;
+    }
+
+    public static void saveSchedules(ArrayList<Schedule> schedules) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(scheduleCSV, false))) {
+            // Write the header row
+            writer.println(SCHEDULE_HEADER);
+
+            // Write each schedule entry
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            for (Schedule schedule : schedules) {
+                StringBuilder line = new StringBuilder();
+                line.append(schedule.getDoctorID()).append(DELIMITER);
+                line.append(schedule.getDate().format(dateFormatter)).append(DELIMITER);
+
+                for (String session : schedule.getSession()) {
+                    line.append(session).append(DELIMITER);
+                }
+
+                // Remove the trailing delimiter
+                line.setLength(line.length() - 1);
+                writer.println(line.toString());
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving schedules: " + e.getMessage());
+        }
     }
 }

@@ -216,7 +216,7 @@ public class App {
     //All doctor functions and logic
     public static void doctorFunctions(){
         Doctor doctor = (Doctor) userLoggedIn;
-        ArrayList<Schedule> docSchedule = doctor.viewSchedule(doctor.getHospitalID(), schedules);
+        // ArrayList<Schedule> docSchedule = doctor.viewSchedule(doctor.getHospitalID(), schedules);
 
         doctor.displayMenu();
         System.out.print("Enter your choice: ");
@@ -227,38 +227,17 @@ public class App {
                 break;
             case 2:
                 break;
-            case 3: // View Personal Schedule
-                int sessionCounter = 0;
-                Patient scheduledPatient;
-                for (Schedule schedule : docSchedule) {
-                    System.out.printf("Your Personal Schedule on %s:\n",
-                            schedule.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                    sessionCounter = 0;
-                    while (sessionCounter < 8) {
-                        if (schedule.getSession()[sessionCounter].equals("Available")
-                                || schedule.getSession()[sessionCounter].equals("Unavailable")) {
-                            System.out.printf("Session %d (%s): %s\n", sessionCounter + 1,
-                                    sessionTimings[sessionCounter], schedule.getSession()[sessionCounter]);
-                        } else { // Need to retrieve patient name
-                            scheduledPatient = new Patient()
-                                    .getPatientById(schedule.getSession()[sessionCounter], users);
-                            System.out.printf("Session %d (%s): %s\n", sessionCounter + 1,
-                                    sessionTimings[sessionCounter], scheduledPatient.getName());
-
-                        }
-                        sessionCounter++;
-                    }
-                }
-
-                sc.nextLine();
-                System.out.println("Press Enter to continue");
-                sc.nextLine();
+            case 3: // View Personal Schedule based on week
+                doctor.viewWeeklySchedule(schedules, users);
                 break;
             case 4:
+                doctor.setAvailability(schedules);
                 break;
             case 5:
+                doctor.acceptOrDeclineAppointmentRequests(schedules, users);
                 break;
             case 6:
+            doctor.viewUpcomingAppointments(schedules, users);
                 break;
             case 7:
                 break;
