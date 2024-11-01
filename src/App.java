@@ -19,10 +19,13 @@ public class App {
 
     private static ArrayList<User> users;
     private static ArrayList<Appointment> appts;
+    private static ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords;
     private static ArrayList<Schedule> schedules;
     private static Scanner sc = new Scanner(System.in);
     private static User userLoggedIn = null;
     private static boolean loggedOut = false;
+    private static ArrayList<Medication> inventory;
+    private static ArrayList<ReplenishmentRequest> replenishmentRequests;
 
     public static void main(String[] args) throws Exception {
 
@@ -77,8 +80,7 @@ public class App {
                     doctorFunctions();
 
                 } else if (userLoggedIn instanceof Pharmacist) { // User is a Pharmacist instance
-                    Pharmacist pharmacist = (Pharmacist) userLoggedIn;
-                    pharmacist.displayMenu();
+                    pharmacistFunctions();
 
                 } else { // User is a Administrator instance
                     Administrator admin = (Administrator) userLoggedIn;
@@ -92,7 +94,7 @@ public class App {
         }
     }
 
-    //All Patient function & logic
+    // All Patient function & logic
     public static void patientFunctions() throws IOException {
         Patient patient = (Patient) userLoggedIn;
         ArrayList<Appointment> patientAppointments = patient.viewAppointments(patient.getHospitalID(),
@@ -134,7 +136,8 @@ public class App {
                             patient.setEmail(newEmail);
                             break;
                         case 4:
-                            CsvDB.saveUsers(users);; // Save changes upon exiting
+                            CsvDB.saveUsers(users);
+                            ; // Save changes upon exiting
                             changing = false;
                             break;
                     }
@@ -213,8 +216,8 @@ public class App {
         }
     }
 
-    //All doctor functions and logic
-    public static void doctorFunctions(){
+    // All doctor functions and logic
+    public static void doctorFunctions() {
         Doctor doctor = (Doctor) userLoggedIn;
         // ArrayList<Schedule> docSchedule = doctor.viewSchedule(doctor.getHospitalID(), schedules);
 
@@ -249,6 +252,69 @@ public class App {
                 break;
         }
 
+    }
+
+    // All Phamacist functions and logic
+    public static void pharmacistFunctions() {
+        Pharmacist pharmacist = (Pharmacist) userLoggedIn;
+        pharmacist.displayMenu();
+        System.out.print("\nEnter your choice: ");
+        int choice = sc.nextInt();
+
+        switch (choice) {
+            case 1:
+                try {
+                    apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
+                    pharmacist.viewAppointmentOutcome(apptOutcomeRecords);
+                    sc.nextLine();
+                    System.out.println("\nPress Enter to continue");
+                    sc.nextLine();
+                } catch (IOException e) {
+                    System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
+                }
+                break;
+            case 2:
+                try {
+                    apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
+                    inventory = CsvDB.readMedications();
+                    pharmacist.prescribeAndUpdate(apptOutcomeRecords, inventory);
+                    sc.nextLine();
+                    System.out.println("\nPress Enter to continue");
+                    sc.nextLine();
+                } catch (IOException e) {
+                    System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
+                }
+                break;
+            case 3:
+                try {
+                    inventory = CsvDB.readMedications();
+                    pharmacist.viewInventory(inventory);
+                    sc.nextLine();
+                    System.out.println("\nPress Enter to continue");
+                    sc.nextLine();
+                } catch (IOException e) {
+                    System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
+                }
+                break;
+            case 4:
+                try {
+                    inventory = CsvDB.readMedications();
+                    replenishmentRequests = CsvDB.readRequest();
+                    pharmacist.submitReplenishmentRequest(inventory, replenishmentRequests, pharmacist);
+                    sc.nextLine();
+                    System.out.println("\nPress Enter to continue");
+                    sc.nextLine();
+                } catch (IOException e) {
+                    System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
+                }
+                break;
+            case 5:
+                userLoggedIn = null;
+                loggedOut = true;
+                System.out.println("You have logged out");
+                sc.nextLine();
+                break;
+        }
     }
 
 }

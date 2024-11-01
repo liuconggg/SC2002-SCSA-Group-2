@@ -1,0 +1,4 @@
+Medication ID,Medication Name,Stock Status,Alert,Quantity
+M0001,Paracetemol,HIGH,false,90
+M0002,Ibuprofen,MEDIUM,false,50
+M0003,Cough Syrup,LOW,true,9

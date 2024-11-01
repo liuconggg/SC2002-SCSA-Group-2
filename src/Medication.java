@@ -1,10 +1,37 @@
+import java.util.ArrayList;
+
 public class Medication {
 
+	private String medicationID;
 	private String medicationName;
-	private String stockLevel;
+	private String stockStatus;
 	private boolean alert;
 	private int totalQuantity;
-	private String medicationID;
+
+	public Medication() { // default constructor
+
+	}
+
+	public Medication(String medicationID, String medicationName, String stockStatus, boolean alert,
+			int totalQuantity) {
+		this.medicationID = medicationID;
+		this.medicationName = medicationName;
+		this.stockStatus = stockStatus;
+		this.alert = alert;
+		this.totalQuantity = totalQuantity;
+	}
+
+	public String getMedicationID() {
+		return this.medicationID;
+	}
+
+	/**
+	 *
+	 * @param medicationID
+	 */
+	public void setMedicationID(String medicationID) {
+		this.medicationID = medicationID;
+	}
 
 	public String getMedicationName() {
 		return this.medicationName;
@@ -18,18 +45,16 @@ public class Medication {
 		this.medicationName = medicationName;
 	}
 
-	public String getStockLevel() {
-		// TODO - implement Medication.getStock
-		throw new UnsupportedOperationException();
+	public String getStockStatus() {
+		return this.stockStatus;
 	}
 
 	/**
 	 * 
-	 * @param stockLevel
+	 * @param stockStatus
 	 */
-	public void setStockLevel(String stockLevel) {
-		// TODO - implement Medication.setStock
-		throw new UnsupportedOperationException();
+	public void setStockStatus(String stockStatus) {
+		this.stockStatus = stockStatus;
 	}
 
 	public boolean getAlert() {
@@ -54,18 +79,6 @@ public class Medication {
 	 */
 	public void setTotalQuantity(int totalQuantity) {
 		this.totalQuantity = totalQuantity;
-	}
-
-	public String getMedicationID() {
-		return this.medicationID;
-	}
-
-	/**
-	 * 
-	 * @param medicationID
-	 */
-	public void setMedicationID(String medicationID) {
-		this.medicationID = medicationID;
 	}
 
 }

@@ -1,16 +1,26 @@
+import java.util.ArrayList;
+
 public class AppointmentOutcomeRecord {
 
 	private String appointmentID;
 	private String typeOfService;
 	private String consultationNotes;
+	private ArrayList<MedicationItem> prescriptions;
+	private String prescriptionStatus;
 
+	public AppointmentOutcomeRecord() {
 
-	public AppointmentOutcomeRecord(String appointmentID, String typeOfService, String consultationNotes){
+	}
+
+	public AppointmentOutcomeRecord(String appointmentID, String typeOfService, String consultationNotes,
+			ArrayList<MedicationItem> prescriptions, String prescriptionStatus) {
 		this.appointmentID = appointmentID;
 		this.typeOfService = typeOfService;
 		this.consultationNotes = consultationNotes;
+		this.prescriptions = prescriptions;
+		this.prescriptionStatus = prescriptionStatus;
 	}
-	
+
 	public String getAppointmentID() {
 		return this.appointmentID;
 	}
@@ -47,16 +57,28 @@ public class AppointmentOutcomeRecord {
 		this.consultationNotes = consultationNotes;
 	}
 
-	// public PrescribedMedication[] getPrescribedMedication() {
+	public ArrayList<MedicationItem> getPrescriptions() {
+		return this.prescriptions;
+	}
 
-	// }
+	/**
+	 *
+	 * @param prescriptions
+	 */
+	public void setPrescriptions(ArrayList<MedicationItem> prescriptions) {
+		this.prescriptions = prescriptions;
+	}
 
-	// /**
-	//  * 
-	//  * @param prescribedMedication
-	//  */
-	// public void setPrescribedMedication(PrescribedMedication[] prescribedMedication) {
+	public String getPrescriptionStatus() {
+		return this.prescriptionStatus;
+	}
 
-	// }
+	/**
+	 *
+	 * @param prescriptionStatus
+	 */
+	public void setPrescriptionStatus(String prescriptionStatus) {
+		this.prescriptionStatus = prescriptionStatus;
+	}
 
 }

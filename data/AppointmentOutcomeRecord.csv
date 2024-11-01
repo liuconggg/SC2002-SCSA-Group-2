@@ -1,0 +1,6 @@
+Appointment ID,Type of Service,Consultation Notes,Prescriptions,Prescription Status
+Appointment 1,Consultation,Severe bruises and pain on the leg,M0002:Ibuprofen:20;M0003:Cough Syrup:50,DISPENSED
+Appointment 2,Blood Test,Patient suspected to have dengue. Blood test conducted,M0001:Paracetemol:10;M0002:Ibuprofen:90,PENDING
+Appointment 3,X-RAY,NA,,COMPLETED
+Appointment 4,Consultation,Patient suspected to have Covid,M0001:Paracetemol:10;M0002:Ibuprofen:30;M0003:Cough Syrup:40,DISPENSED
+Appointment 5,Consultation,Patient suspected to have Cough,M0003:Cough Syrup:1,DISPENSED
