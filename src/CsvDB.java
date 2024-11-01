@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.util.*;
 import java.time.LocalDate;
@@ -5,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 //For all operations in the CSV file
-
 public class CsvDB {
 
     public static final String DELIMITER = ","; // for CSV file
@@ -39,7 +39,7 @@ public class CsvDB {
     // Read Patient.csv, Doctor.csv, Pharmacist.csv, Administrator.csv files
     public static ArrayList<User> readUsers() throws IOException {
         ArrayList<User> users = new ArrayList<User>();
-        String[] csvFiles = { patientCSV, doctorCSV, administratorCSV, pharmacistCSV };
+        String[] csvFiles = {patientCSV, doctorCSV, administratorCSV, pharmacistCSV};
         BufferedReader reader;
         String line;
 
@@ -59,15 +59,11 @@ public class CsvDB {
                             Doctor doctor = new Doctor(fields[0], fields[1], fields[2], Integer.parseInt(fields[3]),
                                     fields[4]);
                             users.add(doctor);
-                        }
-
-                        else if (file.equals(pharmacistCSV)) {
+                        } else if (file.equals(pharmacistCSV)) {
                             Pharmacist pharmacist = new Pharmacist(fields[0], fields[1], fields[2],
                                     Integer.parseInt(fields[3]), fields[4]);
                             users.add(pharmacist);
-                        }
-
-                        else {
+                        } else {
                             // Only administrator
                             Administrator admin = new Administrator(fields[0], fields[1], fields[2],
                                     Integer.parseInt(fields[3]), fields[4]);
@@ -93,14 +89,15 @@ public class CsvDB {
         PrintWriter out;
 
         for (User user : users) { // Store the users into their respective arrays
-            if (user instanceof Patient)
-                patients.add((Patient) user);
-            else if (user instanceof Doctor)
-                doctors.add((Doctor) user);
-            else if (user instanceof Pharmacist)
-                pharmacists.add((Pharmacist) user);
-            else
+            if (user instanceof Patient) {
+                patients.add((Patient) user); 
+            }else if (user instanceof Doctor) {
+                doctors.add((Doctor) user); 
+            }else if (user instanceof Pharmacist) {
+                pharmacists.add((Pharmacist) user); 
+            }else {
                 administrators.add((Administrator) user);
+            }
         }
 
         out = new PrintWriter(new FileWriter(patientCSV, false)); // Overwrite the patientCSV
@@ -199,6 +196,7 @@ public class CsvDB {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         BufferedReader reader = new BufferedReader(new FileReader(scheduleCSV));
         String line;
+
         try {
             while ((line = reader.readLine()) != null) {
                 if (!(line.contains(SCHEDULE_HEADER))) {
@@ -375,4 +373,28 @@ public class CsvDB {
         }
     }
 
+    public static void saveSchedules(ArrayList<Schedule> schedules) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(scheduleCSV, false))) {
+            // Write the header row
+            writer.println(SCHEDULE_HEADER);
+
+            // Write each schedule entry
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            for (Schedule schedule : schedules) {
+                StringBuilder line = new StringBuilder();
+                line.append(schedule.getDoctorID()).append(DELIMITER);
+                line.append(schedule.getDate().format(dateFormatter)).append(DELIMITER);
+
+                for (String session : schedule.getSession()) {
+                    line.append(session).append(DELIMITER);
+                }
+
+                // Remove the trailing delimiter
+                line.setLength(line.length() - 1);
+                writer.println(line.toString());
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving schedules: " + e.getMessage());
+        }
+    }
 }

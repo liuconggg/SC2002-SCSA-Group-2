@@ -1,6 +1,6 @@
 Doctor ID,Password,Name,Age,Gender
 D0001,123,Alex Johnson,35,Male
 D0002,password,Emily Davis,45,Female
-D0003,password,Michael Smith,66,Male
-D0004,password,Sophia Brown,29,Female
+D0003,123,Michael Smith,66,Male
+D0004,123,Sophia Brown,29,Female
 D0005,password,Daniel Wilson,50,Male
