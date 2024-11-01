@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Administrator extends User implements Inventory {
 
-	public Administrator(String hospitalID, String password, String name, int age, String gender){
+	public Administrator(String hospitalID, String password, String name, int age, String gender) {
 		super(hospitalID, password, name, age, gender);
 	}
 
@@ -12,7 +12,7 @@ public class Administrator extends User implements Inventory {
 		System.out.println("2. View Appointment Details");
 		System.out.println("3. View and Manage Medication Inventory");
 		System.out.println("4. Approve Replenishment Requests");
-		System.out.println("5. Logout");	
+		System.out.println("5. Logout");
 	}
 
 	@Override
@@ -27,8 +27,28 @@ public class Administrator extends User implements Inventory {
 		}
 	}
 
-	@Override public void updateInventory(ArrayList<Medication> inventory, String medicationName, int quantity) {
+	@Override
+	public void updateInventory(ArrayList<Medication> inventory, String medicationName, int quantity) {
+		boolean medicationFound = false;
 
+		// Loop through the inventory to find if the medication already exists
+		for (Medication med : inventory) {
+			if (med.getMedicationName().equalsIgnoreCase(medicationName)) {
+				// Update the quantity of the existing medication
+				med.setTotalQuantity(med.getTotalQuantity() + quantity);
+				System.out.println("Updated " + medicationName + " quantity to: " + med.getTotalQuantity());
+				medicationFound = true;
+				break; // Exit the loop as the medication has been found and updated
+			}
+		}
+
+		// If medication was not found in the inventory, optionally add it
+		// if (!medicationFound) {
+		// 	Medication newMedication = new Medication(medicationName, quantity);
+		// 	inventory.add(newMedication);
+		// 	System.out.println("Added new medication: " + newMedication.getName() + " with quantity: "
+		// 			+ newMedication.getQuantity());
+		// }
 	}
 
 }

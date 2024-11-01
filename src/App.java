@@ -306,11 +306,20 @@ public class App {
         administrator.displayMenu();
         System.out.print("Enter your choice: ");
         int choice = sc.nextInt();
+        String medicineName;
+        int medicineQuantity;
+
 
         switch (choice) {
             case 1:
                 break;
             case 2:
+                System.out.println("===========");
+                System.out.print("Enter medicine name: ");
+                medicineName = sc.next();
+                System.out.print("Enter medicine quantity: ");
+                medicineQuantity = sc.nextInt();
+                administrator.updateInventory(inventory, medicineName, medicineQuantity);
                 break;
             case 3:
                 administrator.viewInventory(inventory);
