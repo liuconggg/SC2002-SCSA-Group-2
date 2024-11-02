@@ -1,4 +1,6 @@
+
 public class MedicationItem {
+
     private String medicationID;
     private String medicationName;
     private int quantity;
@@ -30,7 +32,7 @@ public class MedicationItem {
     }
 
     /**
-     * 
+     *
      * @param medicationName
      */
     public void setMedicationName(String medicationName) {
@@ -42,7 +44,7 @@ public class MedicationItem {
     }
 
     /**
-     * 
+     *
      * @param quantity
      */
     public void setQuantity(int quantity) {
