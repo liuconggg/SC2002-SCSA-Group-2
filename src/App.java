@@ -1,31 +1,28 @@
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.time.format.DateTimeFormatter;
 
 public class App {
 
     public static final String DEFAULT_PASSWORD = "password";
     public static final String[] sessionTimings = {
-            "09:00 - 10:00",
-            "10:00 - 11:00",
-            "11:00 - 12:00",
-            "12:00 - 13:00",
-            "13:00 - 14:00",
-            "14:00 - 15:00",
-            "15:00 - 16:00",
-            "16:00 - 17:00"
+        "09:00 - 10:00",
+        "10:00 - 11:00",
+        "11:00 - 12:00",
+        "12:00 - 13:00",
+        "13:00 - 14:00",
+        "14:00 - 15:00",
+        "15:00 - 16:00",
+        "16:00 - 17:00"
     };
 
     private static ArrayList<User> users;
     private static ArrayList<Appointment> appts;
-    private static ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords;
     private static ArrayList<Schedule> schedules;
     private static Scanner sc = new Scanner(System.in);
     private static User userLoggedIn = null;
     private static boolean loggedOut = false;
-    private static ArrayList<Medication> inventory;
-    private static ArrayList<ReplenishmentRequest> replenishmentRequests;
 
     public static void main(String[] args) throws Exception {
 
@@ -60,8 +57,9 @@ public class App {
                                 System.out.println("Password changed successfully!");
 
                                 break;
-                            } else
+                            } else {
                                 System.out.println("Password does not match! Please try again!");
+                            }
                         } while (true);
 
                     }
@@ -80,7 +78,8 @@ public class App {
                     doctorFunctions();
 
                 } else if (userLoggedIn instanceof Pharmacist) { // User is a Pharmacist instance
-                    pharmacistFunctions();
+                    Pharmacist pharmacist = (Pharmacist) userLoggedIn;
+                    pharmacist.displayMenu();
 
                 } else { // User is a Administrator instance
                     Administrator admin = (Administrator) userLoggedIn;
@@ -88,13 +87,14 @@ public class App {
                 }
             }
 
-            if (userLoggedIn == null && !loggedOut)
+            if (userLoggedIn == null && !loggedOut) {
                 System.out.println("Login failed! Please try again!");
+            }
 
         }
     }
 
-    // All Patient function & logic
+    //All Patient function & logic
     public static void patientFunctions() throws IOException {
         Patient patient = (Patient) userLoggedIn;
         ArrayList<Appointment> patientAppointments = patient.viewAppointments(patient.getHospitalID(),
@@ -150,60 +150,60 @@ public class App {
             case 5: // Reschedule an Appointment
                 break;
             case 6: // Cancel an Appointment
-                if (patientAppointments.size() > 0) {
-                    int apptCounter = 0;
-                    int appointmentChoice;
-                    Doctor doc;
-                    System.out.println("Which appointment do you want to cancel?");
-                    for (Appointment patientAppt : patientAppointments) {
-                        doc = new Doctor().getDoctorById(patientAppt.getDoctorID(), users);
-                        if (doc != null) {
-                            System.out.printf("%d. Appointment with Dr %s on %s is %s\n", ++apptCounter,
-                                    doc.getName(),
-                                    patientAppt.getDateTime()
-                                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
-                                    patientAppt.getStatus());
-                        }
+                // if (patientAppointments.size() > 0) {
+                //     int apptCounter = 0;
+                //     int appointmentChoice;
+                //     Doctor doc;
+                //     System.out.println("Which appointment do you want to cancel?");
+                //     for (Appointment patientAppt : patientAppointments) {
+                //         doc = new Doctor().getDoctorById(patientAppt.getDoctorID(), users);
+                //         if (doc != null) {
+                //             System.out.printf("%d. Appointment with Dr %s on %s is %s\n", ++apptCounter,
+                //                     doc.getName(),
+                //                     patientAppt.getDateTime()
+                //                             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                //                     patientAppt.getStatus());
+                //         }
 
-                    }
-
-                    System.out.print("Your choice: ");
-                    appointmentChoice = sc.nextInt();
-                    if (appointmentChoice <= patientAppointments.size()) {
-                        doc = new Doctor().getDoctorById(
-                                patientAppointments.get(appointmentChoice - 1).getDoctorID(), users);
-                        patientAppointments.get(appointmentChoice - 1).setStatus("Cancelled");
-                        CsvDB.saveAppointments(appts);
-                        System.out.printf("Your appointment with %s has been cancelled\n", doc.getName());
-                    }
-
-                } else
-                    System.out.println("You have no scheduled appointments");
-                sc.nextLine();
-                System.out.println("Press Enter to continue...");
-                sc.nextLine();
+                //     }
+                //     System.out.print("Your choice: ");
+                //     appointmentChoice = sc.nextInt();
+                //     if (appointmentChoice <= patientAppointments.size()) {
+                //         doc = new Doctor().getDoctorById(
+                //                 patientAppointments.get(appointmentChoice - 1).getDoctorID(), users);
+                //         patientAppointments.get(appointmentChoice - 1).setStatus("Cancelled");
+                //         CsvDB.saveAppointments(appts);
+                //         System.out.printf("Your appointment with %s has been cancelled\n", doc.getName());
+                //     }
+                // } else {
+                //     System.out.println("You have no scheduled appointments");
+                // }
+                // sc.nextLine();
+                // System.out.println("Press Enter to continue...");
+                // sc.nextLine();
                 break;
             case 7: // View scheduled appointments
-                if (patientAppointments.size() > 0) {
-                    int apptCounter = 0;
-                    Doctor doc;
+                // if (patientAppointments.size() > 0) {
+                //     int apptCounter = 0;
+                //     Doctor doc;
 
-                    System.out.println("Your scheduled appointment(s):");
-                    for (Appointment patientAppt : patientAppointments) {
-                        doc = new Doctor().getDoctorById(patientAppt.getDoctorID(), users);
-                        if (doc != null) {
-                            System.out.printf("%d. Appointment with Dr %s on %s is %s\n", ++apptCounter,
-                                    doc.getName(),
-                                    patientAppt.getDateTime()
-                                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
-                                    patientAppt.getStatus());
-                        }
-                    }
-                } else
-                    System.out.println("You have no scheduled appointments");
-                sc.nextLine();
-                System.out.println("Press Enter to continue...");
-                sc.nextLine();
+                //     System.out.println("Your scheduled appointment(s):");
+                //     for (Appointment patientAppt : patientAppointments) {
+                //         doc = new Doctor().getDoctorById(patientAppt.getDoctorID(), users);
+                //         if (doc != null) {
+                //             System.out.printf("%d. Appointment with Dr %s on %s is %s\n", ++apptCounter,
+                //                     doc.getName(),
+                //                     patientAppt.getDateTime()
+                //                             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                //                     patientAppt.getStatus());
+                //         }
+                //     }
+                // } else {
+                //     System.out.println("You have no scheduled appointments");
+                // }
+                // sc.nextLine();
+                // System.out.println("Press Enter to continue...");
+                // sc.nextLine();
                 break;
             case 8: // View Past Appointment Outcome Records
                 break;
@@ -216,7 +216,7 @@ public class App {
         }
     }
 
-    // All doctor functions and logic
+    //All doctor functions and logic
     public static void doctorFunctions() {
         Doctor doctor = (Doctor) userLoggedIn;
         // ArrayList<Schedule> docSchedule = doctor.viewSchedule(doctor.getHospitalID(), schedules);
@@ -240,7 +240,7 @@ public class App {
                 doctor.acceptOrDeclineAppointmentRequests(schedules, users);
                 break;
             case 6:
-            doctor.viewUpcomingAppointments(schedules, users);
+                doctor.viewUpcomingAppointments(schedules, users);
                 break;
             case 7:
                 break;
@@ -252,69 +252,6 @@ public class App {
                 break;
         }
 
-    }
-
-    // All Phamacist functions and logic
-    public static void pharmacistFunctions() {
-        Pharmacist pharmacist = (Pharmacist) userLoggedIn;
-        pharmacist.displayMenu();
-        System.out.print("\nEnter your choice: ");
-        int choice = sc.nextInt();
-
-        switch (choice) {
-            case 1:
-                try {
-                    apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
-                    pharmacist.viewAppointmentOutcome(apptOutcomeRecords);
-                    sc.nextLine();
-                    System.out.println("\nPress Enter to continue");
-                    sc.nextLine();
-                } catch (IOException e) {
-                    System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
-                }
-                break;
-            case 2:
-                try {
-                    apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
-                    inventory = CsvDB.readMedications();
-                    pharmacist.prescribeAndUpdate(apptOutcomeRecords, inventory);
-                    sc.nextLine();
-                    System.out.println("\nPress Enter to continue");
-                    sc.nextLine();
-                } catch (IOException e) {
-                    System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
-                }
-                break;
-            case 3:
-                try {
-                    inventory = CsvDB.readMedications();
-                    pharmacist.viewInventory(inventory);
-                    sc.nextLine();
-                    System.out.println("\nPress Enter to continue");
-                    sc.nextLine();
-                } catch (IOException e) {
-                    System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
-                }
-                break;
-            case 4:
-                try {
-                    inventory = CsvDB.readMedications();
-                    replenishmentRequests = CsvDB.readRequest();
-                    pharmacist.submitReplenishmentRequest(inventory, replenishmentRequests, pharmacist);
-                    sc.nextLine();
-                    System.out.println("\nPress Enter to continue");
-                    sc.nextLine();
-                } catch (IOException e) {
-                    System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
-                }
-                break;
-            case 5:
-                userLoggedIn = null;
-                loggedOut = true;
-                System.out.println("You have logged out");
-                sc.nextLine();
-                break;
-        }
     }
 
 }

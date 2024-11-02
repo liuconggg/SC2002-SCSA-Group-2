@@ -1,84 +1,85 @@
+
 import java.util.ArrayList;
 
 public class AppointmentOutcomeRecord {
 
-	private String appointmentID;
-	private String typeOfService;
-	private String consultationNotes;
-	private ArrayList<MedicationItem> prescriptions;
-	private String prescriptionStatus;
+    private String appointmentID;
+    private String typeOfService;
+    private String consultationNotes;
+    private ArrayList<MedicationItem> prescriptions;
+    private String prescriptionStatus;
 
-	public AppointmentOutcomeRecord() {
+    public AppointmentOutcomeRecord() {
 
-	}
+    }
 
-	public AppointmentOutcomeRecord(String appointmentID, String typeOfService, String consultationNotes,
-			ArrayList<MedicationItem> prescriptions, String prescriptionStatus) {
-		this.appointmentID = appointmentID;
-		this.typeOfService = typeOfService;
-		this.consultationNotes = consultationNotes;
-		this.prescriptions = prescriptions;
-		this.prescriptionStatus = prescriptionStatus;
-	}
+    public AppointmentOutcomeRecord(String appointmentID, String typeOfService, String consultationNotes,
+            ArrayList<MedicationItem> prescriptions, String prescriptionStatus) {
+        this.appointmentID = appointmentID;
+        this.typeOfService = typeOfService;
+        this.consultationNotes = consultationNotes;
+        this.prescriptions = prescriptions;
+        this.prescriptionStatus = prescriptionStatus;
+    }
 
-	public String getAppointmentID() {
-		return this.appointmentID;
-	}
+    public String getAppointmentID() {
+        return this.appointmentID;
+    }
 
-	/**
-	 * 
-	 * @param appointmentID
-	 */
-	public void setAppointmentID(String appointmentID) {
-		this.appointmentID = appointmentID;
-	}
+    /**
+     *
+     * @param appointmentID
+     */
+    public void setAppointmentID(String appointmentID) {
+        this.appointmentID = appointmentID;
+    }
 
-	public String getTypeOfService() {
-		return this.typeOfService;
-	}
+    public String getTypeOfService() {
+        return this.typeOfService;
+    }
 
-	/**
-	 * 
-	 * @param typeOfService
-	 */
-	public void setTypeOfService(String typeOfService) {
-		this.typeOfService = typeOfService;
-	}
+    /**
+     *
+     * @param typeOfService
+     */
+    public void setTypeOfService(String typeOfService) {
+        this.typeOfService = typeOfService;
+    }
 
-	public String getConsultationNotes() {
-		return this.consultationNotes;
-	}
+    public String getConsultationNotes() {
+        return this.consultationNotes;
+    }
 
-	/**
-	 * 
-	 * @param consultationNotes
-	 */
-	public void setConsultationNotes(String consultationNotes) {
-		this.consultationNotes = consultationNotes;
-	}
+    /**
+     *
+     * @param consultationNotes
+     */
+    public void setConsultationNotes(String consultationNotes) {
+        this.consultationNotes = consultationNotes;
+    }
 
-	public ArrayList<MedicationItem> getPrescriptions() {
-		return this.prescriptions;
-	}
+    public ArrayList<MedicationItem> getPrescriptions() {
+        return this.prescriptions;
+    }
 
-	/**
-	 *
-	 * @param prescriptions
-	 */
-	public void setPrescriptions(ArrayList<MedicationItem> prescriptions) {
-		this.prescriptions = prescriptions;
-	}
+    /**
+     *
+     * @param prescriptions
+     */
+    public void setPrescriptions(ArrayList<MedicationItem> prescriptions) {
+        this.prescriptions = prescriptions;
+    }
 
-	public String getPrescriptionStatus() {
-		return this.prescriptionStatus;
-	}
+    public String getPrescriptionStatus() {
+        return this.prescriptionStatus;
+    }
 
-	/**
-	 *
-	 * @param prescriptionStatus
-	 */
-	public void setPrescriptionStatus(String prescriptionStatus) {
-		this.prescriptionStatus = prescriptionStatus;
-	}
+    /**
+     *
+     * @param prescriptionStatus
+     */
+    public void setPrescriptionStatus(String prescriptionStatus) {
+        this.prescriptionStatus = prescriptionStatus;
+    }
 
 }
