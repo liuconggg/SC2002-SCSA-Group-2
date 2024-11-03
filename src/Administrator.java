@@ -14,5 +14,4 @@ public class Administrator extends User {
         System.out.println("4. Approve Replenishment Requests");
         System.out.println("5. Logout");
     }
-
 }

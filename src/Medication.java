@@ -1,5 +1,4 @@
 
-
 public class Medication {
 
     private String medicationID;

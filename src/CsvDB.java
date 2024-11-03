@@ -2,7 +2,6 @@
 import java.io.*;
 import java.util.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 //For all operations in the CSV file
@@ -18,11 +17,13 @@ public class CsvDB {
     public static final String DOCTOR_HEADER = "Doctor ID,Password,Name,Age,Gender";
     public static final String PHARMACIST_HEADER = "Pharmacist ID,Password,Name,Age,Gender";
     public static final String ADMINISTRATOR_HEADER = "Administrator ID,Password,Name,Age,Gender";
-    public static final String APPT_HEADER = "Appointment ID,Patient ID,Doctor ID,Date and Time,Status";
+    public static final String APPT_HEADER = "Appointment ID,Patient ID,Doctor ID,Date,Session,Status";
     public static final String APPT_OUTCOME_HEADER = "Appointment ID,Type of Service,Consultation Notes,Prescriptions,Prescription Status";
     public static final String SCHEDULE_HEADER = "Doctor ID,Date,Session 1,Session 2,Session 3,Session 4,Session 5,Session 6,Session 7,Session 8";
     public static final String MEDICATION_HEADER = "Medication ID,Medication Name,Stock Status,Alert,Quantity";
     public static final String REQUEST_HEADER = "Request ID,Medication Batch,Status,Pharmacist ID";
+    public static final String TREATMENT_HEADER = "Patient ID,Appointment ID, diagnosis";
+    public static final String DIAGNOSIS_HEADER = "Patient ID,Appointment ID, treatment";
 
     // Store the file names
     // public static final String userCSV = "data\\User.csv";
@@ -160,7 +161,9 @@ public class CsvDB {
                 if (!(line.contains(APPT_HEADER))) { // Ignore header row
                     String[] fields = line.split(DELIMITER);
                     Appointment appt = new Appointment(fields[0], fields[1], fields[2],
-                            LocalDate.parse(fields[3], timeFormatter), fields[4]);
+                            LocalDate.parse(fields[3], timeFormatter),
+                            Integer.parseInt(fields[4]), fields[5]
+                    );
 
                     appts.add(appt);
                 }
@@ -174,20 +177,23 @@ public class CsvDB {
 
     // Update Appointment.csv file
     public static void saveAppointments(ArrayList<Appointment> appointments) throws IOException {
-        // PrintWriter out;
+        PrintWriter out;
 
-        // out = new PrintWriter(new FileWriter(appointmentCSV, false));
-        // out.println(APPT_HEADER);
-        // try {
-        //     for (Appointment appointment : appointments) {
-        //         out.printf("%s,%s,%s,%s,%s\n", appointment.getAppointmentID(), appointment.getPatientID(),
-        //                 appointment.getDoctorID(),
-        //                 appointment.getDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
-        //                 appointment.getStatus());
-        //     }
-        // } finally {
-        //     out.close();
-        // }
+        out = new PrintWriter(new FileWriter(appointmentCSV, false));
+        out.println(APPT_HEADER);
+        try {
+            for (Appointment appointment : appointments) {
+                out.printf("%s,%s,%s,%s,%s\n", appointment.getAppointmentID(), appointment.getPatientID(),
+                        appointment.getDoctorID(),
+                        appointment.getDate()
+                                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                        appointment.getSession(),
+                        appointment.getStatus()
+                );
+            }
+        } finally {
+            out.close();
+        }
     }
 
     // Read Schedule.csv file
