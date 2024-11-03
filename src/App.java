@@ -105,6 +105,10 @@ public class App {
 
         switch (choice) {
             case 1: // View personal medical record
+                patient.viewMedicalRecord();
+                sc.nextLine();
+                System.out.println("\nPress Enter to continue");
+                sc.nextLine();
                 break;
 
             case 2: // Update personal information
@@ -144,8 +148,13 @@ public class App {
                 }
                 break;
             case 3: // View Available Appointment Slots
+                patient.viewAvailableAppointment(schedules, users);
                 break;
             case 4: // Schedule an Appointment
+                patient.scheduleAppointment(schedules, users, patient.getHospitalID());
+                sc.nextLine();
+                System.out.println("Press Enter to continue...");
+                sc.nextLine();
                 break;
             case 5: // Reschedule an Appointment
                 break;
@@ -204,6 +213,10 @@ public class App {
                 // sc.nextLine();
                 // System.out.println("Press Enter to continue...");
                 // sc.nextLine();
+                patient.viewScheduledAppointments(appts, users);
+                sc.nextLine();
+                System.out.println("Press Enter to continue...");
+                sc.nextLine();
                 break;
             case 8: // View Past Appointment Outcome Records
                 break;

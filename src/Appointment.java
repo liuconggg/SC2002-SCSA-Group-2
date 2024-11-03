@@ -8,12 +8,12 @@ public class Appointment {
     private String patientID;
     private String doctorID;
     private LocalDate date;
-    private String session;
+    private int session;
 
     public Appointment() {
     }
 
-    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, String session) {
+    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, int session) {
         this.appointmentID = appointmentID;
         this.patientID = patientID;
         this.doctorID = doctorID;
@@ -57,7 +57,7 @@ public class Appointment {
         this.doctorID = doctorID;
     }
 
-    public String getSession() {
+    public int getSession() {
         return this.session;
     }
 
@@ -65,7 +65,7 @@ public class Appointment {
      *
      * @param status
      */
-    public void setSession(String session) {
+    public void setSession(int session) {
         this.session = session;
     }
 
