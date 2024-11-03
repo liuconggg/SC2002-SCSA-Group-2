@@ -1,4 +1,5 @@
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.Scanner;
 public class Doctor extends User {
 
     public Doctor() {
+
     }
 
     public Doctor(String hospitalID, String password, String name, int age, String gender) {
@@ -186,6 +188,9 @@ public class Doctor extends User {
         new Scanner(System.in).nextLine();  // Wait for the user to press Enter
     }
 
+    public void viewPatientMedicaRecords() {
+    }
+
     public void acceptOrDeclineAppointmentRequests(ArrayList<Schedule> schedules, ArrayList<User> users) {
         Scanner sc = new Scanner(System.in);
         boolean exit = false;
@@ -263,8 +268,22 @@ public class Doctor extends User {
                         char decision = decisionInput.toUpperCase().charAt(0);
 
                         if (decision == 'A') {
-                            chosenSchedule.acceptAppointment(sessionIndex);
-                            System.out.println("\nAppointment has been accepted.");
+                            try {
+                                chosenSchedule.acceptAppointment(sessionIndex);
+                                ArrayList<Appointment> appointments = CsvDB.readAppointments();
+
+                                String appointmentId = "A" + String.format("%04d", appointments.size() + 1);
+                                Appointment appointment = new Appointment(appointmentId, chosenSchedule.getPatientIdFromSession(sessionIndex),
+                                        chosenSchedule.getDoctorID(),
+                                        //change here
+                                        chosenSchedule.getDate(), sessionIndex + 1, "Confirmed"
+                                );
+                                appointments.add(appointment);
+                                CsvDB.saveAppointments(appointments);
+                                System.out.println("\nAppointment has been accepted.");
+                            } catch (IOException e) {
+                                System.out.println("An error occurred while saving the appointment: " + e.getMessage());
+                            }
                         } else if (decision == 'D') {
                             // add logic here for appointment outcome
                             chosenSchedule.declineAppointment(sessionIndex);
@@ -383,4 +402,5 @@ public class Doctor extends User {
             }
         }
     }
+
 }

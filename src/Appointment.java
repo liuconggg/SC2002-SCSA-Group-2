@@ -8,21 +8,28 @@ public class Appointment {
     private String patientID;
     private String doctorID;
     private LocalDate date;
-    private String session;
+    private int session;
+    private String status;
 
     public Appointment() {
     }
 
-    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, String session) {
+    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, int session,
+            String status) {
         this.appointmentID = appointmentID;
         this.patientID = patientID;
         this.doctorID = doctorID;
         this.date = date;
         this.session = session;
+        this.status = status;
     }
 
-    public String getAppointmentID() {
-        return this.appointmentID;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    String getStatus() {
+        return status;
     }
 
     /**
@@ -31,6 +38,10 @@ public class Appointment {
      */
     public void setAppointmentID(String appointmentID) {
         this.appointmentID = appointmentID;
+    }
+
+    public String getAppointmentID() {
+        return appointmentID;
     }
 
     public String getPatientID() {
@@ -57,7 +68,7 @@ public class Appointment {
         this.doctorID = doctorID;
     }
 
-    public String getSession() {
+    public int getSession() {
         return this.session;
     }
 
@@ -65,7 +76,7 @@ public class Appointment {
      *
      * @param status
      */
-    public void setSession(String session) {
+    public void setSession(int session) {
         this.session = session;
     }
 
@@ -108,12 +119,12 @@ public class Appointment {
 
     public Appointment getAppointmentByAppointmentID(String appointmentID, ArrayList<Appointment> appointments) {
         Appointment found = null;
-        for (Appointment appt : appointments) {
-            if (appt.getAppointmentID().equals(appointmentID)) {
-                found = appt;
-                break;
-            }
-        }
+        // for (Appointment appt : appointments) {
+        //     if (appt.getAppointmentID().equals(appointmentID)) {
+        //         found = appt;
+        //         break;
+        //     }
+        // }
 
         return found;
     }
