@@ -87,6 +87,7 @@ public class Patient extends User {
         System.out.println("9. Logout");
     }
 
+         
     public void viewMedicalRecord(ArrayList<AppointmentOutcomeRecord> outcomeRecords, ArrayList<Diagnosis> diagnoses, ArrayList<Treatment> treatments) throws IOException {
         System.out.println("\n==================== Medical Record ====================");
         System.out.printf("ID            : %s\n", getHospitalID());
@@ -150,6 +151,7 @@ public class Patient extends User {
             System.out.println("2. Phone Number");
             System.out.println("3. Email Address");
             System.out.println("4. Confirm Changes & Exit");
+            System.out.println("5. Exit without changes");
             System.out.print("Your Choice: ");
             action = sc.nextInt();
             sc.nextLine();  // Consume newline
@@ -173,6 +175,9 @@ public class Patient extends User {
                 case 4:
                     CsvDB.saveUsers(users);  // Save changes to the CSV file upon exiting
                     System.out.println("Your changes have been saved.");
+                    changing = false;
+                    break;
+                case 5:
                     changing = false;
                     break;
                 default:

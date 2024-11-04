@@ -5,16 +5,15 @@ import java.util.Scanner;
 
 public class App {
 
-    public static final String DEFAULT_PASSWORD = "password";
     public static final String[] sessionTimings = {
-        "09:00 - 10:00",
-        "10:00 - 11:00",
-        "11:00 - 12:00",
-        "12:00 - 13:00",
-        "13:00 - 14:00",
-        "14:00 - 15:00",
-        "15:00 - 16:00",
-        "16:00 - 17:00"
+            "09:00 - 10:00",
+            "10:00 - 11:00",
+            "11:00 - 12:00",
+            "12:00 - 13:00",
+            "13:00 - 14:00",
+            "14:00 - 15:00",
+            "15:00 - 16:00",
+            "16:00 - 17:00"
     };
 
     private static ArrayList<User> users;
@@ -24,14 +23,12 @@ public class App {
     private static ArrayList<Medication> inventory;
     private static ArrayList<ReplenishmentRequest> replenishmentRequests;
     private static Scanner sc = new Scanner(System.in);
-    private static User userLoggedIn = null;
-    private static boolean loggedOut = false;
+    private static User user = null;
     private static ArrayList<Diagnosis> diagnoses;
     private static ArrayList<Treatment> treatments;
 
     public static void main(String[] args) throws Exception {
 
-        String id, password;
         users = CsvDB.readUsers();
         appts = CsvDB.readAppointments();
         schedules = CsvDB.readSchedules();
@@ -39,73 +36,52 @@ public class App {
         diagnoses = CsvDB.readDiagnoses();
         treatments = CsvDB.readTreatments();
 
-        System.out.println("Hospital Management System");
-        userLoggedIn = null;
+        System.out.println("=== Hospital Management System ===");
 
+        AuthenticationService auth = new AuthenticationService(users);
         while (true) {
-            loggedOut = false;
-            System.out.print("Hospital ID:");
-            id = sc.nextLine();
-            System.out.print("Password:");
-            password = sc.nextLine();
 
-            for (User user : users) {
-                if (user.getHospitalID().equals(id) && user.getPassword().equals(password)) { // Check valid credentials
-                    if (user.getPassword().equals(DEFAULT_PASSWORD)) { // User still using default password ("password")
+            if (user != null) {
+                user.displayMenu();
 
-                        System.out.println("Please change your password first");
-                        do {
-                            System.out.print("New Password: ");
-                            String newPassword = sc.nextLine();
-                            System.out.print("Confirm New Password: ");
-                            String cfmNewPassword = sc.nextLine();
-                            if (newPassword.equals(cfmNewPassword)) {
-                                user.setPassword(newPassword);
-                                CsvDB.saveUsers(users);
-                                System.out.println("Password changed successfully!");
-
-                                break;
-                            } else {
-                                System.out.println("Password does not match! Please try again!");
-                            }
-                        } while (true);
-
-                    }
-                    userLoggedIn = user;
-                    System.out.println("Logged In successfully!");
-                    break;
-                }
-            }
-
-            // Display user menu and functions logic here
-            while (userLoggedIn != null) {
-                // Display Patient Menu
-                if (userLoggedIn instanceof Patient) {
+                if (user instanceof Patient)
                     patientFunctions();
-                } else if (userLoggedIn instanceof Doctor) { // User is a Doctor instance
+
+                else if (user instanceof Doctor)
                     doctorFunctions();
 
-                } else if (userLoggedIn instanceof Pharmacist) { // User is a Pharmacist instance
+                else if (user instanceof Pharmacist)
                     pharmacistFunctions();
-                } else { // User is a Administrator instance
-                    Administrator admin = (Administrator) userLoggedIn;
-                    admin.displayMenu();
+
+                else {
+                    // Admin functions here
                 }
+            } else {
+                user = auth.authenticate();
             }
 
-            if (userLoggedIn == null && !loggedOut) {
-                System.out.println("Login failed! Please try again!");
-            }
+            // Display user menu and functions logic here (to be removed)
+            // while (user != null) {
+            // // Display Patient Menu
+            // if (user instanceof Patient) {
+            // patientFunctions();
+            // } else if (user instanceof Doctor) { // User is a Doctor instance
+            // doctorFunctions();
+
+            // } else if (user instanceof Pharmacist) { // User is a Pharmacist instance
+            // pharmacistFunctions();
+            // } else { // User is a Administrator instance
+            // Administrator admin = (Administrator) user;
+            // admin.displayMenu();
+            // }
+            // }
 
         }
     }
 
-    //All Patient function & logic
+    // Patient actions
     public static void patientFunctions() throws IOException {
-        Patient patient = (Patient) userLoggedIn;
-        ArrayList<Appointment> patientAppointments = patient.viewAppointments(patient.getHospitalID(),
-                appts);
-        patient.displayMenu();
+        Patient patient = (Patient) user;
         System.out.print("Enter your choice: ");
         int choice = sc.nextInt();
 
@@ -138,8 +114,8 @@ public class App {
                 break;
             case 5: // Reschedule an Appointment
                 patient.rescheduleAppointment(appts, schedules, users);
-                appts = CsvDB.readAppointments();      // Reload appointments after rescheduling
-                schedules = CsvDB.readSchedules();     // Reload schedules after rescheduling
+                appts = CsvDB.readAppointments(); // Reload appointments after rescheduling
+                schedules = CsvDB.readSchedules(); // Reload schedules after rescheduling
                 sc.nextLine();
                 System.out.println("Press Enter to continue...");
                 sc.nextLine();
@@ -151,7 +127,7 @@ public class App {
                 System.out.println("Press Enter to continue...");
                 sc.nextLine();
                 break;
-            case 7: 
+            case 7:
                 patient.viewScheduledAppointments(appts, users);
                 sc.nextLine();
                 System.out.println("Press Enter to continue...");
@@ -162,22 +138,21 @@ public class App {
                 sc.nextLine();
                 System.out.println("Press Enter to continue...");
                 sc.nextLine();
-            break;
+                break;
             case 9: // Log out
-                userLoggedIn = null;
-                loggedOut = true;
+                user = null;
                 System.out.println("You have logged out");
                 sc.nextLine();
                 break;
         }
     }
 
-    //All doctor functions and logic
+    // Doctor actions
     public static void doctorFunctions() {
-        Doctor doctor = (Doctor) userLoggedIn;
-        // ArrayList<Schedule> docSchedule = doctor.viewSchedule(doctor.getHospitalID(), schedules);
+        Doctor doctor = (Doctor) user;
+        // ArrayList<Schedule> docSchedule = doctor.viewSchedule(doctor.getHospitalID(),
+        // schedules);
 
-        doctor.displayMenu();
         System.out.print("Enter your choice: ");
         int choice = sc.nextInt();
 
@@ -202,8 +177,7 @@ public class App {
                 doctor.recordAppointmentOutcome(appts);
                 break;
             case 8:
-                userLoggedIn = null;
-                loggedOut = true;
+                user = null;
                 System.out.println("You have logged out");
                 sc.nextLine();
                 break;
@@ -211,9 +185,9 @@ public class App {
 
     }
 
+    // Pharmacist actions
     public static void pharmacistFunctions() {
-        Pharmacist pharmacist = (Pharmacist) userLoggedIn;
-        pharmacist.displayMenu();
+        Pharmacist pharmacist = (Pharmacist) user;
         System.out.print("\nEnter your choice: ");
         int choice = sc.nextInt();
         switch (choice) {
@@ -264,8 +238,7 @@ public class App {
                 }
                 break;
             case 5:
-                userLoggedIn = null;
-                loggedOut = true;
+                user = null;
                 System.out.println("You have logged out");
                 sc.nextLine();
                 break;
