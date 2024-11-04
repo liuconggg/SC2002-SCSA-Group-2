@@ -36,8 +36,6 @@ public class App {
         diagnoses = CsvDB.readDiagnoses();
         treatments = CsvDB.readTreatments();
 
-        System.out.println("=== Hospital Management System ===");
-
         AuthenticationService auth = new AuthenticationService(users);
         while (true) {
 

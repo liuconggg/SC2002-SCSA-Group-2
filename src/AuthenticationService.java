@@ -12,6 +12,8 @@ public class AuthenticationService {
     }
 
     public User authenticate() throws IOException {
+        System.out.println("=== Hospital Management System ===");
+
         System.out.print("Hospital ID: ");
         String id = scanner.nextLine();
         System.out.print("Password: ");
@@ -26,14 +28,14 @@ public class AuthenticationService {
             }
         }
 
-        System.out.println("Login failed! Please try again!");
+        System.out.println("Login failed! Please try again!\n");
 
         return null;
     }
 
 
     private void changePassword(User user) throws IOException{
-        System.out.println("Please change your password first.");
+        System.out.println("=== Please change your password first! ===");
         while(true){
             System.out.print("New Password: ");
             String newPassword = scanner.nextLine();
@@ -45,7 +47,7 @@ public class AuthenticationService {
                 System.out.println("Password changed successfully!");
                 break;
             }else{
-                System.out.println("Passwords do not match. Please try again.");
+                System.out.println("Passwords do not match. Please try again.\n");
             }
         }
 
