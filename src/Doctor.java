@@ -396,7 +396,7 @@ public class Doctor extends User {
         }
     }
 
-    public void recordAppointmentOutcome(ArrayList<Appointment> appointments) {
+    public void recordAppointmentOutcome(ArrayList<Appointment> appointments, ArrayList<Medication> inventory, ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords) {
         Scanner sc = new Scanner(System.in);
         boolean exit = false;
 
@@ -462,23 +462,75 @@ public class Doctor extends User {
                         String diagnosis = "";
                         String treatment = "";
 
-                        System.out.println("\nEnter type of service (enter na if nth): ");
-                        typeOfService = sc.next();
+                        System.out.println("\nEnter type of service (enter na if none): ");
+                        typeOfService = sc.nextLine();
 
-                        System.out.println("\nEnter consultation notes (enter na if nth): ");
-                        consultationNotes = sc.next();
+                        System.out.println("\nEnter consultation notes (enter na if none): ");
+                        consultationNotes = sc.nextLine();
 
-                        System.out.println("\nEnter diagnosis (enter na if nth): ");
-                        diagnosis = sc.next();
+                        System.out.println("\nEnter diagnosis (enter na if none): ");
+                        diagnosis = sc.nextLine();
 
-                        System.out.println("\nEnter treatment (enter na if nth): ");
-                        treatment = sc.next();
+                        System.out.println("\nEnter treatment (enter na if none): ");
+                        treatment = sc.nextLine();
 
-                        System.out.println("\nEnter medicines (enter na if nth): ");
-                        treatment = sc.next();
+                        // Step 4: Display medication inventory and allow the user to prescribe medicines
+                        ArrayList<Medication> prescribedMedicines = new ArrayList<>();
+                        boolean addingMedicines = true;
 
+                        while (addingMedicines) {
+                            System.out.println("\nAvailable Medicines:");
+                            int medIndex = 1;
+                            for (Medication med : inventory) {
+                                System.out.printf("%d. %s (Available: %d units)\n", medIndex, med.getMedicationName(),
+                                        med.getTotalQuantity());
+                                medIndex++;
+                            }
+
+                            System.out.println("\nSelect a medicine by number to prescribe (or press Enter to finish): ");
+                            String medInput = sc.nextLine();
+
+                            if (medInput.trim().isEmpty()) {
+                                addingMedicines = false;
+                                continue;
+                            }
+
+                            try {
+                                int medChoice = Integer.parseInt(medInput);
+
+                                if (medChoice > 0 && medChoice <= inventory.size()) {
+                                    Medication selectedMed = inventory.get(medChoice - 1);
+                                    System.out.printf("Enter quantity for %s: ", selectedMed.getMedicationName());
+                                    String quantityInput = sc.nextLine();
+                                    int quantity = Integer.parseInt(quantityInput);
+
+                                    if (quantity > 0 && quantity <= selectedMed.getTotalQuantity()) {
+                                        System.out.println("\nCurrent Prescribing List:");
+                                        Medication prescribedMed = new Medication();
+                                        prescribedMed.setMedicationName(selectedMed.getMedicationName());
+                                        prescribedMed.setTotalQuantity(quantity);
+                                        prescribedMedicines.add(prescribedMed);
+                                        for (Medication med : prescribedMedicines) {
+                                            System.out.printf("- %s: %d units\n", med.getMedicationName(), med.getTotalQuantity());
+                                        }
+                                    } else {
+                                        System.out.println("Invalid quantity. Please enter a valid amount within the available units.");
+                                    }
+                                } else {
+                                    System.out.println("Invalid choice. Please select a valid medicine number.");
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input. Please enter a valid number.");
+                            }
+                        }
+
+                        // Save the details to an outcome record including prescribed medications
+                        // AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(selectedAppointment, typeOfService, consultationNotes, diagnosis, treatment, prescribedMedicines);
+                        // apptOutcomeRecords.add(outcomeRecord);
+                        // CsvDB.saveAppointmentOutcomeRecords(apptOutcomeRecords);
                         selectedAppointment.setStatus("Completed");
                         System.out.println("\nAppointment outcome recorded successfully as 'Completed'.");
+
                     } else if (outcome.equals("N")) {
                         selectedAppointment.setStatus("No-Show");
                         System.out.println("\nAppointment outcome recorded successfully as 'No-Show'.");

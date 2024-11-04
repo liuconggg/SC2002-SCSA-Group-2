@@ -4,3 +4,4 @@ A0002,Blood Test,Patient suspected to have dengue. Blood test conducted,M0001:Pa
 A0003,X-RAY,NA,,COMPLETED
 A0004,Consultation,Patient suspected to have Covid,M0001:Paracetemol:10;M0002:Ibuprofen:30;M0003:Cough Syrup:40,DISPENSED
 A0005,Consultation,Patient suspected to have Cough,M0003:Cough Syrup:1,DISPENSED
+

@@ -33,6 +33,8 @@ public class App {
         users = CsvDB.readUsers();
         appts = CsvDB.readAppointments();
         schedules = CsvDB.readSchedules();
+        inventory = CsvDB.readMedications();
+        apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
 
         System.out.println("Hospital Management System");
         userLoggedIn = null;
@@ -244,7 +246,7 @@ public class App {
                 doctor.viewUpcomingAppointments(schedules, users);
                 break;
             case 7:
-                doctor.recordAppointmentOutcome(appts);
+                doctor.recordAppointmentOutcome(appts, inventory, apptOutcomeRecords);
                 break;
             case 8:
                 userLoggedIn = null;
