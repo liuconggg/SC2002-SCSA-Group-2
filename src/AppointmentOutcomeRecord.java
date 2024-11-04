@@ -62,6 +62,19 @@ public class AppointmentOutcomeRecord {
         return this.prescriptions;
     }
 
+    public String getPrescriptionsAsString() {
+        if (prescriptions == null || prescriptions.isEmpty()) {
+            return "No prescriptions.";
+        }
+        
+        StringBuilder prescriptionsStr = new StringBuilder();
+        for (MedicationItem item : prescriptions) {
+            prescriptionsStr.append(item.toString()).append("\n");
+        }
+        
+        return prescriptionsStr.toString().trim();
+    }
+
     /**
      *
      * @param prescriptions

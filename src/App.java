@@ -113,40 +113,10 @@ public class App {
                 break;
 
             case 2: // Update personal information
-                boolean changing = true;
-                int action;
-                while (changing) {
-                    System.out.println("Select the information to update");
-                    System.out.println("1. Name");
-                    System.out.println("2. Phone Number");
-                    System.out.println("3. Email Address");
-                    System.out.println("4. Confirm Changes & Exit");
-                    System.out.print("Your Choice:");
-                    action = sc.nextInt();
-                    sc.nextLine();
-                    switch (action) {
-                        case 1:
-                            System.out.print("Enter your new name: ");
-                            String newName = sc.nextLine();
-                            patient.setName(newName);
-                            break;
-                        case 2:
-                            System.out.print("Enter your new phone number: ");
-                            String newPhoneNumber = sc.nextLine();
-                            patient.setPhoneNumber(newPhoneNumber);
-                            break;
-                        case 3:
-                            System.out.print("Enter your new email address: ");
-                            String newEmail = sc.nextLine();
-                            patient.setEmail(newEmail);
-                            break;
-                        case 4:
-                            CsvDB.saveUsers(users);
-                            ; // Save changes upon exiting
-                            changing = false;
-                            break;
-                    }
-                }
+                patient.updatePersonalInformation(users);
+                sc.nextLine();
+                System.out.println("\nPress Enter to continue");
+                sc.nextLine();
                 break;
             case 3: // View Available Appointment Slots
                 patient.viewAvailableAppointment(schedules, users);
@@ -183,7 +153,12 @@ public class App {
                 sc.nextLine();
                 break;
             case 8: // View Past Appointment Outcome Records
-                break;
+                ArrayList<AppointmentOutcomeRecord> outcomeRecords = CsvDB.readAppointmentOutcomeRecords();
+                patient.viewAppointmentOutcomeRecords(appts, outcomeRecords);
+                sc.nextLine();
+                System.out.println("Press Enter to continue...");
+                sc.nextLine();
+            break;
             case 9: // Log out
                 userLoggedIn = null;
                 loggedOut = true;

@@ -87,14 +87,90 @@ public class Patient extends User {
         System.out.println("9. Logout");
     }
 
-    public void viewMedicalRecord(){
-		System.out.println("\n=== Medical Record ===");
-		System.out.println("ID: " + getHospitalID());
-		System.out.println("Name: " + getName());
-		System.out.println("Date of Birth: " + getDateOfBirth());
-		System.out.println("Gender: " + getGender());
-		System.out.println("Blood Type: " + getBloodType());
-	}
+    public void viewMedicalRecord() throws IOException {
+        System.out.println("\n=== Medical Record ===");
+        System.out.println("ID: " + getHospitalID());
+        System.out.println("Name: " + getName());
+        System.out.println("Date of Birth: " + getDateOfBirth());
+        System.out.println("Gender: " + getGender());
+        System.out.println("Contact Number: " + getPhoneNumber());
+        System.out.println("Email: " + getEmail());
+        System.out.println("Blood Type: " + getBloodType());
+    
+        // Load diagnosis and treatment data
+        ArrayList<Diagnosis> diagnoses = CsvDB.readDiagnoses();
+        ArrayList<Treatment> treatments = CsvDB.readTreatments();
+    
+        // Display diagnosis information for this patient
+        System.out.println("\n=== Diagnosis ===");
+        boolean hasDiagnosis = false;
+        for (Diagnosis diagnosis : diagnoses) {
+            if (diagnosis.getPatientID().equals(this.getHospitalID())) {
+                System.out.printf("Appointment ID: %s - Diagnosis: %s\n", 
+                                  diagnosis.getAppointmentID(), diagnosis.getDiagnosis());
+                hasDiagnosis = true;
+            }
+        }
+        if (!hasDiagnosis) {
+            System.out.println("No diagnoses found.");
+        }
+    
+        // Display treatment information for this patient
+        System.out.println("\n=== Treatment ===");
+        boolean hasTreatment = false;
+        for (Treatment treatment : treatments) {
+            if (treatment.getPatientID().equals(this.getHospitalID())) {
+                System.out.printf("Appointment ID: %s - Treatment: %s\n", 
+                                  treatment.getAppointmentID(), treatment.getTreatment());
+                hasTreatment = true;
+            }
+        }
+        if (!hasTreatment) {
+            System.out.println("No treatments found.");
+        }
+    }
+
+    public void updatePersonalInformation(ArrayList<User> users) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        boolean changing = true;
+        int action;
+    
+        while (changing) {
+            System.out.println("Select the information to update:");
+            System.out.println("1. Name");
+            System.out.println("2. Phone Number");
+            System.out.println("3. Email Address");
+            System.out.println("4. Confirm Changes & Exit");
+            System.out.print("Your Choice: ");
+            action = sc.nextInt();
+            sc.nextLine();  // Consume newline
+    
+            switch (action) {
+                case 1:
+                    System.out.print("Enter your new name: ");
+                    String newName = sc.nextLine();
+                    this.setName(newName);
+                    break;
+                case 2:
+                    System.out.print("Enter your new phone number: ");
+                    String newPhoneNumber = sc.nextLine();
+                    this.setPhoneNumber(newPhoneNumber);
+                    break;
+                case 3:
+                    System.out.print("Enter your new email address: ");
+                    String newEmail = sc.nextLine();
+                    this.setEmail(newEmail);
+                    break;
+                case 4:
+                    CsvDB.saveUsers(users);  // Save changes to the CSV file upon exiting
+                    System.out.println("Your changes have been saved.");
+                    changing = false;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
 
     public void viewAvailableAppointment(ArrayList<Schedule> schedules, ArrayList<User> users) {
         Scanner sc = new Scanner(System.in);
@@ -578,13 +654,75 @@ public class Patient extends User {
         }
     }
 
-    private Doctor getDoctorById(String doctorID, ArrayList<User> users) {
-        for (User user : users) {
-            if (user instanceof Doctor && user.getHospitalID().equals(doctorID)) {
-                return (Doctor) user;
+    public void viewAppointmentOutcomeRecords(ArrayList<Appointment> appointments, ArrayList<AppointmentOutcomeRecord> outcomeRecords) throws IOException {
+        Scanner sc = new Scanner(System.in);
+    
+        // Define session timings
+        final String[] sessionTimings = {
+            "09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00",
+            "13:00 - 14:00", "14:00 - 15:00", "15:00 - 16:00",
+            "16:00 - 17:00", "17:00 - 18:00"
+        };
+    
+        // Filter to show only the patient's completed appointments
+        ArrayList<Appointment> completedAppointments = new ArrayList<>();
+        for (Appointment appt : appointments) {
+            if (appt.getPatientID().equals(this.getHospitalID()) && appt.getStatus().equalsIgnoreCase("Completed")) {
+                completedAppointments.add(appt);
             }
         }
-        return null;
+    
+        // Check if there are any completed appointments for this patient
+        if (completedAppointments.isEmpty()) {
+            System.out.println("You have no completed appointments with recorded outcomes.");
+            return;
+        }
+    
+        // Display completed appointments and allow the patient to choose one
+        System.out.println("Select a completed appointment to view its outcome record:");
+        int apptCounter = 0;
+        for (Appointment appt : completedAppointments) {
+            int session = appt.getSession();
+            String sessionTime = (session > 0 && session <= sessionTimings.length) ? sessionTimings[session - 1] : "Unknown time";
+    
+            System.out.printf("%d. Appointment ID: %s, Date: %s, Time: %s\n",
+                    ++apptCounter,
+                    appt.getAppointmentID(),
+                    appt.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    sessionTime);
+        }
+    
+        // Get user selection
+        System.out.print("Enter the number of the appointment you want to view: ");
+        int choice = sc.nextInt();
+        sc.nextLine(); // consume newline
+    
+        if (choice < 1 || choice > completedAppointments.size()) {
+            System.out.println("Invalid selection.");
+            return;
+        }
+    
+        // Find the outcome record for the selected completed appointment
+        Appointment selectedAppointment = completedAppointments.get(choice - 1);
+        boolean foundOutcome = false;
+    
+        for (AppointmentOutcomeRecord record : outcomeRecords) {
+            if (record.getAppointmentID().equals(selectedAppointment.getAppointmentID())) {
+                // Display the outcome record details
+                System.out.println("\n=== Appointment Outcome Record ===");
+                System.out.println("Appointment ID: " + record.getAppointmentID());
+                System.out.println("Type of Service: " + record.getTypeOfService());
+                System.out.println("Consultation Notes: " + record.getConsultationNotes());
+                System.out.println("Prescriptions: " + record.getPrescriptionsAsString());
+                System.out.println("Prescription Status: " + record.getPrescriptionStatus());
+                foundOutcome = true;
+                break;
+            }
+        }
+    
+        if (!foundOutcome) {
+            System.out.println("No outcome record found for the selected appointment.");
+        }
     }
 
     public ArrayList<Appointment> viewAppointments(String patientID, ArrayList<Appointment> appointments) {
@@ -609,6 +747,15 @@ public class Patient extends User {
         }
 
         return patientFound;
+    }
+
+    private Doctor getDoctorById(String doctorID, ArrayList<User> users) {
+        for (User user : users) {
+            if (user instanceof Doctor && user.getHospitalID().equals(doctorID)) {
+                return (Doctor) user;
+            }
+        }
+        return null;
     }
 
 }
