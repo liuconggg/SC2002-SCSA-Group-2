@@ -69,7 +69,6 @@ public class Appointment {
     }
 
     public int getSession() {
-    public int getSession() {
         return this.session;
     }
 
@@ -77,7 +76,6 @@ public class Appointment {
      *
      * @param status
      */
-    public void setSession(int session) {
     public void setSession(int session) {
         this.session = session;
     }

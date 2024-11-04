@@ -1,8 +1,10 @@
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 
 public class Patient extends User {
 
@@ -203,12 +205,9 @@ public class Patient extends User {
                 currentDate = currentDate.plusDays(2);  // Skip Saturday and Sunday
             }
         }
-
-        System.out.println("\nPress Enter to return to the main menu.");
-        sc.nextLine();  // Pause to allow the user to review output
     }
 
-    public void scheduleAppointment(ArrayList<Schedule> schedules, ArrayList<User> users, String patientID) {
+    public void scheduleAppointment(ArrayList<Schedule> schedules, ArrayList<User> users, String patientID) throws IOException {
         Scanner sc = new Scanner(System.in);
 
         // Collect all doctors from the users list
@@ -330,8 +329,214 @@ public class Patient extends User {
         // Save updated schedules to the CSV file
         CsvDB.saveSchedules(schedules);
 
+        ArrayList<Appointment> appointments = CsvDB.readAppointments();
+        String appointmentID = "A" + String.format("%04d", appointments.size() + 1);
+        Appointment newAppointment = new Appointment(appointmentID, patientID, doctorID, appointmentDate, sessionNumber, "Pending");
+        appointments.add(newAppointment);
+        CsvDB.saveAppointments(appointments);  // Update Appointment.csv with the new appointment
+
         System.out.printf("Appointment booked for Dr. %s on %s, Session %d.\n", 
                           selectedDoctor.getName(), appointmentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), sessionNumber);
+    }
+
+    public void rescheduleAppointment(ArrayList<Appointment> appointments, ArrayList<Schedule> schedules, ArrayList<User> users) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        
+        // Filter to show only pending or confirmed appointments
+        ArrayList<Appointment> reschedulableAppointments = new ArrayList<>();
+        for (Appointment appt : viewAppointments(this.getHospitalID(), appointments)) {
+            if (appt.getStatus().equalsIgnoreCase("Pending") || appt.getStatus().equalsIgnoreCase("Confirmed")) {
+                reschedulableAppointments.add(appt);
+            }
+        }
+
+        // Check if there are any appointments to reschedule
+        if (reschedulableAppointments.isEmpty()) {
+            System.out.println("\nYou have no pending or confirmed appointments to reschedule.");
+            return;
+        }
+
+        // Display reschedulable appointments
+        System.out.println("Which appointment would you like to reschedule?");
+        int apptCounter = 0;
+        for (Appointment appt : reschedulableAppointments) {
+            Doctor doctor = getDoctorById(appt.getDoctorID(), users);
+            if (doctor != null) {
+                System.out.printf("%d. Appointment with Dr. %s on %s at %s - Status: %s\n",
+                    ++apptCounter,
+                    doctor.getName(),
+                    appt.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    App.sessionTimings[appt.getSession() - 1],
+                    appt.getStatus());
+            }
+        }
+
+        // Get user choice
+        System.out.print("Enter the number of the appointment you want to reschedule: ");
+        int appointmentChoice = sc.nextInt();
+        sc.nextLine();  // Consume newline
+
+        // Validate the choice
+        if (appointmentChoice < 1 || appointmentChoice > reschedulableAppointments.size()) {
+            System.out.println("Invalid choice.");
+            return;
+        }
+
+        // Get the chosen appointment
+        Appointment chosenAppointment = reschedulableAppointments.get(appointmentChoice - 1);
+        Doctor selectedDoctor = getDoctorById(chosenAppointment.getDoctorID(), users);
+        if (selectedDoctor == null) {
+            System.out.println("Doctor not found.");
+            return;
+        }
+
+        // Prompt for new date
+        System.out.print("Enter the new appointment date (dd/MM/yyyy): ");
+        String newDateInput = sc.nextLine().trim();
+        LocalDate newAppointmentDate;
+        try {
+            newAppointmentDate = LocalDate.parse(newDateInput, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        } catch (Exception e) {
+            System.out.println("Invalid date format. Please use dd/MM/yyyy.");
+            return;
+        }
+
+        // Find or create schedule for the new date
+        Schedule newScheduleForDate = null;
+        for (Schedule schedule : schedules) {
+            if (schedule.getDoctorID().equals(selectedDoctor.getHospitalID()) && schedule.getDate().equals(newAppointmentDate)) {
+                newScheduleForDate = schedule;
+                break;
+            }
+        }
+        if (newScheduleForDate == null) {
+            newScheduleForDate = Schedule.createDefaultSchedule(selectedDoctor.getHospitalID(), newAppointmentDate);
+            schedules.add(newScheduleForDate);
+        }
+
+        // Display available sessions for new date
+        System.out.println("\nAvailable sessions for Dr. " + selectedDoctor.getName() + " on " + newAppointmentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ":");
+        String[] newSession = newScheduleForDate.getSession();
+        boolean hasAvailableSession = false;
+        for (int i = 0; i < newSession.length; i++) {
+            if (newSession[i].equals("Available")) {
+                System.out.printf("Session %d: Available\n", i + 1);
+                hasAvailableSession = true;
+            }
+        }
+
+        if (!hasAvailableSession) {
+            System.out.println("No available sessions on this date.");
+            return;
+        }
+
+        // Select a new session
+        System.out.print("Select a session number for the new date: ");
+        int newSessionNumber = sc.nextInt();
+        sc.nextLine();  // Consume newline
+
+        if (newSessionNumber < 1 || newSessionNumber > newSession.length || !newSession[newSessionNumber - 1].equals("Available")) {
+            System.out.println("Invalid session selection or session not available.");
+            return;
+        }
+
+        // Update old schedule slot to "Available"
+        String doctorID = chosenAppointment.getDoctorID();
+        LocalDate oldAppointmentDate = chosenAppointment.getDate();
+        int oldSessionNumber = chosenAppointment.getSession();
+        for (Schedule schedule : schedules) {
+            if (schedule.getDoctorID().equals(doctorID) && schedule.getDate().equals(oldAppointmentDate)) {
+                String[] oldSessionSlots = schedule.getSession();
+                oldSessionSlots[oldSessionNumber - 1] = "Available";
+                schedule.setSession(oldSessionSlots);
+                break;
+            }
+        }
+
+        // Update appointment details and mark the new session as "Pending" in Schedule.csv
+        chosenAppointment.setDate(newAppointmentDate);
+        chosenAppointment.setSession(newSessionNumber);
+        if (chosenAppointment.getStatus().equalsIgnoreCase("Confirmed")) {
+            chosenAppointment.setStatus("Pending");  // Change confirmed to pending if rescheduled
+        }
+
+        newSession[newSessionNumber - 1] = this.getHospitalID() + "-Pending";
+        newScheduleForDate.setSession(newSession);
+
+        // Save updated appointments and schedules to CSV files
+        CsvDB.saveAppointments(appointments);
+        CsvDB.saveSchedules(schedules);
+
+        System.out.printf("Your appointment with Dr. %s has been rescheduled to %s, Session %d.\n",
+                selectedDoctor.getName(),
+                newAppointmentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                newSessionNumber);
+    }
+
+    public void cancelAppointment(ArrayList<Appointment> appointments, ArrayList<Schedule> schedules, ArrayList<User> users) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        // Filter to show only pending or confirmed appointments
+        ArrayList<Appointment> cancellableAppointments = new ArrayList<>();
+        for (Appointment patientAppt : viewAppointments(this.getHospitalID(), appointments)) {
+            if (patientAppt.getStatus().equalsIgnoreCase("Pending") || patientAppt.getStatus().equalsIgnoreCase("Confirmed")) {
+                cancellableAppointments.add(patientAppt);
+            }
+        }
+
+        // Check if there are any appointments to cancel
+        if (cancellableAppointments.isEmpty()) {
+            System.out.println("You have no pending or confirmed appointments to cancel.");
+            return;
+        }
+
+        // Display cancellable appointments
+        System.out.println("Which appointment would you like to cancel?");
+        int apptCounter = 0;
+        for (Appointment appt : cancellableAppointments) {
+            Doctor doctor = getDoctorById(appt.getDoctorID(), users);
+            if (doctor != null) {
+                System.out.printf("%d. Appointment with Dr. %s on %s at %s - Status: %s\n",
+                    ++apptCounter,
+                    doctor.getName(),
+                    appt.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    App.sessionTimings[appt.getSession() - 1],
+                    appt.getStatus());
+            }
+        }
+
+        // Get user choice
+        System.out.print("Enter the number of the appointment you want to cancel: ");
+        int appointmentChoice = sc.nextInt();
+        sc.nextLine();  // Consume newline
+
+        // Validate the choice
+        if (appointmentChoice >= 1 && appointmentChoice <= cancellableAppointments.size()) {
+            // Get the chosen appointment and update status
+            Appointment chosenAppointment = cancellableAppointments.get(appointmentChoice - 1);
+            chosenAppointment.setStatus("Cancelled");
+
+            // Update the schedule slot to "Available"
+            String doctorID = chosenAppointment.getDoctorID();
+            LocalDate apptDate = chosenAppointment.getDate();
+            int sessionNumber = chosenAppointment.getSession();
+            for (Schedule schedule : schedules) {
+                if (schedule.getDoctorID().equals(doctorID) && schedule.getDate().equals(apptDate)) {
+                    String[] sessionSlots = schedule.getSession();
+                    sessionSlots[sessionNumber - 1] = "Available";
+                    schedule.setSession(sessionSlots);
+                    break;
+                }
+            }
+
+            // Save the changes
+            CsvDB.saveAppointments(appointments);
+            CsvDB.saveSchedules(schedules);
+            System.out.printf("Your appointment with Dr. %s on %s has been cancelled.\n",
+                getDoctorById(doctorID, users).getName(),
+                chosenAppointment.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        } else {
+            System.out.println("Invalid choice.");
+        }
     }
     
     public void viewScheduledAppointments(ArrayList<Appointment> appointments, ArrayList<User> users) {
@@ -345,7 +550,7 @@ public class Patient extends User {
 
         // Filter confirmed appointments for this patient
         for (Appointment appt : appointments) {
-            if (appt.getPatientID().equals(this.getHospitalID())) {
+            if (appt.getPatientID().equals(this.getHospitalID()) && !appt.getStatus().equalsIgnoreCase("Cancelled")) {
                 patientAppointments.add(appt);
             }
         }
@@ -383,8 +588,15 @@ public class Patient extends User {
     }
 
     public ArrayList<Appointment> viewAppointments(String patientID, ArrayList<Appointment> appointments) {
-        Appointment appts = new Appointment();
-        return appts.getAppointmentsByPatientID(patientID, appointments);
+        ArrayList<Appointment> patientAppointments = new ArrayList<>();
+    
+        for (Appointment appointment : appointments) {
+            if (appointment.getPatientID().equals(patientID)) {
+                patientAppointments.add(appointment);
+            }
+        }
+    
+        return patientAppointments;
     }
 
     public static Patient getPatientById(String patientID, ArrayList<User> users) {
