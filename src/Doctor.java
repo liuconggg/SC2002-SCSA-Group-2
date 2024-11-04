@@ -1,6 +1,7 @@
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -188,10 +189,7 @@ public class Doctor extends User {
         new Scanner(System.in).nextLine();  // Wait for the user to press Enter
     }
 
-    public void viewPatientMedicaRecords() {
-    }
-
-    public void acceptOrDeclineAppointmentRequests(ArrayList<Schedule> schedules, ArrayList<User> users) {
+    public void acceptOrDeclineAppointmentRequests(ArrayList<Schedule> schedules, ArrayList<User> users, ArrayList<Appointment> appointments) {
         Scanner sc = new Scanner(System.in);
         boolean exit = false;
 
@@ -201,7 +199,7 @@ public class Doctor extends User {
             ArrayList<Schedule> pendingSchedules = new ArrayList<>();
             ArrayList<Integer> pendingSessionIndexes = new ArrayList<>();
 
-            // Gather all pending appointments
+            // Gather all pending appointments 
             for (Schedule schedule : doctorSchedule) {
                 if (schedule.getDate().isBefore(LocalDate.now())) {
                     continue;  // Skip past dates
@@ -268,42 +266,29 @@ public class Doctor extends User {
                         char decision = decisionInput.toUpperCase().charAt(0);
 
                         if (decision == 'A') {
-                            try {
-                                chosenSchedule.acceptAppointment(sessionIndex);
-                                ArrayList<Appointment> appointments = CsvDB.readAppointments();
+                            chosenSchedule.acceptAppointment(sessionIndex);
 
-                                String appointmentId = "A" + String.format("%04d", appointments.size() + 1);
-                                Appointment appointment = new Appointment(appointmentId, chosenSchedule.getPatientIdFromSession(sessionIndex),
-                                        chosenSchedule.getDoctorID(),
-                                        //change here
-                                        chosenSchedule.getDate(), sessionIndex + 1, "Confirmed"
-                                );
-                                appointments.add(appointment);
-                                CsvDB.saveAppointments(appointments);
-                                System.out.println("\nAppointment has been accepted.");
-                            } catch (IOException e) {
-                                System.out.println("An error occurred while saving the appointment: " + e.getMessage());
-                            }
+                            Appointment selectedAcAppointment = Appointment.getAppointmentByScheduleAndSession(chosenSchedule, sessionIndex, appointments);
+                            selectedAcAppointment.setStatus("Confirmed");
+
+                            System.out.println("\nAppointment has been accepted.");
                         } else if (decision == 'D') {
-                            // add logic here for appointment outcome
                             chosenSchedule.declineAppointment(sessionIndex);
-                            System.out.println("\nAppointment has been declined. The patient will be notified.");
 
-                            // Notify the patient
-                            String patientId = chosenSchedule.getPatientIdFromSession(sessionIndex);
-                            Patient declinedPatient = Patient.getPatientById(patientId, users);
-                            if (declinedPatient != null) {
-                                // Example: Just printing the notification here; in real-world you'd use an email or message service
-                                System.out.printf("Notification sent to Patient %s: Your appointment on %s at %s has been declined.\n",
-                                        declinedPatient.getName(),
-                                        chosenSchedule.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                                        App.sessionTimings[sessionIndex]);
-                            }
+                            Appointment selectedAcAppointment = Appointment.getAppointmentByScheduleAndSession(chosenSchedule, sessionIndex, appointments);
+                            selectedAcAppointment.setStatus("Cancelled");
+
+                            System.out.println("\nAppointment has been declined. The patient will be notified.");
                         } else {
                             System.out.println("Invalid input, please enter 'A' or 'D'.");
                         }
                         // Update CSV with the new status
                         CsvDB.saveSchedules(schedules);
+                        try {
+                            CsvDB.saveAppointments(appointments);
+                        } catch (IOException e) {
+                            System.err.println("Error while saving appointments: " + e.getMessage());
+                        }
                     } else {
                         System.out.println("\nInvalid choice. Please select a valid appointment number or return to exit.");
                     }
@@ -314,7 +299,7 @@ public class Doctor extends User {
         }
     }
 
-    public void setAvailability(ArrayList<Schedule> schedules) {
+    public void setAvailability(ArrayList<Schedule> schedules, ArrayList<Appointment> appointments) {
         Scanner sc = new Scanner(System.in);
         boolean exit = false;
 
@@ -376,6 +361,9 @@ public class Doctor extends User {
                             if (currentStatus.contains("-Pending")) {
                                 chosenSchedule.getSession()[sessionChoice - 1] = "Unavailable";
                                 // To add on patient appointment outcome logic
+
+                                Appointment selectedAcAppointment = Appointment.getAppointmentByScheduleAndSession(chosenSchedule, sessionChoice - 1, appointments);
+                                selectedAcAppointment.setStatus("Cancelled");
                                 System.out.printf("\nPatient (?) pending booking has been declined. Session %d has been updated to Unavailable as it was pending.\n", sessionChoice);
                             } else if (currentStatus.equals("Available")) {
                                 chosenSchedule.getSession()[sessionChoice - 1] = "Unavailable";
@@ -390,6 +378,11 @@ public class Doctor extends User {
 
                             // Update CSV with the new status
                             CsvDB.saveSchedules(schedules);
+                            try {
+                                CsvDB.saveAppointments(appointments);
+                            } catch (IOException e) {
+                                System.err.println("Error while saving appointments: " + e.getMessage());
+                            }
                         } else {
                             System.out.println("\nInvalid choice. Please select a valid session number or press enter to exit.");
                         }
@@ -403,4 +396,109 @@ public class Doctor extends User {
         }
     }
 
+    public void recordAppointmentOutcome(ArrayList<Appointment> appointments) {
+        Scanner sc = new Scanner(System.in);
+        boolean exit = false;
+
+        while (!exit) {
+            // Step 1: Filter and display confirmed appointments
+            int appointmentIndex = 1;
+
+            System.out.println("\n=== Confirmed Appointments ===");
+
+            ArrayList<Appointment> confirmedAppointments = Appointment.getConfirmedAppointmentsByDoctorID(getHospitalID(), appointments);
+
+            for (Appointment appointment : confirmedAppointments) {
+                System.out.printf("%d. Appointment ID: %s, Date: %s, Session: %s, Patient ID: %s\n",
+                        appointmentIndex, appointment.getAppointmentID(),
+                        appointment.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                        App.sessionTimings[appointment.getSession() - 1],
+                        appointment.getPatientID());
+                appointmentIndex++;
+            }
+
+            if (confirmedAppointments.isEmpty()) {
+                System.out.println("No confirmed appointments found.");
+                break;
+            }
+
+            // Step 2: Get the user's selection for which appointment they want to modify
+            System.out.println("\nSelect the appointment to record the outcome (or press Enter to return):");
+            String input = sc.nextLine();
+
+            if (input.trim().isEmpty()) {
+                System.out.println("Returning to main menu...");
+                exit = true;
+                continue;
+            }
+
+            try {
+                int choice = Integer.parseInt(input);
+
+                if (choice > 0 && choice <= confirmedAppointments.size()) {
+                    // Retrieve the chosen appointment
+                    Appointment selectedAppointment = confirmedAppointments.get(choice - 1);
+
+                    LocalDate appointmentDate = selectedAppointment.getDate();
+                    LocalTime currentTime = LocalTime.now();
+                    LocalDate currentDate = LocalDate.now();
+
+                    String sessionTimeString = App.sessionTimings[selectedAppointment.getSession() - 1].substring(0, 5);
+                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                    LocalTime sessionTime = LocalTime.parse(sessionTimeString, timeFormatter);
+
+                    if (appointmentDate.isAfter(currentDate) || (appointmentDate.isEqual(currentDate) && sessionTime.isAfter(currentTime))) {
+                        System.out.println("\nThe appointment time has not passed yet. You cannot record the outcome at this time.");
+                        continue;
+                    }
+
+                    // Step 3: Prompt the user to record the outcome using Y/N input
+                    System.out.print("Enter the outcome for this appointment ('Y' for Completed or 'N' for No-Show): ");
+                    String outcome = sc.nextLine().trim().toUpperCase();
+
+                    if (outcome.equals("Y")) {
+                        String consultationNotes = "";
+                        String typeOfService = "";
+                        String diagnosis = "";
+                        String treatment = "";
+
+                        System.out.println("\nEnter type of service (enter na if nth): ");
+                        typeOfService = sc.next();
+
+                        System.out.println("\nEnter consultation notes (enter na if nth): ");
+                        consultationNotes = sc.next();
+
+                        System.out.println("\nEnter diagnosis (enter na if nth): ");
+                        diagnosis = sc.next();
+
+                        System.out.println("\nEnter treatment (enter na if nth): ");
+                        treatment = sc.next();
+
+                        System.out.println("\nEnter medicines (enter na if nth): ");
+                        treatment = sc.next();
+
+                        selectedAppointment.setStatus("Completed");
+                        System.out.println("\nAppointment outcome recorded successfully as 'Completed'.");
+                    } else if (outcome.equals("N")) {
+                        selectedAppointment.setStatus("No-Show");
+                        System.out.println("\nAppointment outcome recorded successfully as 'No-Show'.");
+                    } else {
+                        System.out.println("Invalid input. Please enter either 'Y' for Completed or 'N' for No-Show.");
+                        continue; // Continue to allow user to retry entering a valid input
+                    }
+
+                    // Save the updated appointment list to CSV
+                    try {
+                        CsvDB.saveAppointments(appointments);
+                    } catch (IOException e) {
+                        System.err.println("Error while saving appointments: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("Invalid choice. Please select a valid appointment number.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        }
+    }
 }

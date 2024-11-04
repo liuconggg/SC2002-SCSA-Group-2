@@ -92,15 +92,30 @@ public class Appointment {
         this.date = date;
     }
 
+    public static Appointment getAppointmentByScheduleAndSession(Schedule chosenSchedule, int sessionIndex, ArrayList<Appointment> appointments) {
+        if (chosenSchedule == null || appointments == null) {
+            throw new IllegalArgumentException("Schedule or appointment list cannot be null.");
+        }
+
+        for (Appointment appointment : appointments) {
+            if (appointment.getDoctorID().equals(chosenSchedule.getDoctorID())
+                    && appointment.getDate().equals(chosenSchedule.getDate())
+                    && (appointment.getSession() == sessionIndex + 1)) {
+                return appointment;
+            }
+        }
+        return null;  // Return null if no matching appointment is found
+    }
+
     public ArrayList<Appointment> getAppointmentsByPatientID(String patientID, ArrayList<Appointment> appointments) {
         ArrayList<Appointment> filteredAppt = new ArrayList<Appointment>();
 
-        //Only fetch the confirmed and pending appointments for the patients
-        // for (Appointment appointment : appointments) {
-        //     if (appointment.getPatientID().equals(patientID) && !(appointment.getStatus().equals("Completed")) && !(appointment.getStatus().equals("Cancelled"))) {
-        //         filteredAppt.add(appointment);
-        //     }
-        // }
+        // Only fetch the confirmed and pending appointments for the patients
+        for (Appointment appointment : appointments) {
+            if (appointment.getPatientID().equals(patientID) && !(appointment.getStatus().equals("Completed")) && !(appointment.getStatus().equals("Cancelled"))) {
+                filteredAppt.add(appointment);
+            }
+        }
         return filteredAppt;
     }
 
@@ -117,22 +132,26 @@ public class Appointment {
         return filteredAppt;
     }
 
+    public static ArrayList<Appointment> getConfirmedAppointmentsByDoctorID(String doctorID, ArrayList<Appointment> appointments) {
+        ArrayList<Appointment> filteredAppointments = new ArrayList<>();
+
+        for (Appointment appointment : appointments) {
+            if (appointment.getDoctorID().equals(doctorID) && appointment.getStatus().equals("Confirmed")) {
+                filteredAppointments.add(appointment);
+            }
+        }
+        return filteredAppointments;
+    }
+
     public Appointment getAppointmentByAppointmentID(String appointmentID, ArrayList<Appointment> appointments) {
         Appointment found = null;
-        // for (Appointment appt : appointments) {
-        //     if (appt.getAppointmentID().equals(appointmentID)) {
-        //         found = appt;
-        //         break;
-        //     }
-        // }
-
+        for (Appointment appt : appointments) {
+            if (appt.getAppointmentID().equals(appointmentID)) {
+                found = appt;
+                break;
+            }
+        }
         return found;
     }
 
-    // public void createAppointmentOutcomeRecord(User user, String typeOfService, String consultationNotes){
-    // 	if(user instanceof Doctor){
-    // 		Doctor doctor = (Doctor)user;
-    // 		AppointmentOutcomeRecord newRecord = new AppointmentOutcomeRecord(appointmentID, typeOfService, consultationNotes);
-    // 	}
-    // }
 }
