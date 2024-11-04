@@ -106,6 +106,10 @@ public class App {
 
         switch (choice) {
             case 1: // View personal medical record
+                patient.viewMedicalRecord();
+                sc.nextLine();
+                System.out.println("\nPress Enter to continue");
+                sc.nextLine();
                 break;
 
             case 2: // Update personal information
@@ -145,66 +149,38 @@ public class App {
                 }
                 break;
             case 3: // View Available Appointment Slots
+                patient.viewAvailableAppointment(schedules, users);
+                sc.nextLine();
+                System.out.println("Press Enter to continue...");
+                sc.nextLine();
                 break;
             case 4: // Schedule an Appointment
+                patient.scheduleAppointment(schedules, users, patient.getHospitalID());
+                appts = CsvDB.readAppointments();
+                sc.nextLine();
+                System.out.println("Press Enter to continue...");
+                sc.nextLine();
                 break;
             case 5: // Reschedule an Appointment
+                patient.rescheduleAppointment(appts, schedules, users);
+                appts = CsvDB.readAppointments();      // Reload appointments after rescheduling
+                schedules = CsvDB.readSchedules();     // Reload schedules after rescheduling
+                sc.nextLine();
+                System.out.println("Press Enter to continue...");
+                sc.nextLine();
                 break;
             case 6: // Cancel an Appointment
-                // if (patientAppointments.size() > 0) {
-                //     int apptCounter = 0;
-                //     int appointmentChoice;
-                //     Doctor doc;
-                //     System.out.println("Which appointment do you want to cancel?");
-                //     for (Appointment patientAppt : patientAppointments) {
-                //         doc = new Doctor().getDoctorById(patientAppt.getDoctorID(), users);
-                //         if (doc != null) {
-                //             System.out.printf("%d. Appointment with Dr %s on %s is %s\n", ++apptCounter,
-                //                     doc.getName(),
-                //                     patientAppt.getDateTime()
-                //                             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
-                //                     patientAppt.getStatus());
-                //         }
-
-                //     }
-                //     System.out.print("Your choice: ");
-                //     appointmentChoice = sc.nextInt();
-                //     if (appointmentChoice <= patientAppointments.size()) {
-                //         doc = new Doctor().getDoctorById(
-                //                 patientAppointments.get(appointmentChoice - 1).getDoctorID(), users);
-                //         patientAppointments.get(appointmentChoice - 1).setStatus("Cancelled");
-                //         CsvDB.saveAppointments(appts);
-                //         System.out.printf("Your appointment with %s has been cancelled\n", doc.getName());
-                //     }
-                // } else {
-                //     System.out.println("You have no scheduled appointments");
-                // }
-                // sc.nextLine();
-                // System.out.println("Press Enter to continue...");
-                // sc.nextLine();
+                appts = CsvDB.readAppointments();
+                patient.cancelAppointment(appts, schedules, users);
+                sc.nextLine();
+                System.out.println("Press Enter to continue...");
+                sc.nextLine();
                 break;
-            case 7: // View scheduled appointments
-                // if (patientAppointments.size() > 0) {
-                //     int apptCounter = 0;
-                //     Doctor doc;
-
-                //     System.out.println("Your scheduled appointment(s):");
-                //     for (Appointment patientAppt : patientAppointments) {
-                //         doc = new Doctor().getDoctorById(patientAppt.getDoctorID(), users);
-                //         if (doc != null) {
-                //             System.out.printf("%d. Appointment with Dr %s on %s is %s\n", ++apptCounter,
-                //                     doc.getName(),
-                //                     patientAppt.getDateTime()
-                //                             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
-                //                     patientAppt.getStatus());
-                //         }
-                //     }
-                // } else {
-                //     System.out.println("You have no scheduled appointments");
-                // }
-                // sc.nextLine();
-                // System.out.println("Press Enter to continue...");
-                // sc.nextLine();
+            case 7: 
+                patient.viewScheduledAppointments(appts, users);
+                sc.nextLine();
+                System.out.println("Press Enter to continue...");
+                sc.nextLine();
                 break;
             case 8: // View Past Appointment Outcome Records
                 break;
