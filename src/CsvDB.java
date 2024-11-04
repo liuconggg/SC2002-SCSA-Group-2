@@ -3,6 +3,7 @@ import java.io.*;
 import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import jdk.jshell.Diag;
 
 //For all operations in the CSV file
 public class CsvDB {
@@ -22,20 +23,22 @@ public class CsvDB {
     public static final String SCHEDULE_HEADER = "Doctor ID,Date,Session 1,Session 2,Session 3,Session 4,Session 5,Session 6,Session 7,Session 8";
     public static final String MEDICATION_HEADER = "Medication ID,Medication Name,Stock Status,Alert,Quantity";
     public static final String REQUEST_HEADER = "Request ID,Medication Batch,Status,Pharmacist ID";
-    public static final String TREATMENT_HEADER = "Patient ID,Appointment ID, diagnosis";
-    public static final String DIAGNOSIS_HEADER = "Patient ID,Appointment ID, treatment";
+    public static final String TREATMENT_HEADER = "Patient ID,Appointment ID, Diagnosis";
+    public static final String DIAGNOSIS_HEADER = "Patient ID,Appointment ID, Treatment";
 
     // Store the file names
     // public static final String userCSV = "data\\User.csv";
-    public static final String patientCSV = "data/Patient.csv";
-    public static final String doctorCSV = "data/Doctor.csv";
-    public static final String administratorCSV = "data/Administrator.csv";
-    public static final String pharmacistCSV = "data/Pharmacist.csv";
-    public static final String appointmentCSV = "data/Appointment.csv";
-    public static final String appointmentOutcomeRecordCSV = "data/AppointmentOutcomeRecord.csv";
-    public static final String scheduleCSV = "data/Schedule.csv";
-    public static final String medicationCSV = "data/Medication.csv";
-    public static final String requestCSV = "data/ReplenishmentRequest.csv";
+    public static final String patientCSV = "../data/Patient.csv";
+    public static final String doctorCSV = "../data/Doctor.csv";
+    public static final String administratorCSV = "../data/Administrator.csv";
+    public static final String pharmacistCSV = "../data/Pharmacist.csv";
+    public static final String appointmentCSV = "../data/Appointment.csv";
+    public static final String appointmentOutcomeRecordCSV = "../data/AppointmentOutcomeRecord.csv";
+    public static final String scheduleCSV = "../data/Schedule.csv";
+    public static final String medicationCSV = "../data/Medication.csv";
+    public static final String requestCSV = "../data/ReplenishmentRequest.csv";
+    public static final String treatmentCSV = "../data/Treatment.csv";
+    public static final String diagnosisCSV = "../data/Diagnosis.csv";
 
     // Read Patient.csv, Doctor.csv, Pharmacist.csv, Administrator.csv files
     public static ArrayList<User> readUsers() throws IOException {
@@ -165,12 +168,12 @@ public class CsvDB {
                 if (fields.length == 6) {
                     try {
                         Appointment appt = new Appointment(
-                            fields[0],                             // Appointment ID
-                            fields[1],                             // Patient ID
-                            fields[2],                             // Doctor ID
-                            LocalDate.parse(fields[3], timeFormatter),  // Date
-                            Integer.parseInt(fields[4]),           // Session
-                            fields[5]                              // Status
+                                fields[0], // Appointment ID
+                                fields[1], // Patient ID
+                                fields[2], // Doctor ID
+                                LocalDate.parse(fields[3], timeFormatter), // Date
+                                Integer.parseInt(fields[4]), // Session
+                                fields[5] // Status
                         );
                         appts.add(appt);
                     } catch (Exception e) {
@@ -185,6 +188,106 @@ public class CsvDB {
         return appts;
     }
 
+    public static ArrayList<Treatment> readTreatments() throws IOException {
+        ArrayList<Treatment> treatments = new ArrayList<>();
+
+        // Use try-with-resources to ensure BufferedReader closes automatically
+        try (BufferedReader reader = new BufferedReader(new FileReader(treatmentCSV))) {
+            reader.readLine();  // Skip the header row
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(DELIMITER);
+
+                // Ensure the line has exactly 6 fields to avoid ArrayIndexOutOfBoundsException
+                if (fields.length == 6) {
+                    try {
+                        Treatment treatment = new Treatment(
+                                fields[0], // Appointment ID
+                                fields[1], // Patient ID
+                                fields[2] // treatment
+                        );
+                        treatments.add(treatment);
+                    } catch (Exception e) {
+                        System.out.println("Skipping malformed line due to parsing error: " + line);
+                    }
+                } else {
+                    System.out.println("Skipping malformed line due to incorrect field count: " + line);
+                }
+            }
+        }
+
+        return treatments;
+    }
+
+    public static void saveTreatment(ArrayList<Treatment> treatments) throws IOException {
+        // Use try-with-resources to automatically close PrintWriter
+        try (PrintWriter out = new PrintWriter(new FileWriter(treatmentCSV, false))) {
+            // Write the header row
+            out.println("Appointment ID,Patient ID,Treatment");
+
+            // Date formatter for consistent date output
+            for (Treatment treatment : treatments) {
+                // Write all fields, including the status, to ensure no data is missing
+                out.printf("%s,%s,%s%n",
+                        treatment.getPatientID(),
+                        treatment.getAppointmentID(),
+                        treatment.getTreatment()
+                );
+            }
+        }
+    }
+
+    public static ArrayList<Diagnosis> readDiagnosis() throws IOException {
+        ArrayList<Diagnosis> diagnosises = new ArrayList<>();
+
+        // Use try-with-resources to ensure BufferedReader closes automatically
+        try (BufferedReader reader = new BufferedReader(new FileReader(diagnosisCSV))) {
+            reader.readLine();  // Skip the header row
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(DELIMITER);
+
+                // Ensure the line has exactly 6 fields to avoid ArrayIndexOutOfBoundsException
+                if (fields.length == 6) {
+                    try {
+                        Diagnosis diagonsis = new Diagnosis(
+                                fields[0], // Appointment ID
+                                fields[1], // Patient ID
+                                fields[2] // Diagnosis
+                        );
+                        diagnosises.add(diagonsis);
+                    } catch (Exception e) {
+                        System.out.println("Skipping malformed line due to parsing error: " + line);
+                    }
+                } else {
+                    System.out.println("Skipping malformed line due to incorrect field count: " + line);
+                }
+            }
+        }
+
+        return diagnosises;
+    }
+
+    public static void saveDiagnosis(ArrayList<Diagnosis> diagnosises) throws IOException {
+        // Use try-with-resources to automatically close PrintWriter
+        try (PrintWriter out = new PrintWriter(new FileWriter(diagnosisCSV, false))) {
+            // Write the header row
+            out.println("Appointment ID,Patient ID,Diagnosis");
+
+            // Date formatter for consistent date output
+            for (Diagnosis diagnosis : diagnosises) {
+                // Write all fields, including the status, to ensure no data is missing
+                out.printf("%s,%s,%s%n",
+                        diagnosis.getPatientID(),
+                        diagnosis.getAppointmentID(),
+                        diagnosis.getDiagnosis()
+                );
+
+            }
+        }
+    }
 
     // Update Appointment.csv file
     public static void saveAppointments(ArrayList<Appointment> appointments) throws IOException {
@@ -192,19 +295,19 @@ public class CsvDB {
         try (PrintWriter out = new PrintWriter(new FileWriter(appointmentCSV, false))) {
             // Write the header row
             out.println("Appointment ID,Patient ID,Doctor ID,Date,Session,Status");
-            
+
             // Date formatter for consistent date output
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
             for (Appointment appointment : appointments) {
                 // Write all fields, including the status, to ensure no data is missing
                 out.printf("%s,%s,%s,%s,%d,%s%n",
-                    appointment.getAppointmentID(),
-                    appointment.getPatientID(),
-                    appointment.getDoctorID(),
-                    appointment.getDate().format(dateFormatter),
-                    appointment.getSession(),
-                    appointment.getStatus()  // Ensures status is written to file
+                        appointment.getAppointmentID(),
+                        appointment.getPatientID(),
+                        appointment.getDoctorID(),
+                        appointment.getDate().format(dateFormatter),
+                        appointment.getSession(),
+                        appointment.getStatus() // Ensures status is written to file
                 );
             }
         }
@@ -417,4 +520,5 @@ public class CsvDB {
             System.err.println("Error saving schedules: " + e.getMessage());
         }
     }
+
 }

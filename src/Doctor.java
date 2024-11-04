@@ -396,7 +396,7 @@ public class Doctor extends User {
         }
     }
 
-    public void recordAppointmentOutcome(ArrayList<Appointment> appointments, ArrayList<Medication> inventory, ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords) {
+    public void recordAppointmentOutcome(ArrayList<Appointment> appointments, ArrayList<Medication> inventory, ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords, ArrayList<Diagnosis> diagnosises, ArrayList<Treatment> treatments) {
         Scanner sc = new Scanner(System.in);
         boolean exit = false;
 
@@ -459,8 +459,8 @@ public class Doctor extends User {
                     if (outcome.equals("Y")) {
                         String consultationNotes = "";
                         String typeOfService = "";
-                        String diagnosis = "";
-                        String treatment = "";
+                        String diagnosisNotes = "";
+                        String treatmentNotes = "";
 
                         System.out.println("\nEnter type of service (enter na if none): ");
                         typeOfService = sc.nextLine();
@@ -469,13 +469,13 @@ public class Doctor extends User {
                         consultationNotes = sc.nextLine();
 
                         System.out.println("\nEnter diagnosis (enter na if none): ");
-                        diagnosis = sc.nextLine();
+                        diagnosisNotes = sc.nextLine();
 
                         System.out.println("\nEnter treatment (enter na if none): ");
-                        treatment = sc.nextLine();
+                        treatmentNotes = sc.nextLine();
 
                         // Step 4: Display medication inventory and allow the user to prescribe medicines
-                        ArrayList<Medication> prescribedMedicines = new ArrayList<>();
+                        ArrayList<MedicationItem> prescribedMedicines = new ArrayList<>();
                         boolean addingMedicines = true;
 
                         while (addingMedicines) {
@@ -506,12 +506,13 @@ public class Doctor extends User {
 
                                     if (quantity > 0 && quantity <= selectedMed.getTotalQuantity()) {
                                         System.out.println("\nCurrent Prescribing List:");
-                                        Medication prescribedMed = new Medication();
+                                        MedicationItem prescribedMed = new MedicationItem();
+                                        prescribedMed.setMedicationID(selectedMed.getMedicationID());
                                         prescribedMed.setMedicationName(selectedMed.getMedicationName());
-                                        prescribedMed.setTotalQuantity(quantity);
+                                        prescribedMed.setQuantity(quantity);
                                         prescribedMedicines.add(prescribedMed);
-                                        for (Medication med : prescribedMedicines) {
-                                            System.out.printf("- %s: %d units\n", med.getMedicationName(), med.getTotalQuantity());
+                                        for (MedicationItem med : prescribedMedicines) {
+                                            System.out.printf("- %s: %d units\n", med.getMedicationName(), med.getQuantity());
                                         }
                                     } else {
                                         System.out.println("Invalid quantity. Please enter a valid amount within the available units.");
@@ -525,8 +526,19 @@ public class Doctor extends User {
                         }
 
                         // Save the details to an outcome record including prescribed medications
-                        // AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(selectedAppointment, typeOfService, consultationNotes, diagnosis, treatment, prescribedMedicines);
-                        // apptOutcomeRecords.add(outcomeRecord);
+                        AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(selectedAppointment.getAppointmentID(), typeOfService, consultationNotes, prescribedMedicines, "PENDING");
+
+                        Treatment treatment = new Treatment(selectedAppointment.getPatientID(), selectedAppointment.getAppointmentID(), treatmentNotes);
+                        Diagnosis diagnosis = new Diagnosis(selectedAppointment.getPatientID(), selectedAppointment.getAppointmentID(), diagnosisNotes);
+
+                        treatments.add(treatment);
+                        diagnosises.add(diagnosis);
+                        apptOutcomeRecords.add(outcomeRecord);
+
+                        CsvDB.saveAppointmentOutcomeRecords(apptOutcomeRecords);
+                        CsvDB.saveDiagnosis(diagnosises);
+                        CsvDB.saveTreatment(treatments);
+
                         // CsvDB.saveAppointmentOutcomeRecords(apptOutcomeRecords);
                         selectedAppointment.setStatus("Completed");
                         System.out.println("\nAppointment outcome recorded successfully as 'Completed'.");
@@ -550,6 +562,9 @@ public class Doctor extends User {
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a valid number.");
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
     }

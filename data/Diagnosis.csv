@@ -1,5 +1,3 @@
-Patient ID,Appointment ID, diagnosis
-P0001,1,breastcancer
-P0002,3,lungcancer
-P0003,2,diabetes
-
+Appointment ID,Patient ID,Diagnosis
+P0001,A0001,123
+P0001,A0002,dqa

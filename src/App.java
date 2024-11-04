@@ -23,6 +23,8 @@ public class App {
     private static ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords;
     private static ArrayList<Medication> inventory;
     private static ArrayList<ReplenishmentRequest> replenishmentRequests;
+    private static ArrayList<Treatment> treatments;
+    private static ArrayList<Diagnosis> diagnosises;
     private static Scanner sc = new Scanner(System.in);
     private static User userLoggedIn = null;
     private static boolean loggedOut = false;
@@ -35,6 +37,8 @@ public class App {
         schedules = CsvDB.readSchedules();
         inventory = CsvDB.readMedications();
         apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
+        treatments = CsvDB.readTreatments();
+        diagnosises = CsvDB.readDiagnosis();
 
         System.out.println("Hospital Management System");
         userLoggedIn = null;
@@ -178,7 +182,7 @@ public class App {
                 System.out.println("Press Enter to continue...");
                 sc.nextLine();
                 break;
-            case 7: 
+            case 7:
                 patient.viewScheduledAppointments(appts, users);
                 sc.nextLine();
                 System.out.println("Press Enter to continue...");
@@ -222,7 +226,7 @@ public class App {
                 doctor.viewUpcomingAppointments(schedules, users);
                 break;
             case 7:
-                doctor.recordAppointmentOutcome(appts, inventory, apptOutcomeRecords);
+                doctor.recordAppointmentOutcome(appts, inventory, apptOutcomeRecords, diagnosises, treatments);
                 break;
             case 8:
                 userLoggedIn = null;

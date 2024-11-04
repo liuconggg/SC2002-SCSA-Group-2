@@ -1,3 +1,3 @@
-Patient ID, Appointment ID, treatment
-P0001,1,cut away the breast 
-P0002,2,smoke lesser
+Appointment ID,Patient ID,Treatment
+P0001,A0001,d
+P0001,A0002,ewqe
