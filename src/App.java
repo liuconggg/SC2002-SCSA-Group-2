@@ -26,6 +26,8 @@ public class App {
     private static Scanner sc = new Scanner(System.in);
     private static User userLoggedIn = null;
     private static boolean loggedOut = false;
+    private static ArrayList<Diagnosis> diagnoses;
+    private static ArrayList<Treatment> treatments;
 
     public static void main(String[] args) throws Exception {
 
@@ -33,6 +35,9 @@ public class App {
         users = CsvDB.readUsers();
         appts = CsvDB.readAppointments();
         schedules = CsvDB.readSchedules();
+        apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
+        diagnoses = CsvDB.readDiagnoses();
+        treatments = CsvDB.readTreatments();
 
         System.out.println("Hospital Management System");
         userLoggedIn = null;
@@ -106,7 +111,7 @@ public class App {
 
         switch (choice) {
             case 1: // View personal medical record
-                patient.viewMedicalRecord();
+                patient.viewMedicalRecord(apptOutcomeRecords, diagnoses, treatments);
                 sc.nextLine();
                 System.out.println("\nPress Enter to continue");
                 sc.nextLine();
@@ -153,8 +158,7 @@ public class App {
                 sc.nextLine();
                 break;
             case 8: // View Past Appointment Outcome Records
-                ArrayList<AppointmentOutcomeRecord> outcomeRecords = CsvDB.readAppointmentOutcomeRecords();
-                patient.viewAppointmentOutcomeRecords(appts, outcomeRecords);
+                patient.viewAppointmentOutcomeRecords(appts, apptOutcomeRecords);
                 sc.nextLine();
                 System.out.println("Press Enter to continue...");
                 sc.nextLine();
