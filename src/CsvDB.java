@@ -521,4 +521,47 @@ public class CsvDB {
         }
     }
 
+    public static ArrayList<Diagnosis> readDiagnoses() throws IOException {
+        ArrayList<Diagnosis> diagnoses = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new FileReader(diagnosisCSV));
+        String line;
+
+        try {
+            reader.readLine();  // Skip the header row
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(DELIMITER);
+
+                // Ensure the line has exactly 3 fields to avoid ArrayIndexOutOfBoundsException
+                if (fields.length == 3) {
+                    Diagnosis diagnosis = new Diagnosis(fields[0], fields[1], fields[2]);
+                    diagnoses.add(diagnosis);
+                } else {
+                    System.out.println("Skipping malformed line in Diagnosis.csv: " + line);
+                }
+            }
+        } finally {
+            reader.close();
+        }
+
+        return diagnoses;
+    }
+
+    public static ArrayList<Treatment> readTreatments() throws IOException {
+        ArrayList<Treatment> treatments = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new FileReader(treatmentCSV));
+        String line;
+
+        try {
+            reader.readLine();  // Skip the header row
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(DELIMITER);
+                Treatment treatment = new Treatment(fields[0], fields[1], fields[2]);
+                treatments.add(treatment);
+            }
+        } finally {
+            reader.close();
+        }
+
+        return treatments;
+    }
 }
