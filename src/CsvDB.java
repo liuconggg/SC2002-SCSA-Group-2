@@ -27,15 +27,15 @@ public class CsvDB {
 
     // Store the file names
     // public static final String userCSV = "data\\User.csv";
-    public static final String patientCSV = "../data/Patient.csv";
-    public static final String doctorCSV = "../data/Doctor.csv";
-    public static final String administratorCSV = "../data/Administrator.csv";
-    public static final String pharmacistCSV = "../data/Pharmacist.csv";
-    public static final String appointmentCSV = "../data/Appointment.csv";
-    public static final String appointmentOutcomeRecordCSV = "../data/AppointmentOutcomeRecord.csv";
-    public static final String scheduleCSV = "../data/Schedule.csv";
-    public static final String medicationCSV = "../data/Medication.csv";
-    public static final String requestCSV = "../data/ReplenishmentRequest.csv";
+    public static final String patientCSV = "data/Patient.csv";
+    public static final String doctorCSV = "data/Doctor.csv";
+    public static final String administratorCSV = "data/Administrator.csv";
+    public static final String pharmacistCSV = "data/Pharmacist.csv";
+    public static final String appointmentCSV = "data/Appointment.csv";
+    public static final String appointmentOutcomeRecordCSV = "data/AppointmentOutcomeRecord.csv";
+    public static final String scheduleCSV = "data/Schedule.csv";
+    public static final String medicationCSV = "data/Medication.csv";
+    public static final String requestCSV = "data/ReplenishmentRequest.csv";
 
     // Read Patient.csv, Doctor.csv, Pharmacist.csv, Administrator.csv files
     public static ArrayList<User> readUsers() throws IOException {
@@ -150,49 +150,63 @@ public class CsvDB {
 
     // Read Appointment.csv file
     public static ArrayList<Appointment> readAppointments() throws IOException {
-        ArrayList<Appointment> appts = new ArrayList<Appointment>();
+        ArrayList<Appointment> appts = new ArrayList<>();
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        BufferedReader reader = new BufferedReader(new FileReader(appointmentCSV));
-        String line;
 
-        try {
-            reader.readLine();
+        // Use try-with-resources to ensure BufferedReader closes automatically
+        try (BufferedReader reader = new BufferedReader(new FileReader(appointmentCSV))) {
+            reader.readLine();  // Skip the header row
+
+            String line;
             while ((line = reader.readLine()) != null) {
-                if (!(line.contains(APPT_HEADER))) { // Ignore header row
-                    String[] fields = line.split(DELIMITER);
-                    Appointment appt = new Appointment(fields[0], fields[1], fields[2],
-                            LocalDate.parse(fields[3], timeFormatter),
-                            Integer.parseInt(fields[4]), fields[5]
-                    );
+                String[] fields = line.split(DELIMITER);
 
-                    appts.add(appt);
+                // Ensure the line has exactly 6 fields to avoid ArrayIndexOutOfBoundsException
+                if (fields.length == 6) {
+                    try {
+                        Appointment appt = new Appointment(
+                            fields[0],                             // Appointment ID
+                            fields[1],                             // Patient ID
+                            fields[2],                             // Doctor ID
+                            LocalDate.parse(fields[3], timeFormatter),  // Date
+                            Integer.parseInt(fields[4]),           // Session
+                            fields[5]                              // Status
+                        );
+                        appts.add(appt);
+                    } catch (Exception e) {
+                        System.out.println("Skipping malformed line due to parsing error: " + line);
+                    }
+                } else {
+                    System.out.println("Skipping malformed line due to incorrect field count: " + line);
                 }
             }
-        } finally {
-            reader.close();
         }
 
         return appts;
     }
 
+
     // Update Appointment.csv file
     public static void saveAppointments(ArrayList<Appointment> appointments) throws IOException {
-        PrintWriter out;
+        // Use try-with-resources to automatically close PrintWriter
+        try (PrintWriter out = new PrintWriter(new FileWriter(appointmentCSV, false))) {
+            // Write the header row
+            out.println("Appointment ID,Patient ID,Doctor ID,Date,Session,Status");
+            
+            // Date formatter for consistent date output
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        out = new PrintWriter(new FileWriter(appointmentCSV, false));
-        out.println(APPT_HEADER);
-        try {
             for (Appointment appointment : appointments) {
-                out.printf("%s,%s,%s,%s,%s,%s\n", appointment.getAppointmentID(), appointment.getPatientID(),
-                        appointment.getDoctorID(),
-                        appointment.getDate()
-                                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                        appointment.getSession(),
-                        appointment.getStatus()
+                // Write all fields, including the status, to ensure no data is missing
+                out.printf("%s,%s,%s,%s,%d,%s%n",
+                    appointment.getAppointmentID(),
+                    appointment.getPatientID(),
+                    appointment.getDoctorID(),
+                    appointment.getDate().format(dateFormatter),
+                    appointment.getSession(),
+                    appointment.getStatus()  // Ensures status is written to file
                 );
             }
-        } finally {
-            out.close();
         }
     }
 
