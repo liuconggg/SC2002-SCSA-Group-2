@@ -1,6 +1,6 @@
 Doctor ID,Date,Session 1,Session 2,Session 3,Session 4,Session 5,Session 6,Session 7,Session 8
-D0001,04/11/2024,Available,Unavailable,Available,Unavailable,P0004-Pending,Unavailable,Available,Unavailable
-D0001,05/11/2024,Unavailable,Available,Available,P0005-Confirmed,P0001-Confirmed,Unavailable,Available,Available
+D0001,04/11/2024,P0001-Confirmed,Unavailable,Available,Unavailable,P0004-Confirmed,Unavailable,Available,Unavailable
+D0001,05/11/2024,P0001-Confirmed,Available,Available,P0005-Confirmed,P0001-Confirmed,Unavailable,Available,Available
 D0003,05/11/2024,Unavailable,P0001-Pending,Available,Unavailable,Unavailable,Unavailable,P0002-Confirmed,Available
-D0001,06/11/2024,Available,Available,Available,Available,Available,Available,Available,Available
+D0001,06/11/2024,Unavailable,Available,Available,Available,Available,Available,Available,Available
 D0001,07/11/2024,Available,Available,Available,Available,Available,Available,Available,Available

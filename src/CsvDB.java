@@ -183,7 +183,7 @@ public class CsvDB {
         out.println(APPT_HEADER);
         try {
             for (Appointment appointment : appointments) {
-                out.printf("%s,%s,%s,%s,%s\n", appointment.getAppointmentID(), appointment.getPatientID(),
+                out.printf("%s,%s,%s,%s,%s,%s\n", appointment.getAppointmentID(), appointment.getPatientID(),
                         appointment.getDoctorID(),
                         appointment.getDate()
                                 .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
