@@ -86,7 +86,41 @@ public class Administrator extends User implements Inventory {
                 users.add(newDoctor);
                 break;
 
-            // Add similar cases for Pharmacist and Administrator...
+            case 3: // Add Pharmacist
+                System.out.print("Enter Hospital ID: ");
+                hospitalID = sc.nextLine();
+                System.out.print("Enter Password: ");
+                password = sc.nextLine();
+                System.out.print("Enter Name: ");
+                name = sc.nextLine();
+                System.out.print("Enter Age: ");
+                age = sc.nextInt();
+                sc.nextLine();
+                System.out.print("Enter Gender: ");
+                gender = sc.nextLine();
+
+                // Create Pharmacist and add to list
+                Pharmacist newPharmacist= new Pharmacist(hospitalID, password, name, age, gender);
+                users.add(newPharmacist);
+                break;
+
+            case 4: // Add Administrator
+                System.out.print("Enter Hospital ID: ");
+                hospitalID = sc.nextLine();
+                System.out.print("Enter Password: ");
+                password = sc.nextLine();
+                System.out.print("Enter Name: ");
+                name = sc.nextLine();
+                System.out.print("Enter Age: ");
+                age = sc.nextInt();
+                sc.nextLine();
+                System.out.print("Enter Gender: ");
+                gender = sc.nextLine();
+
+                // Create Administrator and add to list
+                Administrator newAdministrator = new Administrator(hospitalID, password, name, age, gender);
+                users.add(newAdministrator);
+                break;
 
             default:
                 System.out.println("Invalid choice. Returning to main menu...");
