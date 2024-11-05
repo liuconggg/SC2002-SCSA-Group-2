@@ -87,47 +87,56 @@ public class Patient extends User {
         System.out.println("9. Logout");
     }
 
-    public void viewMedicalRecord() throws IOException {
-        System.out.println("\n=== Medical Record ===");
-        System.out.println("ID: " + getHospitalID());
-        System.out.println("Name: " + getName());
-        System.out.println("Date of Birth: " + getDateOfBirth());
-        System.out.println("Gender: " + getGender());
-        System.out.println("Contact Number: " + getPhoneNumber());
-        System.out.println("Email: " + getEmail());
-        System.out.println("Blood Type: " + getBloodType());
+    public void viewMedicalRecord(ArrayList<AppointmentOutcomeRecord> outcomeRecords, ArrayList<Diagnosis> diagnoses, ArrayList<Treatment> treatments) throws IOException {
+        System.out.println("\n==================== Medical Record ====================");
+        System.out.printf("ID            : %s\n", getHospitalID());
+        System.out.printf("Name          : %s\n", getName());
+        System.out.printf("Date of Birth : %s\n", getDateOfBirth());
+        System.out.printf("Gender        : %s\n", getGender());
+        System.out.printf("Contact       : %s\n", getPhoneNumber());
+        System.out.printf("Email         : %s\n", getEmail());
+        System.out.printf("Blood Type    : %s\n", getBloodType());
+        System.out.println("=======================================================");
     
-        // Load diagnosis and treatment data
-        ArrayList<Diagnosis> diagnoses = CsvDB.readDiagnoses();
-        ArrayList<Treatment> treatments = CsvDB.readTreatments();
+        // Display diagnosis and treatment information with prescriptions only
+        System.out.println("\n================= Diagnoses and Treatments =============");
+        int recordNo = 1;
+        boolean hasRecords = false;
     
-        // Display diagnosis information for this patient
-        System.out.println("\n=== Diagnosis ===");
-        boolean hasDiagnosis = false;
         for (Diagnosis diagnosis : diagnoses) {
-            if (diagnosis.getPatientID().equals(this.getHospitalID())) {
-                System.out.printf("Appointment ID: %s - Diagnosis: %s\n", 
-                                  diagnosis.getAppointmentID(), diagnosis.getDiagnosis());
-                hasDiagnosis = true;
+            for (Treatment treatment : treatments) {
+                if (diagnosis.getPatientID().equals(this.getHospitalID()) && 
+                    treatment.getPatientID().equals(this.getHospitalID()) &&
+                    diagnosis.getAppointmentID().equals(treatment.getAppointmentID())) {
+    
+                    // Display basic record information
+                    System.out.printf("Record %d:\n", recordNo++);
+                    System.out.printf("  Appointment ID : %s\n", diagnosis.getAppointmentID());
+                    System.out.printf("  Diagnosis      : %s\n", diagnosis.getDiagnosis());
+                    System.out.printf("  Treatment      : %s\n", treatment.getTreatment());
+    
+                    // Find and display only the prescriptions
+                    AppointmentOutcomeRecord outcome = findOutcomeByAppointmentID(outcomeRecords, diagnosis.getAppointmentID());
+                    if (outcome != null && !outcome.getPrescriptions().isEmpty()) {
+                        String prescriptions = outcome.getPrescriptions().stream()
+                            .map(MedicationItem::toString)
+                            .reduce((p1, p2) -> p1 + ", " + p2)
+                            .orElse("No prescriptions.");
+                        System.out.printf("  Prescriptions  : %s\n", prescriptions);
+                    } else {
+                        System.out.println("  Prescriptions  : No prescriptions available.");
+                    }
+    
+                    System.out.println("-------------------------------------------------------");
+                    hasRecords = true;
+                }
             }
-        }
-        if (!hasDiagnosis) {
-            System.out.println("No diagnoses found.");
         }
     
-        // Display treatment information for this patient
-        System.out.println("\n=== Treatment ===");
-        boolean hasTreatment = false;
-        for (Treatment treatment : treatments) {
-            if (treatment.getPatientID().equals(this.getHospitalID())) {
-                System.out.printf("Appointment ID: %s - Treatment: %s\n", 
-                                  treatment.getAppointmentID(), treatment.getTreatment());
-                hasTreatment = true;
-            }
+        if (!hasRecords) {
+            System.out.println("No diagnoses or treatments found for this patient.");
         }
-        if (!hasTreatment) {
-            System.out.println("No treatments found.");
-        }
+        System.out.println("=======================================================");
     }
 
     public void updatePersonalInformation(ArrayList<User> users) throws IOException {
@@ -626,7 +635,7 @@ public class Patient extends User {
 
         // Filter confirmed appointments for this patient
         for (Appointment appt : appointments) {
-            if (appt.getPatientID().equals(this.getHospitalID()) && !appt.getStatus().equalsIgnoreCase("Cancelled")) {
+            if (appt.getPatientID().equals(this.getHospitalID()) && !appt.getStatus().equalsIgnoreCase("Cancelled") && !appt.getStatus().equalsIgnoreCase("Completed")) {
                 patientAppointments.add(appt);
             }
         }
@@ -753,6 +762,15 @@ public class Patient extends User {
         for (User user : users) {
             if (user instanceof Doctor && user.getHospitalID().equals(doctorID)) {
                 return (Doctor) user;
+            }
+        }
+        return null;
+    }
+
+    private AppointmentOutcomeRecord findOutcomeByAppointmentID(ArrayList<AppointmentOutcomeRecord> outcomeRecords, String appointmentID) {
+        for (AppointmentOutcomeRecord outcome : outcomeRecords) {
+            if (outcome.getAppointmentID().equals(appointmentID)) {
+                return outcome;
             }
         }
         return null;

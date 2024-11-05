@@ -35,10 +35,12 @@ public class App {
         users = CsvDB.readUsers();
         appts = CsvDB.readAppointments();
         schedules = CsvDB.readSchedules();
+        apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
+        diagnoses = CsvDB.readDiagnoses();
+        treatments = CsvDB.readTreatments();
         inventory = CsvDB.readMedications();
         apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
         treatments = CsvDB.readTreatments();
-        diagnosises = CsvDB.readDiagnosis();
 
         System.out.println("Hospital Management System");
         userLoggedIn = null;
