@@ -231,8 +231,8 @@ public class CsvDB {
             for (Treatment treatment : treatments) {
                 // Write all fields, including the status, to ensure no data is missing
                 out.printf("%s,%s,%s%n",
-                        treatment.getPatientID(),
                         treatment.getAppointmentID(),
+                        treatment.getPatientID(),
                         treatment.getTreatment()
                 );
             }
@@ -281,8 +281,8 @@ public class CsvDB {
             for (Diagnosis diagnosis : diagnosises) {
                 // Write all fields, including the status, to ensure no data is missing
                 out.printf("%s,%s,%s%n",
-                        diagnosis.getPatientID(),
                         diagnosis.getAppointmentID(),
+                        diagnosis.getPatientID(),
                         diagnosis.getDiagnosis()
                 );
 

@@ -8,9 +8,10 @@ public class Diagnosis {
     public Diagnosis() {
     }
 
-    public Diagnosis(String patientID, String appointmentID, String diagnosis) {
-        this.patientID = patientID;
+    public Diagnosis(String appointmentID, String patientID, String diagnosis) {
         this.appointmentID = appointmentID;
+        this.patientID = patientID;
+
         this.diagnosis = diagnosis;
     }
 
