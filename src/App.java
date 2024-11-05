@@ -252,21 +252,25 @@ public class App {
             case 1:
                 ////////////////////// View and Manage Hospital Staff //////////////////////
                 System.out.println("\nWhat would you like to do?");
-                System.out.println("1. View Staff");
-                System.out.println("2. Update Staff");
-                System.out.println("3. Delete Staff");
+                System.out.println("1. Add Staff");
+                System.out.println("2. View Staff");
+                System.out.println("3. Update Staff");
+                System.out.println("4. Delete Staff");
                 System.out.print("Enter your choice: ");
 
                 int staffChoice = sc.nextInt();
                 sc.nextLine();
                 switch (staffChoice) {
-                    case 1: // View Staff
+                    case 1: // Add Staff
+                        administrator.addUser(users);;
+                        break;
+                    case 2: // View Staff
                         administrator.viewUsers();
                         break;
-                    case 2: // Update Staff
+                    case 3: // Update Staff
                         administrator.updateUser();
                         break;
-                    case 3: // Delete Staff
+                    case 4: // Delete Staff
                         administrator.deleteUser();
                         break;
                     default:
