@@ -303,7 +303,6 @@ public class App {
                         switch (staffChoice) {
                             case 1: // Add Staff
                                 administrator.addUser(users);
-                                ;
                                 break;
                             case 2: // View Staff
                                 administrator.viewUsers();
