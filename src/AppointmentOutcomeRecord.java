@@ -95,4 +95,12 @@ public class AppointmentOutcomeRecord {
         this.prescriptionStatus = prescriptionStatus;
     }
 
+    public static AppointmentOutcomeRecord findOutcomeByAppointmentID(ArrayList<AppointmentOutcomeRecord> outcomeRecords, String appointmentID) {
+        for (AppointmentOutcomeRecord outcome : outcomeRecords) {
+            if (outcome.getAppointmentID().equals(appointmentID)) {
+                return outcome;
+            }
+        }
+        return null;
+    }
 }

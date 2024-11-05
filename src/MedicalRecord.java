@@ -14,5 +14,4 @@ public class MedicalRecord {
     public void setPatientID(String patientID) {
         this.patientID = patientID;
     }
-
 }

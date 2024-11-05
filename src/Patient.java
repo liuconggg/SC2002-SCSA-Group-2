@@ -669,11 +669,12 @@ public class Patient extends User {
                 Doctor doctor = (Doctor) new Doctor().getDoctorById(appt.getDoctorID(), users);
 
                 if (doctor != null) {
-                    System.out.printf("%d. Appointment with Dr. %s on %s at %s\n",
+                    System.out.printf("%d. Appointment with Dr. %s on %s at %s %s\n",
                             ++apptCounter,
                             doctor.getName(),
                             appt.getDate().format(dateFormatter),
-                            sessionTimings[appt.getSession() - 1]);
+                            sessionTimings[appt.getSession() - 1],
+                            appt.getStatus());
                 }
             }
         }

@@ -100,7 +100,8 @@ public class Appointment {
         for (Appointment appointment : appointments) {
             if (appointment.getDoctorID().equals(chosenSchedule.getDoctorID())
                     && appointment.getDate().equals(chosenSchedule.getDate())
-                    && (appointment.getSession() == sessionIndex + 1)) {
+                    && (appointment.getSession() == sessionIndex + 1)
+                    && (appointment.getStatus().equalsIgnoreCase("Pending"))) {
                 return appointment;
             }
         }

@@ -198,6 +198,15 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
             ArrayList<ReplenishmentRequest> replenishmentRequests, Pharmacist pharmacist) {
         ArrayList<MedicationItem> medicationBatch = new ArrayList<>();
 
+        Scanner sc = new Scanner(System.in);
+        System.out.println("\nDo you want to create a replenishment request? (y to continue, press Enter to exit): ");
+        String userChoice = sc.nextLine().trim().toLowerCase();
+
+        if (!userChoice.equals("y")) {
+            System.out.println("Exiting replenishment request process.");
+            return;
+        }
+
         int latestRequestID = replenishmentRequests.size();
         String newRequestID = "R" + String.format("%04d", latestRequestID + 1);
 
@@ -209,7 +218,6 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
         int addedCount = 0;
 
         ArrayList<Medication> lowStockMedications = new ArrayList<>();
-        Scanner sc = new Scanner(System.in);
         System.out.println("\nMedications low on stock: ");
         for (Medication medication : inventory) {
             if (medication.getAlert()) {
