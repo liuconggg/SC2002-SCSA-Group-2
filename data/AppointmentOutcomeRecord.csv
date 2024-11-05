@@ -1,8 +1,3 @@
 Appointment ID,Type of Service,Consultation Notes,Prescriptions,Prescription Status
-A0001,Consultation,Patient has diabetes. Treatment is take diabetic medication,M0002:Ibuprofen:20;M0003:Cough Syrup:50,DISPENSED
-A0002,Blood Test,Patient suspected to have dengue. Blood test conducted,M0001:Paracetemol:10;M0002:Ibuprofen:90,PENDING
-A0003,X-RAY,NA,,COMPLETED
-A0004,Consultation,Patient suspected to have Covid,M0001:Paracetemol:10;M0002:Ibuprofen:30;M0003:Cough Syrup:40,DISPENSED
-A0005,Consultation,Patient suspected to have Cough,M0003:Cough Syrup:1,DISPENSED
-A0001,1,1,M0001:Paracetemol:1;M0002:Ibuprofen:1,PENDING
-A0002,2,2,M0003:Cough Syrup:1,PENDING
+A0001,Consultation,Patient got flu ,M0001:Paracetemol:10,DISPENSED
+A0002,Consultation,Patient got cancer,M0001:Paracetemol:30;M0002:Ibuprofen:40,DISPENSED

@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
 public class Patient extends User {
 
     private String dateOfBirth;
@@ -97,42 +96,42 @@ public class Patient extends User {
         System.out.printf("Email         : %s\n", getEmail());
         System.out.printf("Blood Type    : %s\n", getBloodType());
         System.out.println("=======================================================");
-    
+
         // Display diagnosis and treatment information with prescriptions only
         System.out.println("\n================= Diagnoses and Treatments =============");
         int recordNo = 1;
         boolean hasRecords = false;
-    
+
         for (Diagnosis diagnosis : diagnoses) {
             for (Treatment treatment : treatments) {
-                if (diagnosis.getPatientID().equals(this.getHospitalID()) && 
-                    treatment.getPatientID().equals(this.getHospitalID()) &&
-                    diagnosis.getAppointmentID().equals(treatment.getAppointmentID())) {
-    
+                if (diagnosis.getPatientID().equals(this.getHospitalID())
+                        && treatment.getPatientID().equals(this.getHospitalID())
+                        && diagnosis.getAppointmentID().equals(treatment.getAppointmentID())) {
+
                     // Display basic record information
                     System.out.printf("Record %d:\n", recordNo++);
                     System.out.printf("  Appointment ID : %s\n", diagnosis.getAppointmentID());
                     System.out.printf("  Diagnosis      : %s\n", diagnosis.getDiagnosis());
                     System.out.printf("  Treatment      : %s\n", treatment.getTreatment());
-    
+
                     // Find and display only the prescriptions
                     AppointmentOutcomeRecord outcome = findOutcomeByAppointmentID(outcomeRecords, diagnosis.getAppointmentID());
                     if (outcome != null && !outcome.getPrescriptions().isEmpty()) {
                         String prescriptions = outcome.getPrescriptions().stream()
-                            .map(MedicationItem::toString)
-                            .reduce((p1, p2) -> p1 + ", " + p2)
-                            .orElse("No prescriptions.");
+                                .map(MedicationItem::toString)
+                                .reduce((p1, p2) -> p1 + ", " + p2)
+                                .orElse("No prescriptions.");
                         System.out.printf("  Prescriptions  : %s\n", prescriptions);
                     } else {
                         System.out.println("  Prescriptions  : No prescriptions available.");
                     }
-    
+
                     System.out.println("-------------------------------------------------------");
                     hasRecords = true;
                 }
             }
         }
-    
+
         if (!hasRecords) {
             System.out.println("No diagnoses or treatments found for this patient.");
         }
@@ -143,7 +142,7 @@ public class Patient extends User {
         Scanner sc = new Scanner(System.in);
         boolean changing = true;
         int action;
-    
+
         while (changing) {
             System.out.println("Select the information to update:");
             System.out.println("1. Name");
@@ -153,7 +152,7 @@ public class Patient extends User {
             System.out.print("Your Choice: ");
             action = sc.nextInt();
             sc.nextLine();  // Consume newline
-    
+
             switch (action) {
                 case 1:
                     System.out.print("Enter your new name: ");
@@ -263,7 +262,7 @@ public class Patient extends User {
                     dateInSchedule = true;
 
                     // Display available sessions with timings for this date
-                    System.out.printf("\nAvailable Sessions for Dr. %s on %s:\n", 
+                    System.out.printf("\nAvailable Sessions for Dr. %s on %s:\n",
                             selectedDoctor.getName(), currentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 
                     for (int i = 0; i < schedule.getSession().length; i++) {
@@ -277,7 +276,7 @@ public class Patient extends User {
 
             // If date not found in schedule, assume all sessions are available
             if (!dateInSchedule) {
-                System.out.printf("\nAvailable Sessions for Dr. %s on %s:\n", 
+                System.out.printf("\nAvailable Sessions for Dr. %s on %s:\n",
                         selectedDoctor.getName(), currentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                 for (int i = 0; i < sessionTimings.length; i++) {
                     System.out.printf("Session %d (%s)\n", i + 1, sessionTimings[i]);
@@ -313,13 +312,13 @@ public class Patient extends User {
         // Prompt user to select a doctor by index
         System.out.print("\nSelect a doctor to schedule an appointment (Press Enter to return): ");
         String doctorInput = sc.nextLine().trim();
-        
+
         // Allow patient to exit scheduling process
         if (doctorInput.isEmpty()) {
             System.out.println("Returning to main menu...");
             return;
         }
-        
+
         int selectedDoctorIndex;
         try {
             selectedDoctorIndex = Integer.parseInt(doctorInput);
@@ -340,13 +339,13 @@ public class Patient extends User {
         // Prompt user for appointment date
         System.out.print("Enter the appointment date (dd/MM/yyyy) (Press Enter to return): ");
         String dateInput = sc.nextLine().trim();
-        
+
         // Allow patient to exit if they choose
         if (dateInput.isEmpty()) {
             System.out.println("Returning to main menu...");
             return;
         }
-        
+
         LocalDate appointmentDate;
         try {
             appointmentDate = LocalDate.parse(dateInput, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -388,7 +387,7 @@ public class Patient extends User {
         // Allow user to return without booking a session
         System.out.print("Select a session number to book (Press Enter to return): ");
         String sessionInput = sc.nextLine().trim();
-        
+
         if (sessionInput.isEmpty()) {
             System.out.println("Returning to main menu...");
             return;
@@ -420,13 +419,13 @@ public class Patient extends User {
         appointments.add(newAppointment);
         CsvDB.saveAppointments(appointments);  // Update Appointment.csv with the new appointment
 
-        System.out.printf("Appointment booked for Dr. %s on %s, Session %d.\n", 
-                          selectedDoctor.getName(), appointmentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), sessionNumber);
+        System.out.printf("Appointment booked for Dr. %s on %s, Session %d.\n",
+                selectedDoctor.getName(), appointmentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), sessionNumber);
     }
 
     public void rescheduleAppointment(ArrayList<Appointment> appointments, ArrayList<Schedule> schedules, ArrayList<User> users) throws IOException {
         Scanner sc = new Scanner(System.in);
-        
+
         // Filter to show only pending or confirmed appointments
         ArrayList<Appointment> reschedulableAppointments = new ArrayList<>();
         for (Appointment appt : viewAppointments(this.getHospitalID(), appointments)) {
@@ -448,11 +447,11 @@ public class Patient extends User {
             Doctor doctor = getDoctorById(appt.getDoctorID(), users);
             if (doctor != null) {
                 System.out.printf("%d. Appointment with Dr. %s on %s at %s - Status: %s\n",
-                    ++apptCounter,
-                    doctor.getName(),
-                    appt.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                    App.sessionTimings[appt.getSession() - 1],
-                    appt.getStatus());
+                        ++apptCounter,
+                        doctor.getName(),
+                        appt.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                        App.sessionTimings[appt.getSession() - 1],
+                        appt.getStatus());
             }
         }
 
@@ -581,11 +580,11 @@ public class Patient extends User {
             Doctor doctor = getDoctorById(appt.getDoctorID(), users);
             if (doctor != null) {
                 System.out.printf("%d. Appointment with Dr. %s on %s at %s - Status: %s\n",
-                    ++apptCounter,
-                    doctor.getName(),
-                    appt.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                    App.sessionTimings[appt.getSession() - 1],
-                    appt.getStatus());
+                        ++apptCounter,
+                        doctor.getName(),
+                        appt.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                        App.sessionTimings[appt.getSession() - 1],
+                        appt.getStatus());
             }
         }
 
@@ -617,13 +616,13 @@ public class Patient extends User {
             CsvDB.saveAppointments(appointments);
             CsvDB.saveSchedules(schedules);
             System.out.printf("Your appointment with Dr. %s on %s has been cancelled.\n",
-                getDoctorById(doctorID, users).getName(),
-                chosenAppointment.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    getDoctorById(doctorID, users).getName(),
+                    chosenAppointment.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         } else {
             System.out.println("Invalid choice.");
         }
     }
-    
+
     public void viewScheduledAppointments(ArrayList<Appointment> appointments, ArrayList<User> users) {
         ArrayList<Appointment> patientAppointments = new ArrayList<>();
 
@@ -653,11 +652,11 @@ public class Patient extends User {
                 Doctor doctor = (Doctor) getDoctorById(appt.getDoctorID(), users);
 
                 if (doctor != null) {
-                    System.out.printf("%d. Appointment with Dr. %s on %s at %s\n", 
-                                      ++apptCounter,
-                                      doctor.getName(),
-                                      appt.getDate().format(dateFormatter),
-                                      sessionTimings[appt.getSession() - 1]);
+                    System.out.printf("%d. Appointment with Dr. %s on %s at %s\n",
+                            ++apptCounter,
+                            doctor.getName(),
+                            appt.getDate().format(dateFormatter),
+                            sessionTimings[appt.getSession() - 1]);
                 }
             }
         }
@@ -665,14 +664,14 @@ public class Patient extends User {
 
     public void viewAppointmentOutcomeRecords(ArrayList<Appointment> appointments, ArrayList<AppointmentOutcomeRecord> outcomeRecords) throws IOException {
         Scanner sc = new Scanner(System.in);
-    
+
         // Define session timings
         final String[] sessionTimings = {
             "09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00",
             "13:00 - 14:00", "14:00 - 15:00", "15:00 - 16:00",
             "16:00 - 17:00", "17:00 - 18:00"
         };
-    
+
         // Filter to show only the patient's completed appointments
         ArrayList<Appointment> completedAppointments = new ArrayList<>();
         for (Appointment appt : appointments) {
@@ -680,41 +679,41 @@ public class Patient extends User {
                 completedAppointments.add(appt);
             }
         }
-    
+
         // Check if there are any completed appointments for this patient
         if (completedAppointments.isEmpty()) {
             System.out.println("You have no completed appointments with recorded outcomes.");
             return;
         }
-    
+
         // Display completed appointments and allow the patient to choose one
         System.out.println("Select a completed appointment to view its outcome record:");
         int apptCounter = 0;
         for (Appointment appt : completedAppointments) {
             int session = appt.getSession();
             String sessionTime = (session > 0 && session <= sessionTimings.length) ? sessionTimings[session - 1] : "Unknown time";
-    
+
             System.out.printf("%d. Appointment ID: %s, Date: %s, Time: %s\n",
                     ++apptCounter,
                     appt.getAppointmentID(),
                     appt.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                     sessionTime);
         }
-    
+
         // Get user selection
         System.out.print("Enter the number of the appointment you want to view: ");
         int choice = sc.nextInt();
         sc.nextLine(); // consume newline
-    
+
         if (choice < 1 || choice > completedAppointments.size()) {
             System.out.println("Invalid selection.");
             return;
         }
-    
+
         // Find the outcome record for the selected completed appointment
         Appointment selectedAppointment = completedAppointments.get(choice - 1);
         boolean foundOutcome = false;
-    
+
         for (AppointmentOutcomeRecord record : outcomeRecords) {
             if (record.getAppointmentID().equals(selectedAppointment.getAppointmentID())) {
                 // Display the outcome record details
@@ -728,7 +727,7 @@ public class Patient extends User {
                 break;
             }
         }
-    
+
         if (!foundOutcome) {
             System.out.println("No outcome record found for the selected appointment.");
         }
@@ -736,13 +735,13 @@ public class Patient extends User {
 
     public ArrayList<Appointment> viewAppointments(String patientID, ArrayList<Appointment> appointments) {
         ArrayList<Appointment> patientAppointments = new ArrayList<>();
-    
+
         for (Appointment appointment : appointments) {
             if (appointment.getPatientID().equals(patientID)) {
                 patientAppointments.add(appointment);
             }
         }
-    
+
         return patientAppointments;
     }
 

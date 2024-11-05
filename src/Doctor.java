@@ -569,7 +569,7 @@ public class Doctor extends User {
         }
     }
 
-    public void viewPatientMedicalRecords(ArrayList<Schedule> schedules, ArrayList<User> users) {
+    public void viewPatientMedicalRecords(ArrayList<Schedule> schedules, ArrayList<User> users, ArrayList<AppointmentOutcomeRecord> outcomeRecords, ArrayList<Diagnosis> diagnoses, ArrayList<Treatment> treatments) {
         Scanner sc = new Scanner(System.in);
         ArrayList<String> uniquePatientIds = new ArrayList<>();
         ArrayList<User> patientsUnderCare = new ArrayList<>();
@@ -635,7 +635,7 @@ public class Doctor extends User {
                     System.out.println("\n=== Medical Records for " + selectedPatient.getName() + " ===");
                     if (selectedPatient instanceof Patient) {
                         Patient patient = (Patient) selectedPatient;
-                        patient.viewMedicalRecord();  // Assuming `viewMedicalRecord()` is a method in Patient
+                        patient.viewMedicalRecord(outcomeRecords, diagnoses, treatments);  // Assuming `viewMedicalRecord()` is a method in Patient
                     }
                 } else {
                     System.out.println("Invalid choice. Please select a valid patient number.");

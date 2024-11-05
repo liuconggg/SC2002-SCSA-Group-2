@@ -35,9 +35,7 @@ public class App {
         users = CsvDB.readUsers();
         appts = CsvDB.readAppointments();
         schedules = CsvDB.readSchedules();
-        apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
         diagnoses = CsvDB.readDiagnoses();
-        treatments = CsvDB.readTreatments();
         inventory = CsvDB.readMedications();
         apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
         treatments = CsvDB.readTreatments();
@@ -187,7 +185,7 @@ public class App {
 
         switch (choice) {
             case 1:
-                doctor.viewPatientMedicalRecords(schedules, users);
+                doctor.viewPatientMedicalRecords(schedules, users, apptOutcomeRecords, diagnoses, treatments);
                 break;
             case 2:
                 break;
