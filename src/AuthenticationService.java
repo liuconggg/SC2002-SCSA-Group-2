@@ -1,30 +1,30 @@
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.io.Console;
 
 public class AuthenticationService {
 
     private static final String DEFAULT_PASSWORD = "password";
-    private static Scanner scanner = new Scanner(System.in);
-    private ArrayList<User> users;
+    private static final Console console = System.console();
 
-    public AuthenticationService(ArrayList<User> users) {
-        this.users = users;
-    }
+    public User authenticate(ArrayList<User> users) throws IOException {
 
-    public User authenticate() throws IOException {
+        if(console == null) {
+            System.out.println("No console available. Please run in a terminal. ");
+            return null;
+        }
         System.out.println("=== Hospital Management System ===");
 
-        System.out.print("Hospital ID: ");
-        String id = scanner.nextLine();
-        System.out.print("Password: ");
-        String password = scanner.nextLine();
+        String id = console.readLine("Hospital ID: ");        
+        char[] passwordArray = console.readPassword("Password: ");
+
+        String password = new String(passwordArray);
 
         for (User user : users) {
             if (user.getHospitalID().equals(id) && user.getPassword().equals(password)) {
                 if (user.getPassword().equals(DEFAULT_PASSWORD)) {
-                    changePassword(user);
+                    changePassword(user, users);
                 }
                 return user;
             }
@@ -35,13 +35,14 @@ public class AuthenticationService {
         return null;
     }
 
-    private void changePassword(User user) throws IOException {
+    private void changePassword(User user, ArrayList<User> users) throws IOException {
         System.out.println("=== Please change your password first! ===");
         while (true) {
-            System.out.print("New Password: ");
-            String newPassword = scanner.nextLine();
-            System.out.print("Confirm New Password: ");
-            String confirmPassword = scanner.nextLine();
+            char[] newPasswordArray = console.readPassword("New Password: ");
+            String newPassword = new String(newPasswordArray);
+            char[] confirmPasswordArray = console.readPassword("Confirm New Password: ");
+            String confirmPassword = new String(confirmPasswordArray);
+
             if (newPassword.equals(confirmPassword)) {
                 user.setPassword(newPassword);
                 CsvDB.saveUsers(users);

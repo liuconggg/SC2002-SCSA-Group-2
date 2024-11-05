@@ -4,6 +4,7 @@ import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import jdk.jshell.Diag;
+import java.nio.file.Paths;
 
 //For all operations in the CSV file
 public class CsvDB {
@@ -28,17 +29,17 @@ public class CsvDB {
 
     // Store the file names
     // public static final String userCSV = "data\\User.csv";
-    public static final String patientCSV = "../data/Patient.csv";
-    public static final String doctorCSV = "../data/Doctor.csv";
-    public static final String administratorCSV = "../data/Administrator.csv";
-    public static final String pharmacistCSV = "../data/Pharmacist.csv";
-    public static final String appointmentCSV = "../data/Appointment.csv";
-    public static final String appointmentOutcomeRecordCSV = "../data/AppointmentOutcomeRecord.csv";
-    public static final String scheduleCSV = "../data/Schedule.csv";
-    public static final String medicationCSV = "../data/Medication.csv";
-    public static final String requestCSV = "../data/ReplenishmentRequest.csv";
-    public static final String treatmentCSV = "../data/Treatment.csv";
-    public static final String diagnosisCSV = "../data/Diagnosis.csv";
+    public static final String patientCSV = Paths.get("data", "Patient.csv").toString();
+    public static final String doctorCSV = Paths.get("data", "Doctor.csv").toString();
+    public static final String administratorCSV = Paths.get("data", "Administrator.csv").toString();
+    public static final String pharmacistCSV = Paths.get("data","Pharmacist.csv").toString();
+    public static final String appointmentCSV = Paths.get("data", "Appointment.csv").toString();
+    public static final String appointmentOutcomeRecordCSV = Paths.get("data","AppointmentOutcomeRecord.csv").toString();
+    public static final String scheduleCSV = Paths.get("data", "Schedule.csv").toString();
+    public static final String medicationCSV = Paths.get("data", "Medication.csv").toString();
+    public static final String requestCSV = Paths.get("data", "ReplenishmentRequest.csv").toString();
+    public static final String diagnosisCSV = Paths.get("data", "Diagnosis.csv").toString();
+    public static final String treatmentCSV = Paths.get("data", "Treatment.csv").toString();
 
     // Read Patient.csv, Doctor.csv, Pharmacist.csv, Administrator.csv files
     public static ArrayList<User> readUsers() throws IOException {

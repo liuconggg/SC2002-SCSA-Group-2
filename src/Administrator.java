@@ -27,6 +27,115 @@ public class Administrator extends User implements Inventory {
         return String.format("Admin ID: %s | Name: %s | Age: %d | Gender: %s", hospitalID, name, age, gender);
     }
 
+    public void addUser(ArrayList<User> users) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("What type of user would you like to add?");
+        System.out.println("1. Patient");
+        System.out.println("2. Doctor");
+        System.out.println("3. Pharmacist");
+        System.out.println("4. Administrator");
+        System.out.print("Enter your choice: ");
+        int choice = sc.nextInt();
+        sc.nextLine();
+
+        String hospitalID, password, name, gender, dateOfBirth, phoneNumber, email, bloodType;
+        int age;
+
+        switch (choice) {
+            case 1: // Add Patient
+                System.out.print("Enter Hospital ID: ");
+                hospitalID = sc.nextLine();
+                System.out.print("Enter Password: ");
+                password = sc.nextLine();
+                System.out.print("Enter Name: ");
+                name = sc.nextLine();
+                System.out.print("Enter Age: ");
+                age = sc.nextInt();
+                sc.nextLine();
+                System.out.print("Enter Gender: ");
+                gender = sc.nextLine();
+                System.out.print("Enter Date of Birth: ");
+                dateOfBirth = sc.nextLine();
+                System.out.print("Enter Phone Number: ");
+                phoneNumber = sc.nextLine();
+                System.out.print("Enter Email: ");
+                email = sc.nextLine();
+                System.out.print("Enter Blood Type: ");
+                bloodType = sc.nextLine();
+
+                // Create Patient and add to list
+                Patient newPatient = new Patient(hospitalID, password, name, age, gender, dateOfBirth, phoneNumber, email, bloodType);
+                users.add(newPatient);
+                break;
+
+            case 2: // Add Doctor
+                System.out.print("Enter Hospital ID: ");
+                hospitalID = sc.nextLine();
+                System.out.print("Enter Password: ");
+                password = sc.nextLine();
+                System.out.print("Enter Name: ");
+                name = sc.nextLine();
+                System.out.print("Enter Age: ");
+                age = sc.nextInt();
+                sc.nextLine();
+                System.out.print("Enter Gender: ");
+                gender = sc.nextLine();
+
+                // Create Doctor and add to list
+                Doctor newDoctor = new Doctor(hospitalID, password, name, age, gender);
+                users.add(newDoctor);
+                break;
+
+            case 3: // Add Pharmacist
+                System.out.print("Enter Hospital ID: ");
+                hospitalID = sc.nextLine();
+                System.out.print("Enter Password: ");
+                password = sc.nextLine();
+                System.out.print("Enter Name: ");
+                name = sc.nextLine();
+                System.out.print("Enter Age: ");
+                age = sc.nextInt();
+                sc.nextLine();
+                System.out.print("Enter Gender: ");
+                gender = sc.nextLine();
+
+                // Create Pharmacist and add to list
+                Pharmacist newPharmacist= new Pharmacist(hospitalID, password, name, age, gender);
+                users.add(newPharmacist);
+                break;
+
+            case 4: // Add Administrator
+                System.out.print("Enter Hospital ID: ");
+                hospitalID = sc.nextLine();
+                System.out.print("Enter Password: ");
+                password = sc.nextLine();
+                System.out.print("Enter Name: ");
+                name = sc.nextLine();
+                System.out.print("Enter Age: ");
+                age = sc.nextInt();
+                sc.nextLine();
+                System.out.print("Enter Gender: ");
+                gender = sc.nextLine();
+
+                // Create Administrator and add to list
+                Administrator newAdministrator = new Administrator(hospitalID, password, name, age, gender);
+                users.add(newAdministrator);
+                break;
+
+            default:
+                System.out.println("Invalid choice. Returning to main menu...");
+                return;
+        }
+
+        // Save the updated user list
+        try {
+            CsvDB.saveUsers(users);
+            System.out.println("New user added and saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving user data: " + e.getMessage());
+        }
+    }
+
     public void viewUsers() {
         try {
             ArrayList<User> users = CsvDB.readUsers();
@@ -307,7 +416,8 @@ public class Administrator extends User implements Inventory {
         medication.setTotalQuantity(quantity);
     }
 
-    public void approveReplenishmentRequests(ArrayList<ReplenishmentRequest> replenishmentRequests, ArrayList<Medication> inventory) {
+    public void approveReplenishmentRequests(ArrayList<ReplenishmentRequest> replenishmentRequests,
+            ArrayList<Medication> inventory) {
         Scanner sc = new Scanner(System.in);
         boolean requestFound = false;
 
@@ -360,7 +470,8 @@ public class Administrator extends User implements Inventory {
             }
 
             if (medicationToUpdate != null) {
-                // Update the quantity, stockStatus and alert level of the medication in the inventory
+                // Update the quantity, stockStatus and alert level of the medication in the
+                // inventory
                 String stockStatus = "LOW";
                 boolean alert = false;
                 int newQuantity = medicationToUpdate.getTotalQuantity() + item.getQuantity();
