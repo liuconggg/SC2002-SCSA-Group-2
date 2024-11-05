@@ -216,12 +216,19 @@ public class Patient extends User {
         }
 
         // Prompt user to select a doctor by index
-        System.out.print("Select a doctor to view available slots: ");
+        System.out.print("Select a doctor to view available slots (Press Enter to return): ");
+        String doctorInput = sc.nextLine().trim();
+
+        // Allow patient to exit viewing process
+        if (doctorInput.isEmpty()) {
+            System.out.println("Returning to main menu...");
+            return;
+        }
+
         int selectedDoctorIndex;
         try {
-            selectedDoctorIndex = sc.nextInt();
-            sc.nextLine();  // Consume the remaining newline
-        } catch (Exception e) {
+            selectedDoctorIndex = Integer.parseInt(doctorInput);
+        } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a number.");
             return;
         }
@@ -472,10 +479,22 @@ public class Patient extends User {
             }
         }
 
-        // Get user choice
-        System.out.print("Enter the number of the appointment you want to reschedule: ");
-        int appointmentChoice = sc.nextInt();
-        sc.nextLine();  // Consume newline
+        System.out.println("Which appointment would you like to reschedule? (Press Enter to return): ");
+        String appointmentChoiceInput = sc.nextLine().trim();
+
+        // Allow the patient to exit the rescheduling process
+        if (appointmentChoiceInput.isEmpty()) {
+            System.out.println("Returning to main menu...");
+            return;
+        }
+
+        int appointmentChoice;
+        try {
+            appointmentChoice = Integer.parseInt(appointmentChoiceInput);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+            return;
+        }
 
         // Validate the choice
         if (appointmentChoice < 1 || appointmentChoice > reschedulableAppointments.size()) {
@@ -606,9 +625,28 @@ public class Patient extends User {
         }
 
         // Get user choice
-        System.out.print("Enter the number of the appointment you want to cancel: ");
-        int appointmentChoice = sc.nextInt();
-        sc.nextLine();  // Consume newline
+        System.out.println("Which appointment would you like to cancel? (Press Enter to return): ");
+        String appointmentChoiceInput = sc.nextLine().trim();
+
+        // Allow the patient to exit the cancellation process
+        if (appointmentChoiceInput.isEmpty()) {
+            System.out.println("Returning to main menu...");
+            return;
+        }
+
+        int appointmentChoice;
+        try {
+            appointmentChoice = Integer.parseInt(appointmentChoiceInput);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+            return;
+        }
+
+        // Validate the choice
+        if (appointmentChoice < 1 || appointmentChoice > cancellableAppointments.size()) {
+            System.out.println("Invalid choice.");
+            return;
+        }
 
         // Validate the choice
         if (appointmentChoice >= 1 && appointmentChoice <= cancellableAppointments.size()) {
@@ -719,10 +757,24 @@ public class Patient extends User {
         }
 
         // Get user selection
-        System.out.print("Enter the number of the appointment you want to view: ");
-        int choice = sc.nextInt();
-        sc.nextLine(); // consume newline
+        System.out.print("Enter the number of the appointment you want to view (Press Enter to return): ");
+        String choiceInput = sc.nextLine().trim();
 
+        // Allow the patient to exit the outcome viewing process
+        if (choiceInput.isEmpty()) {
+            System.out.println("Returning to main menu...");
+            return;
+        }
+
+        int choice;
+        try {
+            choice = Integer.parseInt(choiceInput);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+            return;
+        }
+
+// Validate the choice
         if (choice < 1 || choice > completedAppointments.size()) {
             System.out.println("Invalid selection.");
             return;
