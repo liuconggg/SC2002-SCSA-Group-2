@@ -24,7 +24,7 @@ public class App {
     private static ArrayList<Medication> inventory;
     private static ArrayList<ReplenishmentRequest> replenishmentRequests;
     private static ArrayList<Treatment> treatments;
-    private static ArrayList<Diagnosis> diagnosises;
+    private static ArrayList<Diagnosis> diagnoses;
     private static Scanner sc = new Scanner(System.in);
     private static User userLoggedIn = null;
     private static boolean loggedOut = false;
@@ -114,7 +114,7 @@ public class App {
 
         switch (choice) {
             case 1: // View personal medical record
-                patient.viewMedicalRecord();
+                patient.viewMedicalRecord(apptOutcomeRecords, diagnoses, treatments);
                 sc.nextLine();
                 System.out.println("\nPress Enter to continue");
                 sc.nextLine();
@@ -204,7 +204,7 @@ public class App {
                 doctor.viewUpcomingAppointments(schedules, users);
                 break;
             case 7:
-                doctor.recordAppointmentOutcome(appts, inventory, apptOutcomeRecords, diagnosises, treatments);
+                doctor.recordAppointmentOutcome(appts, inventory, apptOutcomeRecords, diagnoses, treatments);
                 break;
             case 8:
                 userLoggedIn = null;
