@@ -29,6 +29,15 @@ public class Doctor extends User {
         System.out.println("8. Logout\n");
     }
 
+    @Override
+    public String toString() {
+        String hospitalID = this.getHospitalID();
+        String name = this.getName();
+        int age = this.getAge();
+        String gender = this.getGender();
+        return String.format("Doctor ID: %s | Name: %s | Age: %d | Gender: %s", hospitalID, name, age, gender);
+    }
+
     public Doctor getDoctorById(String doctorID, ArrayList<User> users) {
         Doctor doctorFound = null;
         for (User doc : users) {
@@ -396,7 +405,7 @@ public class Doctor extends User {
         }
     }
 
-    public void recordAppointmentOutcome(ArrayList<Appointment> appointments) {
+    public void recordAppointmentOutcome(ArrayList<Appointment> appointments, ArrayList<Medication> inventory, ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords, ArrayList<Diagnosis> diagnosises, ArrayList<Treatment> treatments) {
         Scanner sc = new Scanner(System.in);
         boolean exit = false;
 
@@ -459,26 +468,90 @@ public class Doctor extends User {
                     if (outcome.equals("Y")) {
                         String consultationNotes = "";
                         String typeOfService = "";
-                        String diagnosis = "";
-                        String treatment = "";
+                        String diagnosisNotes = "";
+                        String treatmentNotes = "";
 
-                        System.out.println("\nEnter type of service (enter na if nth): ");
-                        typeOfService = sc.next();
+                        System.out.println("\nEnter type of service (enter na if none): ");
+                        typeOfService = sc.nextLine();
 
-                        System.out.println("\nEnter consultation notes (enter na if nth): ");
-                        consultationNotes = sc.next();
+                        System.out.println("\nEnter consultation notes (enter na if none): ");
+                        consultationNotes = sc.nextLine();
 
-                        System.out.println("\nEnter diagnosis (enter na if nth): ");
-                        diagnosis = sc.next();
+                        System.out.println("\nEnter diagnosis (enter na if none): ");
+                        diagnosisNotes = sc.nextLine();
 
-                        System.out.println("\nEnter treatment (enter na if nth): ");
-                        treatment = sc.next();
+                        System.out.println("\nEnter treatment (enter na if none): ");
+                        treatmentNotes = sc.nextLine();
 
-                        System.out.println("\nEnter medicines (enter na if nth): ");
-                        treatment = sc.next();
+                        // Step 4: Display medication inventory and allow the user to prescribe medicines
+                        ArrayList<MedicationItem> prescribedMedicines = new ArrayList<>();
+                        boolean addingMedicines = true;
 
+                        while (addingMedicines) {
+                            System.out.println("\nAvailable Medicines:");
+                            int medIndex = 1;
+                            for (Medication med : inventory) {
+                                System.out.printf("%d. %s (Available: %d units)\n", medIndex, med.getMedicationName(),
+                                        med.getTotalQuantity());
+                                medIndex++;
+                            }
+
+                            System.out.println("\nSelect a medicine by number to prescribe (or press Enter to finish): ");
+                            String medInput = sc.nextLine();
+
+                            if (medInput.trim().isEmpty()) {
+                                addingMedicines = false;
+                                continue;
+                            }
+
+                            try {
+                                int medChoice = Integer.parseInt(medInput);
+
+                                if (medChoice > 0 && medChoice <= inventory.size()) {
+                                    Medication selectedMed = inventory.get(medChoice - 1);
+                                    System.out.printf("Enter quantity for %s: ", selectedMed.getMedicationName());
+                                    String quantityInput = sc.nextLine();
+                                    int quantity = Integer.parseInt(quantityInput);
+
+                                    if (quantity > 0 && quantity <= selectedMed.getTotalQuantity()) {
+                                        System.out.println("\nCurrent Prescribing List:");
+                                        MedicationItem prescribedMed = new MedicationItem();
+                                        prescribedMed.setMedicationID(selectedMed.getMedicationID());
+                                        prescribedMed.setMedicationName(selectedMed.getMedicationName());
+                                        prescribedMed.setQuantity(quantity);
+                                        prescribedMedicines.add(prescribedMed);
+                                        for (MedicationItem med : prescribedMedicines) {
+                                            System.out.printf("- %s: %d units\n", med.getMedicationName(), med.getQuantity());
+                                        }
+                                    } else {
+                                        System.out.println("Invalid quantity. Please enter a valid amount within the available units.");
+                                    }
+                                } else {
+                                    System.out.println("Invalid choice. Please select a valid medicine number.");
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input. Please enter a valid number.");
+                            }
+                        }
+
+                        // Save the details to an outcome record including prescribed medications
+                        AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(selectedAppointment.getAppointmentID(), typeOfService, consultationNotes, prescribedMedicines, "PENDING");
+
+                        Treatment treatment = new Treatment(selectedAppointment.getPatientID(), selectedAppointment.getAppointmentID(), treatmentNotes);
+                        Diagnosis diagnosis = new Diagnosis(selectedAppointment.getPatientID(), selectedAppointment.getAppointmentID(), diagnosisNotes);
+
+                        treatments.add(treatment);
+                        diagnosises.add(diagnosis);
+                        apptOutcomeRecords.add(outcomeRecord);
+
+                        CsvDB.saveAppointmentOutcomeRecords(apptOutcomeRecords);
+                        CsvDB.saveDiagnosis(diagnosises);
+                        CsvDB.saveTreatment(treatments);
+
+                        // CsvDB.saveAppointmentOutcomeRecords(apptOutcomeRecords);
                         selectedAppointment.setStatus("Completed");
                         System.out.println("\nAppointment outcome recorded successfully as 'Completed'.");
+
                     } else if (outcome.equals("N")) {
                         selectedAppointment.setStatus("No-Show");
                         System.out.println("\nAppointment outcome recorded successfully as 'No-Show'.");
@@ -498,6 +571,88 @@ public class Doctor extends User {
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a valid number.");
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void viewPatientMedicalRecords(ArrayList<Schedule> schedules, ArrayList<User> users, ArrayList<AppointmentOutcomeRecord> outcomeRecords, ArrayList<Diagnosis> diagnoses, ArrayList<Treatment> treatments) {
+        Scanner sc = new Scanner(System.in);
+        ArrayList<String> uniquePatientIds = new ArrayList<>();
+        ArrayList<User> patientsUnderCare = new ArrayList<>();
+
+        // Step 1: Filter all confirmed schedules for the logged-in doctor
+        for (Schedule schedule : schedules) {
+            if (schedule.getDoctorID().equals(getHospitalID())) {
+                for (int i = 0; i < schedule.getSession().length; i++) {
+                    String sessionInfo = schedule.getSession()[i];
+                    if (sessionInfo.contains("-Confirmed")) {
+                        String patientId = sessionInfo.split("-")[0];  // Extract the patient ID
+                        if (!uniquePatientIds.contains(patientId)) {
+                            uniquePatientIds.add(patientId);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Step 2: Retrieve all user (patient) objects based on unique patient IDs
+        for (String patientId : uniquePatientIds) {
+            for (User user : users) {
+                if (user.getHospitalID().equals(patientId) && user instanceof Patient) {
+                    patientsUnderCare.add(user);
+                    break;
+                }
+            }
+        }
+
+        // Step 3: Display the list of patients under the doctor's care
+        if (patientsUnderCare.isEmpty()) {
+            System.out.println("No patients are currently under your care.");
+            return;
+        }
+
+        boolean viewingRecords = true;
+        while (viewingRecords) {
+            System.out.println("\n=== Patients Under Your Care ===");
+            int index = 1;
+            for (User patient : patientsUnderCare) {
+                System.out.printf("%d. Patient Name: %s, Age: %d, Gender: %s\n", index, patient.getName(), patient.getAge(), patient.getGender());
+                index++;
+            }
+
+            // Step 4: Let the doctor select a patient to view their medical records
+            System.out.println("\nSelect a patient to view their medical records (or press Enter to return):");
+            String input = sc.nextLine();
+
+            if (input.trim().isEmpty()) {
+                System.out.println("Returning to previous menu...");
+                viewingRecords = false;  // Exit the loop
+                continue;
+            }
+
+            try {
+                int choice = Integer.parseInt(input);
+
+                if (choice > 0 && choice <= patientsUnderCare.size()) {
+                    // Retrieve the chosen patient object
+                    User selectedPatient = patientsUnderCare.get(choice - 1);
+
+                    // Display the patient's medical record information (assuming a method exists)
+                    System.out.println("\n=== Medical Records for " + selectedPatient.getName() + " ===");
+                    if (selectedPatient instanceof Patient) {
+                        Patient patient = (Patient) selectedPatient;
+                        patient.viewMedicalRecord(outcomeRecords, diagnoses, treatments);  // Assuming `viewMedicalRecord()` is a method in Patient
+                    }
+                } else {
+                    System.out.println("Invalid choice. Please select a valid patient number.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            } catch (IOException e) {
+                System.err.println("Error displaying medical records: " + e.getMessage());
             }
         }
     }

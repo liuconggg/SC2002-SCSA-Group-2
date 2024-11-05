@@ -19,6 +19,15 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
     }
 
     @Override
+    public String toString() {
+        String hospitalID = this.getHospitalID();
+        String name = this.getName();
+        int age = this.getAge();
+        String gender = this.getGender();
+        return String.format("Pharmacist ID: %s | Name: %s | Age: %d | Gender: %s", hospitalID, name, age, gender);
+    }
+
+    @Override
     public void viewAppointmentOutcome(ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords) {
         System.out.println("\n=== Appointment Outcome Records ===");
         for (AppointmentOutcomeRecord record : apptOutcomeRecords) {
@@ -63,15 +72,54 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
         medication.setTotalQuantity(quantity);
     }
 
-    public void prescribeAndUpdate(ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords,
-            ArrayList<Medication> inventory) {
-        for (AppointmentOutcomeRecord record : apptOutcomeRecords) {
-            if (record.getPrescriptionStatus().equalsIgnoreCase("PENDING")) {
-                ArrayList<MedicationItem> prescribedItems = record.getPrescriptions();
+    public void prescribeAndUpdate(ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords, ArrayList<Medication> inventory) {
+        Scanner scanner = new Scanner(System.in);
+        boolean continueDispensing = true;
+
+        while (continueDispensing) {
+            // Display pending appointment outcome records for selection
+            System.out.println("\n=== Pending Appointment Outcome Records ===");
+            ArrayList<AppointmentOutcomeRecord> pendingRecords = new ArrayList<>();
+            int index = 1;
+            for (AppointmentOutcomeRecord record : apptOutcomeRecords) {
+                if (record.getPrescriptionStatus().equalsIgnoreCase("PENDING")) {
+                    System.out.printf("%d. Appointment ID: %s, Prescription: %s\n", index, record.getAppointmentID(), record.getPrescriptions());
+                    pendingRecords.add(record);
+                    index++;
+                }
+            }
+
+            // If no pending records are available, inform the user and exit
+            if (pendingRecords.isEmpty()) {
+                System.out.println("No pending appointment outcome records available for dispensing.");
+                break;
+            }
+
+            // Prompt the Pharmacist to select an appointment outcome record or press Enter to exit
+            System.out.println("\nEnter the number of the Appointment Outcome Record you want to dispense medication for (or press Enter to return): ");
+            String input = scanner.nextLine();
+
+            if (input.trim().isEmpty()) {
+                System.out.println("Returning to main menu...");
+                continueDispensing = false; // Exit the loop
+                continue;
+            }
+
+            try {
+                int choice = Integer.parseInt(input);
+
+                // Validate the choice
+                if (choice < 1 || choice > pendingRecords.size()) {
+                    System.out.println("Invalid selection. Please try again.");
+                    continue;
+                }
+
+                // Get the selected record
+                AppointmentOutcomeRecord selectedRecord = pendingRecords.get(choice - 1);
+                ArrayList<MedicationItem> prescribedItems = selectedRecord.getPrescriptions();
                 boolean sufficientStock = true;
 
-                // Check if there is sufficient stock for all prescribed medications for this
-                // appointment outcome
+                // Check if there is sufficient stock for all prescribed medications for this appointment outcome
                 for (MedicationItem item : prescribedItems) {
                     for (Medication medication : inventory) {
                         if (medication.getMedicationID().equals(item.getMedicationID())) {
@@ -92,9 +140,8 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
 
                 // If sufficient stock for this appointment outcome, proceed with dispensing
                 if (sufficientStock) {
-                    updateAppointmentOutcome(record, record.getAppointmentID(), record.getTypeOfService(),
-                            record.getConsultationNotes(), record.getPrescriptions(), "DISPENSED");
-
+                    updateAppointmentOutcome(selectedRecord, selectedRecord.getAppointmentID(), selectedRecord.getTypeOfService(),
+                            selectedRecord.getConsultationNotes(), selectedRecord.getPrescriptions(), "DISPENSED");
                     // Update inventory for each prescribed medication
                     for (MedicationItem item : prescribedItems) {
                         for (Medication medication : inventory) {
@@ -105,7 +152,7 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
                                 if (newQuantity < 10) {
                                     stockStatus = "LOW";
                                     alert = true;
-                                } else if ((10 <= newQuantity) && (newQuantity <= 50)) {
+                                } else if (10 <= newQuantity && newQuantity <= 50) {
                                     stockStatus = "MEDIUM";
                                 }
                                 updateMedication(medication, medication.getMedicationID(),
@@ -114,21 +161,25 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
                             }
                         }
                     }
-                    System.out.println("Appointment Outcome ID: " + record.getAppointmentID()
+                    System.out.println("Appointment Outcome ID: " + selectedRecord.getAppointmentID()
                             + " has been dispensed successfully.");
                 } else {
-                    System.out.println("Appointment Outcome ID: " + record.getAppointmentID()
+                    System.out.println("Appointment Outcome ID: " + selectedRecord.getAppointmentID()
                             + " could not be dispensed due to insufficient stock.");
                 }
+
+                // Save the updated appointment outcome records and inventory
+                try {
+                    CsvDB.saveAppointmentOutcomeRecords(apptOutcomeRecords);
+                    CsvDB.saveMedications(inventory);
+                } catch (IOException e) {
+                    System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
             }
         }
-        try {
-            CsvDB.saveAppointmentOutcomeRecords(apptOutcomeRecords);
-            CsvDB.saveMedications(inventory);
-        } catch (IOException e) {
-            System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
-        }
-
     }
 
     @Override
