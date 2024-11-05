@@ -545,5 +545,4 @@ public class CsvDB {
 
         return diagnoses;
     }
-
 }

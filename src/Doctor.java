@@ -29,6 +29,15 @@ public class Doctor extends User {
         System.out.println("8. Logout\n");
     }
 
+    @Override
+    public String toString() {
+        String hospitalID = this.getHospitalID();
+        String name = this.getName();
+        int age = this.getAge();
+        String gender = this.getGender();
+        return String.format("Doctor ID: %s | Name: %s | Age: %d | Gender: %s", hospitalID, name, age, gender);
+    }
+
     public Doctor getDoctorById(String doctorID, ArrayList<User> users) {
         Doctor doctorFound = null;
         for (User doc : users) {

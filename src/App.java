@@ -26,8 +26,6 @@ public class App {
     private static ArrayList<Diagnosis> diagnoses;
     private static Scanner sc = new Scanner(System.in);
     private static User user = null;
-    private static ArrayList<Diagnosis> diagnoses;
-    private static ArrayList<Treatment> treatments;
 
     public static void main(String[] args) throws Exception {
 
@@ -46,13 +44,13 @@ public class App {
                 user.displayMenu();
 
                 if (user instanceof Patient) {
-                    patientFunctions(); 
-                }else if (user instanceof Doctor) {
-                    doctorFunctions(); 
-                }else if (user instanceof Pharmacist) {
-                    pharmacistFunctions(); 
-                }else {
-                    // Admin functions here
+                    patientFunctions();
+                } else if (user instanceof Doctor) {
+                    doctorFunctions();
+                } else if (user instanceof Pharmacist) {
+                    pharmacistFunctions();
+                } else if (user instanceof Administrator) { // User is a Administrator instance
+                    administratorFunctions();
                 }
             } else {
                 user = auth.authenticate();
@@ -135,7 +133,6 @@ public class App {
                 sc.nextLine();
                 System.out.println("Press Enter to continue...");
                 sc.nextLine();
-                break;
                 break;
             case 9: // Log out
                 user = null;
@@ -237,6 +234,130 @@ public class App {
                 }
                 break;
             case 5:
+                user = null;
+                System.out.println("You have logged out");
+                sc.nextLine();
+                break;
+        }
+    }
+
+    // All Administrator functions and logic
+    public static void administratorFunctions() {
+        Administrator administrator = (Administrator) user;
+        //administrator.displayMenu();
+        System.out.print("Enter your choice: ");
+        int choice = sc.nextInt();
+
+        switch (choice) {
+            case 1:
+                ////////////////////// View and Manage Hospital Staff //////////////////////
+                System.out.println("\nWhat would you like to do?");
+                System.out.println("1. View Staff");
+                System.out.println("2. Update Staff");
+                System.out.println("3. Delete Staff");
+                System.out.print("Enter your choice: ");
+
+                int staffChoice = sc.nextInt();
+                sc.nextLine();
+                switch (staffChoice) {
+                    case 1: // View Staff
+                        administrator.viewUsers();
+                        break;
+                    case 2: // Update Staff
+                        administrator.updateUser();
+                        break;
+                    case 3: // Delete Staff
+                        administrator.deleteUser();
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Returning to main menu...");
+                        break;
+                }
+
+                System.out.println();
+                System.out.println("Press Enter to continue");
+                sc.nextLine();
+                break;
+            case 2:
+                ////////////////////// View Appointment details //////////////////////
+                break;
+            case 3:
+                ////////////////////// View and Manage Medication Inventory //////////////////////
+                try {
+                    inventory = CsvDB.readMedications();
+                } catch (IOException e) {
+                    System.out.println("Error loading inventory: " + e.getMessage());
+                    return; // Exit the method if loading fails
+                }
+
+                System.out.println("What would you like to do?");
+                System.out.println("1. View Inventory");
+                System.out.println("2. Add or Update Inventory Item");
+                System.out.println("3. Delete Inventory Item");
+                System.out.print("Enter your choice: ");
+
+                int subChoice = sc.nextInt(); // Get user input for sub-choice
+                sc.nextLine(); // Consume newline left after nextInt()
+
+                switch (subChoice) {
+                    case 1:
+                        // View Inventory
+                        administrator.viewInventory(inventory);
+                        break;
+
+                    case 2:
+                        // Update Inventory
+                        System.out.print("Enter the name of the medication to update: ");
+                        String medicationName = sc.nextLine();
+
+                        System.out.print("Enter the quantity to add: ");
+                        while (!sc.hasNextInt()) {
+                            System.out.print("Please enter a valid integer for the quantity: ");
+                            sc.next(); // Discard invalid input
+                        }
+                        int quantity = sc.nextInt();
+                        sc.nextLine(); // Consume newline left after nextInt()
+
+                        // Update the inventory in memory
+                        administrator.updateInventory(inventory, medicationName, quantity);
+
+                        // Save the updated inventory to the CSV file
+                        try {
+                            CsvDB.saveMedications(inventory);
+                            System.out.println("Inventory updated successfully.");
+                        } catch (IOException e) {
+                            System.out.println("Error saving inventory: " + e.getMessage());
+                        }
+                        break;
+
+                    case 3:
+                        // Delete Inventory Item
+                        System.out.print("Enter the name of the medication to delete: ");
+                        String medicationToDelete = sc.nextLine();
+                        administrator.deleteInventory(inventory, medicationToDelete);
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice. Returning to main menu...");
+                        break;
+                }
+
+                System.out.println();
+                System.out.println("Press Enter to continue");
+                sc.nextLine();
+                break;
+            case 4:
+                ////////////////////// Approve Replenishment Requests //////////////////////
+                try {
+                    inventory = CsvDB.readMedications();
+                    replenishmentRequests = CsvDB.readRequest();
+                    administrator.approveReplenishmentRequests(replenishmentRequests, inventory);
+                } catch (IOException e) {
+                    System.out.println("Error loading inventory or replenishment requests: " + e.getMessage());
+                }
+                break;
+            case 5:
+                ////////////////////// Logout //////////////////////
                 user = null;
                 System.out.println("You have logged out");
                 sc.nextLine();
