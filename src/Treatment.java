@@ -8,7 +8,7 @@ public class Treatment {
     public Treatment() {
     }
 
-    public Treatment(String patientID, String appointmentID, String treatment) {
+    public Treatment(String appointmentID, String patientID, String treatment) {
         this.patientID = patientID;
         this.appointmentID = appointmentID;
         this.treatment = treatment;

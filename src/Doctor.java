@@ -223,8 +223,7 @@ public class Doctor extends User {
 
                         if (scheduledPatient != null) {
                             // Add pending appointment details to the list
-                            String appointmentDetail = String.format("\n%d. Date: %s, Time: %s, Patient: %s",
-                                    pendingAppointments.size() + 1,
+                            String appointmentDetail = String.format("Date: %s, Time: %s, Patient: %s",
                                     schedule.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                                     App.sessionTimings[i],
                                     scheduledPatient.getName());
@@ -236,74 +235,104 @@ public class Doctor extends User {
                 }
             }
 
+            // If no pending appointments, inform the user and exit
             if (pendingAppointments.isEmpty()) {
                 System.out.println("No pending appointments.");
                 exit = true;
-            } else {
-                // Display pending appointments
-                for (String appointment : pendingAppointments) {
-                    System.out.println(appointment);
+                continue;
+            }
+
+            // Sort the schedules and session indexes based on date and time
+            ArrayList<Integer> sortedIndices = new ArrayList<>();
+            for (int i = 0; i < pendingSchedules.size(); i++) {
+                sortedIndices.add(i);
+            }
+
+            sortedIndices.sort((index1, index2) -> {
+                Schedule schedule1 = pendingSchedules.get(index1);
+                Schedule schedule2 = pendingSchedules.get(index2);
+                int dateComparison = schedule1.getDate().compareTo(schedule2.getDate());
+                if (dateComparison != 0) {
+                    return dateComparison;
                 }
+                // If dates are equal, compare based on session time
+                return Integer.compare(pendingSessionIndexes.get(index1), pendingSessionIndexes.get(index2));
+            });
 
-                // Prompt for action
-                System.out.println("\nEnter the number of the appointment to accept or decline, or select the last option to return (Press Enter to return):");
-                String choiceInput = sc.nextLine();
+            // Display sorted pending appointments
+            System.out.println("\n=== Pending Appointments ===");
+            for (int i = 0; i < sortedIndices.size(); i++) {
+                int sortedIndex = sortedIndices.get(i);
+                System.out.printf("%d. %s\n", i + 1, pendingAppointments.get(sortedIndex));
+            }
 
-                if (choiceInput.trim().isEmpty()) {
-                    System.out.println("Press Enter to return");
-                    exit = true;
-                    continue;
-                }
+            // Prompt for action
+            System.out.println("\nEnter the number of the appointment to accept or decline, or press Enter to return:");
+            String choiceInput = sc.nextLine();
 
-                try {
-                    int choice = Integer.parseInt(choiceInput);
+            if (choiceInput.trim().isEmpty()) {
+                System.out.println("Returning to previous menu...");
+                exit = true;
+                continue;
+            }
 
-                    if (choice > 0 && choice <= pendingAppointments.size()) {
-                        // Retrieve the corresponding schedule and session index
-                        Schedule chosenSchedule = pendingSchedules.get(choice - 1);
-                        int sessionIndex = pendingSessionIndexes.get(choice - 1);
+            try {
+                int choice = Integer.parseInt(choiceInput);
 
-                        // Accept or decline the appointment
-                        System.out.print("Enter 'A' to Accept or 'D' to Decline (Press Enter to return): ");
-                        String decisionInput = sc.nextLine();
+                if (choice > 0 && choice <= sortedIndices.size()) {
+                    // Retrieve the corresponding schedule and session index
+                    int sortedIndex = sortedIndices.get(choice - 1);
+                    Schedule chosenSchedule = pendingSchedules.get(sortedIndex);
+                    int sessionIndex = pendingSessionIndexes.get(sortedIndex);
 
-                        if (decisionInput.trim().isEmpty()) {
-                            System.out.println("Press Enter to return");
-                            continue;
-                        }
+                    // Accept or decline the appointment
+                    System.out.print("Enter 'A' to Accept or 'D' to Decline (Press Enter to return): ");
+                    String decisionInput = sc.nextLine();
 
-                        char decision = decisionInput.toUpperCase().charAt(0);
-
-                        if (decision == 'A') {
-                            chosenSchedule.acceptAppointment(sessionIndex);
-
-                            Appointment selectedAcAppointment = Appointment.getAppointmentByScheduleAndSession(chosenSchedule, sessionIndex, appointments);
-                            selectedAcAppointment.setStatus("Confirmed");
-
-                            System.out.println("\nAppointment has been accepted.");
-                        } else if (decision == 'D') {
-                            chosenSchedule.declineAppointment(sessionIndex);
-
-                            Appointment selectedAcAppointment = Appointment.getAppointmentByScheduleAndSession(chosenSchedule, sessionIndex, appointments);
-                            selectedAcAppointment.setStatus("Cancelled");
-
-                            System.out.println("\nAppointment has been declined. The patient will be notified.");
-                        } else {
-                            System.out.println("Invalid input, please enter 'A' or 'D'.");
-                        }
-                        // Update CSV with the new status
-                        CsvDB.saveSchedules(schedules);
-                        try {
-                            CsvDB.saveAppointments(appointments);
-                        } catch (IOException e) {
-                            System.err.println("Error while saving appointments: " + e.getMessage());
-                        }
-                    } else {
-                        System.out.println("\nInvalid choice. Please select a valid appointment number or return to exit.");
+                    if (decisionInput.trim().isEmpty()) {
+                        System.out.println("Returning to previous menu...");
+                        continue;
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid input. Please enter a valid number.");
+
+                    char decision = decisionInput.toUpperCase().charAt(0);
+
+                    if (decision == 'A') {
+                        chosenSchedule.acceptAppointment(sessionIndex);
+
+                        Appointment selectedAcAppointment = Appointment.getAppointmentByScheduleAndSession(chosenSchedule, sessionIndex, appointments);
+                        if (selectedAcAppointment != null) {
+                            selectedAcAppointment.setStatus("Confirmed");
+                        } else {
+                            System.err.println("Appointment not found for the chosen schedule and session index. Please check the appointments list.");
+                        }
+
+                        System.out.println("\nAppointment has been accepted.");
+                    } else if (decision == 'D') {
+                        chosenSchedule.declineAppointment(sessionIndex);
+
+                        Appointment selectedAcAppointment = Appointment.getAppointmentByScheduleAndSession(chosenSchedule, sessionIndex, appointments);
+                        if (selectedAcAppointment != null) {
+                            selectedAcAppointment.setStatus("Cancelled");
+                        } else {
+                            System.err.println("Appointment not found for the chosen schedule and session index. Please check the appointments list.");
+                        }
+
+                        System.out.println("\nAppointment has been declined. The patient will be notified.");
+                    } else {
+                        System.out.println("Invalid input, please enter 'A' or 'D'.");
+                    }
+
+                    CsvDB.saveSchedules(schedules);
+                    try {
+                        CsvDB.saveAppointments(appointments);
+                    } catch (IOException e) {
+                        System.err.println("Error while saving appointments: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("Invalid choice. Please select a valid appointment number.");
                 }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
             }
         }
     }
@@ -537,8 +566,8 @@ public class Doctor extends User {
                         // Save the details to an outcome record including prescribed medications
                         AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(selectedAppointment.getAppointmentID(), typeOfService, consultationNotes, prescribedMedicines, "PENDING");
 
-                        Treatment treatment = new Treatment(selectedAppointment.getPatientID(), selectedAppointment.getAppointmentID(), treatmentNotes);
-                        Diagnosis diagnosis = new Diagnosis(selectedAppointment.getPatientID(), selectedAppointment.getAppointmentID(), diagnosisNotes);
+                        Treatment treatment = new Treatment(selectedAppointment.getAppointmentID(), selectedAppointment.getPatientID(), treatmentNotes);
+                        Diagnosis diagnosis = new Diagnosis(selectedAppointment.getAppointmentID(), selectedAppointment.getPatientID(), diagnosisNotes);
 
                         treatments.add(treatment);
                         diagnosises.add(diagnosis);
@@ -653,6 +682,203 @@ public class Doctor extends User {
                 System.out.println("Invalid input. Please enter a valid number.");
             } catch (IOException e) {
                 System.err.println("Error displaying medical records: " + e.getMessage());
+            }
+        }
+    }
+
+    public void updateMedicalRecord(ArrayList<Schedule> schedules, ArrayList<User> users, ArrayList<AppointmentOutcomeRecord> outcomeRecords, ArrayList<Diagnosis> diagnoses, ArrayList<Treatment> treatments, ArrayList<Medication> inventory) {
+        Scanner sc = new Scanner(System.in);
+
+        while (true) {
+            // Display the appointment outcomes for user selection
+            System.out.println("Select an Appointment Outcome by number:");
+            for (int i = 0; i < outcomeRecords.size(); i++) {
+                AppointmentOutcomeRecord outcome = outcomeRecords.get(i);
+                System.out.println((i + 1) + ". Appointment ID: " + outcome.getAppointmentID());
+            }
+
+            // Get user input for appointment outcome selection
+            System.out.print("Enter the number of the Appointment Outcome (or press Enter to return): ");
+            String selectedOutcomeIndexInput = sc.nextLine();
+
+            if (selectedOutcomeIndexInput.trim().isEmpty()) {
+                System.out.println("Returning to previous menu...");
+                return;
+            }
+
+            int selectedOutcomeIndex;
+
+            try {
+                selectedOutcomeIndex = Integer.parseInt(selectedOutcomeIndexInput) - 1;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                continue;
+            }
+
+            if (selectedOutcomeIndex < 0 || selectedOutcomeIndex >= outcomeRecords.size()) {
+                System.out.println("Invalid selection. Please select a valid number.");
+                continue;
+            }
+
+            // Get the selected appointment outcome
+            AppointmentOutcomeRecord selectedOutcome = outcomeRecords.get(selectedOutcomeIndex);
+            String appointmentId = selectedOutcome.getAppointmentID();
+
+            // Find the corresponding diagnosis and treatment
+            Diagnosis selectedDiagnosis = null;
+            for (Diagnosis diagnosis : diagnoses) {
+                if (diagnosis.getAppointmentID().equals(appointmentId)) {
+                    selectedDiagnosis = diagnosis;
+                    break;
+                }
+            }
+
+            Treatment selectedTreatment = null;
+            for (Treatment treatment : treatments) {
+                if (treatment.getAppointmentID().equals(appointmentId)) {
+                    selectedTreatment = treatment;
+                    break;
+                }
+            }
+
+            // Ask the user if they want to update diagnosis
+            if (selectedDiagnosis != null) {
+                System.out.println("Current Diagnosis: " + selectedDiagnosis.getDiagnosis());
+                System.out.print("Do you want to update the diagnosis? (y/n or press Enter to skip): ");
+                String updateDiagnosisResponse = sc.nextLine();
+                if (updateDiagnosisResponse.equalsIgnoreCase("y")) {
+                    System.out.print("Enter new diagnosis details (or press Enter to cancel): ");
+                    String newDiagnosisDetails = sc.nextLine();
+                    if (!newDiagnosisDetails.trim().isEmpty()) {
+                        String currentDiagnosis = selectedDiagnosis.getDiagnosis();
+                        String updatedDiagnosis;
+
+                        // Check if current diagnosis already contains " - Updated:"
+                        if (currentDiagnosis.contains(" - Updated:")) {
+                            // Extract the original part before " - Updated:"
+                            int updatedIndex = currentDiagnosis.indexOf(" - Updated:");
+                            String originalDiagnosis = currentDiagnosis.substring(0, updatedIndex);
+                            updatedDiagnosis = originalDiagnosis + " - Updated: " + newDiagnosisDetails;
+                        } else {
+                            // Append " - Updated:" for the first time
+                            updatedDiagnosis = currentDiagnosis + " - Updated: " + newDiagnosisDetails;
+                        }
+
+                        selectedDiagnosis.setDiagnosis(updatedDiagnosis);
+                        System.out.println("Diagnosis updated.");
+                    } else {
+                        System.out.println("Diagnosis update cancelled.");
+                    }
+                }
+            } else {
+                System.out.println("No diagnosis found for this appointment.");
+            }
+
+            // Ask the user if they want to update treatment
+            if (selectedTreatment != null) {
+                System.out.println("Current Treatment: " + selectedTreatment.getTreatment());
+                System.out.print("Do you want to update the treatment? (y/n or press Enter to skip): ");
+                String updateTreatmentResponse = sc.nextLine();
+                if (updateTreatmentResponse.equalsIgnoreCase("y")) {
+                    System.out.print("Enter new treatment details (or press Enter to cancel): ");
+                    String newTreatmentDetails = sc.nextLine();
+                    if (!newTreatmentDetails.trim().isEmpty()) {
+                        String currentTreatment = selectedTreatment.getTreatment();
+                        String updatedTreatment;
+
+                        // Check if current treatment already contains " - Updated:"
+                        if (currentTreatment.contains(" - Updated:")) {
+                            // Extract the original part before " - Updated:"
+                            int updatedIndex = currentTreatment.indexOf(" - Updated:");
+                            String originalTreatment = currentTreatment.substring(0, updatedIndex);
+                            updatedTreatment = originalTreatment + " - Updated: " + newTreatmentDetails;
+                        } else {
+                            // Append " - Updated:" for the first time
+                            updatedTreatment = currentTreatment + " - Updated: " + newTreatmentDetails;
+                        }
+
+                        selectedTreatment.setTreatment(updatedTreatment);
+                        System.out.println("Treatment updated.");
+                    } else {
+                        System.out.println("Treatment update cancelled.");
+                    }
+                }
+            } else {
+                System.out.println("No treatment found for this appointment.");
+            }
+
+            // Allow editing prescription if status is pending
+            if ("PENDING".equalsIgnoreCase(selectedOutcome.getPrescriptionStatus())) {
+                System.out.println("Prescription Status: " + selectedOutcome.getPrescriptionStatus());
+                System.out.print("Do you want to edit the prescriptions? (y/n or press Enter to skip): ");
+                String editPrescriptionResponse = sc.nextLine();
+                if (editPrescriptionResponse.equalsIgnoreCase("y")) {
+                    System.out.print("Enter new prescription details (or press Enter to cancel): ");
+                    ArrayList<MedicationItem> prescribedMedicines = new ArrayList<>();
+                    boolean addingMedicines = true;
+
+                    while (addingMedicines) {
+                        System.out.println("\nAvailable Medicines:");
+                        int medIndex = 1;
+                        for (Medication med : inventory) {
+                            System.out.printf("%d. %s (Available: %d units)\n", medIndex, med.getMedicationName(),
+                                    med.getTotalQuantity());
+                            medIndex++;
+                        }
+
+                        System.out.println("\nSelect a medicine by number to prescribe (or press Enter to finish): ");
+                        String medInput = sc.nextLine();
+
+                        if (medInput.trim().isEmpty()) {
+                            addingMedicines = false;
+                            continue;
+                        }
+
+                        try {
+                            int medChoice = Integer.parseInt(medInput);
+
+                            if (medChoice > 0 && medChoice <= inventory.size()) {
+                                Medication selectedMed = inventory.get(medChoice - 1);
+                                System.out.printf("Enter quantity for %s: ", selectedMed.getMedicationName());
+                                String quantityInput = sc.nextLine();
+                                int quantity = Integer.parseInt(quantityInput);
+
+                                if (quantity > 0 && quantity <= selectedMed.getTotalQuantity()) {
+                                    System.out.println("\nCurrent Prescribing List:");
+                                    MedicationItem prescribedMed = new MedicationItem();
+                                    prescribedMed.setMedicationID(selectedMed.getMedicationID());
+                                    prescribedMed.setMedicationName(selectedMed.getMedicationName());
+                                    prescribedMed.setQuantity(quantity);
+                                    prescribedMedicines.add(prescribedMed);
+                                    for (MedicationItem med : prescribedMedicines) {
+                                        System.out.printf("- %s: %d units\n", med.getMedicationName(), med.getQuantity());
+                                    }
+                                } else {
+                                    System.out.println("Invalid quantity. Please enter a valid amount within the available units.");
+                                }
+                            } else {
+                                System.out.println("Invalid choice. Please select a valid medicine number.");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter a valid number.");
+                        }
+                    }
+
+                    selectedOutcome.setPrescriptions(prescribedMedicines);
+
+                } else {
+                    System.out.println("Prescription status is 'DISPENSED'. Editing is not allowed.");
+                }
+            }
+
+            try {
+                CsvDB.saveAppointmentOutcomeRecords(outcomeRecords);
+                CsvDB.saveDiagnosis(diagnoses);
+                CsvDB.saveTreatment(treatments);
+
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
     }

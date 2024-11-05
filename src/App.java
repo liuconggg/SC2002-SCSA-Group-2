@@ -29,22 +29,13 @@ public class App {
     private static User user = null;
 
     public static void main(String[] args) throws Exception {
+        users = CsvDB.readUsers();
 
         //Load all CSV data
-        users = CsvDB.readUsers();
-        appts = CsvDB.readAppointments();
-        schedules = CsvDB.readSchedules();
-        diagnoses = CsvDB.readDiagnoses();
-        inventory = CsvDB.readMedications();
-        apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
-        treatments = CsvDB.readTreatments();
-
         AuthenticationService auth = new AuthenticationService();
         while (true) {
 
             if (user != null) {
-                user.displayMenu();
-
                 if (user instanceof Patient) {
                     patientFunctions();
                 } else if (user instanceof Doctor) {
@@ -68,6 +59,14 @@ public class App {
 
         while (choice != 9) {
             try {
+                users = CsvDB.readUsers();
+                apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
+                diagnoses = CsvDB.readDiagnoses();
+                treatments = CsvDB.readTreatments();
+                schedules = CsvDB.readSchedules();
+                appts = CsvDB.readAppointments();
+
+                patient.displayMenu();
                 System.out.print("Enter your choice: ");
                 choice = sc.nextInt();
 
@@ -93,21 +92,17 @@ public class App {
                         break;
                     case 4: // Schedule an Appointment
                         patient.scheduleAppointment(schedules, users, patient.getHospitalID());
-                        appts = CsvDB.readAppointments();
                         sc.nextLine();
                         System.out.println("Press Enter to continue...");
                         sc.nextLine();
                         break;
                     case 5: // Reschedule an Appointment
                         patient.rescheduleAppointment(appts, schedules, users);
-                        appts = CsvDB.readAppointments(); // Reload appointments after rescheduling
-                        schedules = CsvDB.readSchedules(); // Reload schedules after rescheduling
                         sc.nextLine();
                         System.out.println("Press Enter to continue...");
                         sc.nextLine();
                         break;
                     case 6: // Cancel an Appointment
-                        appts = CsvDB.readAppointments();
                         patient.cancelAppointment(appts, schedules, users);
                         sc.nextLine();
                         System.out.println("Press Enter to continue...");
@@ -147,7 +142,7 @@ public class App {
     }
 
     // Doctor actions
-    public static void doctorFunctions() {
+    public static void doctorFunctions() throws IOException {
         Doctor doctor = (Doctor) user;
         // ArrayList<Schedule> docSchedule = doctor.viewSchedule(doctor.getHospitalID(),
         // schedules);
@@ -155,6 +150,15 @@ public class App {
 
         while (choice != 8) {
             try {
+                users = CsvDB.readUsers();
+                appts = CsvDB.readAppointments();
+                schedules = CsvDB.readSchedules();
+                diagnoses = CsvDB.readDiagnoses();
+                inventory = CsvDB.readMedications();
+                apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
+                treatments = CsvDB.readTreatments();
+
+                doctor.displayMenu();
                 System.out.print("Enter your choice: ");
                 choice = sc.nextInt();
 
@@ -163,6 +167,7 @@ public class App {
                         doctor.viewPatientMedicalRecords(schedules, users, apptOutcomeRecords, diagnoses, treatments);
                         break;
                     case 2:
+                        doctor.updateMedicalRecord(schedules, users, apptOutcomeRecords, diagnoses, treatments, inventory);
                         break;
                     case 3: // View Personal Schedule based on week
                         doctor.viewWeeklySchedule(schedules, users);
@@ -201,62 +206,45 @@ public class App {
     }
 
     // Pharmacist actions
-    public static void pharmacistFunctions() {
+    public static void pharmacistFunctions() throws IOException {
         Pharmacist pharmacist = (Pharmacist) user;
         int choice = -1;
 
         while (choice != 5) {
             try {
+                pharmacist.displayMenu();
+
+                inventory = CsvDB.readMedications();
+                apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
+                replenishmentRequests = CsvDB.readRequest();
+
                 System.out.print("\nEnter your choice: ");
                 choice = sc.nextInt();
                 switch (choice) {
                     case 1:
-                        try {
-                            apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
-                            pharmacist.viewAppointmentOutcome(apptOutcomeRecords);
-                            sc.nextLine();
-                            System.out.println("\nPress Enter to continue");
-                            sc.nextLine();
-                        } catch (IOException e) {
-                            System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
-                        }
+                        pharmacist.viewAppointmentOutcome(apptOutcomeRecords);
+                        sc.nextLine();
+                        System.out.println("\nPress Enter to continue");
+                        sc.nextLine();
                         break;
                     case 2:
-                        try {
-                            apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();
-                            inventory = CsvDB.readMedications();
-                            pharmacist.prescribeAndUpdate(apptOutcomeRecords, inventory);
-                            sc.nextLine();
-                            System.out.println("\nPress Enter to continue");
-                            sc.nextLine();
-                        } catch (IOException e) {
-                            System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
-                        }
+                        pharmacist.prescribeAndUpdate(apptOutcomeRecords, inventory);
+                        sc.nextLine();
+                        System.out.println("\nPress Enter to continue");
+                        sc.nextLine();
                         break;
                     case 3:
-                        try {
-                            inventory = CsvDB.readMedications();
-                            pharmacist.viewInventory(inventory);
-                            sc.nextLine();
-                            System.out.println("\nPress Enter to continue");
-                            sc.nextLine();
-                        } catch (IOException e) {
-                            System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
-                        }
+                        pharmacist.viewInventory(inventory);
+                        sc.nextLine();
+                        System.out.println("\nPress Enter to continue");
+                        sc.nextLine();
                         break;
                     case 4:
-                        try {
-                            inventory = CsvDB.readMedications();
-                            replenishmentRequests = CsvDB.readRequest();
-                            pharmacist.submitReplenishmentRequest(inventory, replenishmentRequests, pharmacist);
-                            sc.nextLine();
-                            System.out.println("\nPress Enter to continue");
-                            sc.nextLine();
-                        } catch (IOException e) {
-                            System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
-                        }
+                        pharmacist.submitReplenishmentRequest(inventory, replenishmentRequests, pharmacist);
+                        sc.nextLine();
+                        System.out.println("\nPress Enter to continue");
+                        sc.nextLine();
                         break;
-
                     case 5:
                         break;
                     default:
@@ -279,12 +267,18 @@ public class App {
     }
 
     // All Administrator functions and logic
-    public static void administratorFunctions() {
+    public static void administratorFunctions() throws IOException {
         Administrator administrator = (Administrator) user;
         int choice = -1;
 
         while (choice != 5) {
             try {
+                users = CsvDB.readUsers();
+                appts = CsvDB.readAppointments();
+                inventory = CsvDB.readMedications();
+                replenishmentRequests = CsvDB.readRequest();
+
+                administrator.displayMenu();
                 System.out.print("Enter your choice: ");
                 choice = sc.nextInt();
 
@@ -328,12 +322,7 @@ public class App {
                     case 3:
                         ////////////////////// View and Manage Medication Inventory
                         ////////////////////// //////////////////////
-                        try {
-                            inventory = CsvDB.readMedications();
-                        } catch (IOException e) {
-                            System.out.println("Error loading inventory: " + e.getMessage());
-                            return; // Exit the method if loading fails
-                        }
+                
 
                         System.out.println("What would you like to do?");
                         System.out.println("1. View Inventory");
@@ -393,17 +382,12 @@ public class App {
                         break;
                     case 4:
                         ////////////////////// Approve Replenishment Requests //////////////////////
-                        try {
-                            inventory = CsvDB.readMedications();
-                            replenishmentRequests = CsvDB.readRequest();
                             administrator.approveReplenishmentRequests(replenishmentRequests, inventory);
-                        } catch (IOException e) {
-                            System.out.println("Error loading inventory or replenishment requests: " + e.getMessage());
-                        }
-                        break;
-                    case 5:
+
                         break;
 
+                    case 5:
+                        break;
                     default:
                         System.out.println("Invalid input. Please try again.");
                         break;
