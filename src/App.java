@@ -141,7 +141,7 @@ public class App {
         }
 
         if (choice == 9) {
-            System.out.println("You have logged out");
+            System.out.println("You have logged out ");
             user = null;
         }
     }
@@ -195,7 +195,7 @@ public class App {
 
         if (choice == 8) {
             user = null;
-            System.out.println("You have logged out");
+            System.out.println("You have logged out ");
         }
 
     }
@@ -272,7 +272,7 @@ public class App {
 
         if (choice == 5) {
             user = null;
-            System.out.println("You have logged out");
+            System.out.println("You have logged out ");
 
         }
 
@@ -420,7 +420,7 @@ public class App {
 
         if (choice == 5) {
             user = null;
-            System.out.println("You have logged out");
+            System.out.println("You have logged out ");
 
         }
 
