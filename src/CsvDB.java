@@ -32,9 +32,9 @@ public class CsvDB {
     public static final String patientCSV = Paths.get("data", "Patient.csv").toString();
     public static final String doctorCSV = Paths.get("data", "Doctor.csv").toString();
     public static final String administratorCSV = Paths.get("data", "Administrator.csv").toString();
-    public static final String pharmacistCSV = Paths.get("data","Pharmacist.csv").toString();
+    public static final String pharmacistCSV = Paths.get("data", "Pharmacist.csv").toString();
     public static final String appointmentCSV = Paths.get("data", "Appointment.csv").toString();
-    public static final String appointmentOutcomeRecordCSV = Paths.get("data","AppointmentOutcomeRecord.csv").toString();
+    public static final String appointmentOutcomeRecordCSV = Paths.get("data", "AppointmentOutcomeRecord.csv").toString();
     public static final String scheduleCSV = Paths.get("data", "Schedule.csv").toString();
     public static final String medicationCSV = Paths.get("data", "Medication.csv").toString();
     public static final String requestCSV = Paths.get("data", "ReplenishmentRequest.csv").toString();
