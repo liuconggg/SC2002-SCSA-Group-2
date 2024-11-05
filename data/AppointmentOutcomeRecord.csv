@@ -1,4 +1,4 @@
 Appointment ID,Type of Service,Consultation Notes,Prescriptions,Prescription Status
 A0001,Consultation,Patient got flu ,M0001:Paracetamol:10,DISPENSED
-A0002,Consultation,Patient got cancer,M0001:Paracetamol:30;M0002:Ibuprofen:40,PENDING
+A0002,Consultation,Patient got cancer,M0001:Paracetamol:30;M0002:Ibuprofen:40,DISPENSED
 A0001,test,test1,M0001:Paracetamol:30,PENDING
