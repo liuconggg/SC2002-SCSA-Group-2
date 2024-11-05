@@ -100,7 +100,7 @@ public class Administrator extends User implements Inventory {
                 gender = sc.nextLine();
 
                 // Create Pharmacist and add to list
-                Pharmacist newPharmacist= new Pharmacist(hospitalID, password, name, age, gender);
+                Pharmacist newPharmacist = new Pharmacist(hospitalID, password, name, age, gender);
                 users.add(newPharmacist);
                 break;
 

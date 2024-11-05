@@ -1,7 +1,7 @@
 
+import java.io.Console;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.io.Console;
 
 public class AuthenticationService {
 
@@ -10,13 +10,13 @@ public class AuthenticationService {
 
     public User authenticate(ArrayList<User> users) throws IOException {
 
-        if(console == null) {
+        if (console == null) {
             System.out.println("No console available. Please run in a terminal. ");
             return null;
         }
         System.out.println("=== Hospital Management System ===");
 
-        String id = console.readLine("Hospital ID: ");        
+        String id = console.readLine("Hospital ID: ");
         char[] passwordArray = console.readPassword("Password: ");
 
         String password = new String(passwordArray);

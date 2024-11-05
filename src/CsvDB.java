@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 
 //For all operations in the CSV file
 public class CsvDB {
+
     public static final String currentDir = System.getProperty("user.dir");
 
     public static final String DELIMITER = ","; // for CSV file
@@ -28,20 +29,17 @@ public class CsvDB {
 
     // Store the file names
     // public static final String userCSV = "data\\User.csv";
-    public static final String patientCSV = Paths.get(currentDir,"data", "Patient.csv").toString().replaceFirst("/src", "");
-    public static final String doctorCSV = Paths.get(currentDir,"data", "Doctor.csv").toString().replaceFirst("/src", "");
-    public static final String administratorCSV = Paths.get(currentDir,"data", "Administrator.csv").toString().replaceFirst("/src", "");
-    public static final String pharmacistCSV = Paths.get(currentDir,"data","Pharmacist.csv").toString().replaceFirst("/src", "");
-    public static final String appointmentCSV = Paths.get(currentDir,"data", "Appointment.csv").toString().replaceFirst("/src", "");
-    public static final String appointmentOutcomeRecordCSV = Paths.get(currentDir,"data","AppointmentOutcomeRecord.csv").toString().replaceFirst("/src", "");
-    public static final String scheduleCSV = Paths.get(currentDir,"data", "Schedule.csv").toString().replaceFirst("/src", "");
-    public static final String medicationCSV = Paths.get(currentDir,"data", "Medication.csv").toString().replaceFirst("/src", "");
-    public static final String requestCSV = Paths.get(currentDir,"data", "ReplenishmentRequest.csv").toString().replaceFirst("/src", "");
-    public static final String diagnosisCSV = Paths.get(currentDir,"data", "Diagnosis.csv").toString().replaceFirst("/src", "");
-    public static final String treatmentCSV = Paths.get(currentDir,"data", "Treatment.csv").toString().replaceFirst("/src", "");
-
-
-
+    public static final String patientCSV = Paths.get(currentDir, "data", "Patient.csv").toString().replaceFirst("/src", "");
+    public static final String doctorCSV = Paths.get(currentDir, "data", "Doctor.csv").toString().replaceFirst("/src", "");
+    public static final String administratorCSV = Paths.get(currentDir, "data", "Administrator.csv").toString().replaceFirst("/src", "");
+    public static final String pharmacistCSV = Paths.get(currentDir, "data", "Pharmacist.csv").toString().replaceFirst("/src", "");
+    public static final String appointmentCSV = Paths.get(currentDir, "data", "Appointment.csv").toString().replaceFirst("/src", "");
+    public static final String appointmentOutcomeRecordCSV = Paths.get(currentDir, "data", "AppointmentOutcomeRecord.csv").toString().replaceFirst("/src", "");
+    public static final String scheduleCSV = Paths.get(currentDir, "data", "Schedule.csv").toString().replaceFirst("/src", "");
+    public static final String medicationCSV = Paths.get(currentDir, "data", "Medication.csv").toString().replaceFirst("/src", "");
+    public static final String requestCSV = Paths.get(currentDir, "data", "ReplenishmentRequest.csv").toString().replaceFirst("/src", "");
+    public static final String diagnosisCSV = Paths.get(currentDir, "data", "Diagnosis.csv").toString().replaceFirst("/src", "");
+    public static final String treatmentCSV = Paths.get(currentDir, "data", "Treatment.csv").toString().replaceFirst("/src", "");
 
     // Read Patient.csv, Doctor.csv, Pharmacist.csv, Administrator.csv files
     public static ArrayList<User> readUsers() throws IOException {
