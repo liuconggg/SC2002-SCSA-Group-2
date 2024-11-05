@@ -149,6 +149,7 @@ public class Patient extends User {
             System.out.println("2. Phone Number");
             System.out.println("3. Email Address");
             System.out.println("4. Confirm Changes & Exit");
+            System.out.println("5. Exit without changes");
             System.out.print("Your Choice: ");
             action = sc.nextInt();
             sc.nextLine();  // Consume newline
@@ -172,6 +173,9 @@ public class Patient extends User {
                 case 4:
                     CsvDB.saveUsers(users);  // Save changes to the CSV file upon exiting
                     System.out.println("Your changes have been saved.");
+                    changing = false;
+                    break;
+                case 5:
                     changing = false;
                     break;
                 default:
@@ -444,7 +448,7 @@ public class Patient extends User {
         System.out.println("Which appointment would you like to reschedule?");
         int apptCounter = 0;
         for (Appointment appt : reschedulableAppointments) {
-            Doctor doctor = getDoctorById(appt.getDoctorID(), users);
+            Doctor doctor = new Doctor().getDoctorById(appt.getDoctorID(), users);
             if (doctor != null) {
                 System.out.printf("%d. Appointment with Dr. %s on %s at %s - Status: %s\n",
                         ++apptCounter,
@@ -468,7 +472,7 @@ public class Patient extends User {
 
         // Get the chosen appointment
         Appointment chosenAppointment = reschedulableAppointments.get(appointmentChoice - 1);
-        Doctor selectedDoctor = getDoctorById(chosenAppointment.getDoctorID(), users);
+        Doctor selectedDoctor = new Doctor().getDoctorById(chosenAppointment.getDoctorID(), users);
         if (selectedDoctor == null) {
             System.out.println("Doctor not found.");
             return;
@@ -577,7 +581,7 @@ public class Patient extends User {
         System.out.println("Which appointment would you like to cancel?");
         int apptCounter = 0;
         for (Appointment appt : cancellableAppointments) {
-            Doctor doctor = getDoctorById(appt.getDoctorID(), users);
+            Doctor doctor = new Doctor().getDoctorById(appt.getDoctorID(), users);
             if (doctor != null) {
                 System.out.printf("%d. Appointment with Dr. %s on %s at %s - Status: %s\n",
                         ++apptCounter,
@@ -616,7 +620,7 @@ public class Patient extends User {
             CsvDB.saveAppointments(appointments);
             CsvDB.saveSchedules(schedules);
             System.out.printf("Your appointment with Dr. %s on %s has been cancelled.\n",
-                    getDoctorById(doctorID, users).getName(),
+                    new Doctor().getDoctorById(doctorID, users).getName(),
                     chosenAppointment.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         } else {
             System.out.println("Invalid choice.");
@@ -649,7 +653,7 @@ public class Patient extends User {
 
             // Display each appointment's details
             for (Appointment appt : patientAppointments) {
-                Doctor doctor = (Doctor) getDoctorById(appt.getDoctorID(), users);
+                Doctor doctor = (Doctor) new Doctor().getDoctorById(appt.getDoctorID(), users);
 
                 if (doctor != null) {
                     System.out.printf("%d. Appointment with Dr. %s on %s at %s\n",
@@ -755,15 +759,6 @@ public class Patient extends User {
         }
 
         return patientFound;
-    }
-
-    private Doctor getDoctorById(String doctorID, ArrayList<User> users) {
-        for (User user : users) {
-            if (user instanceof Doctor && user.getHospitalID().equals(doctorID)) {
-                return (Doctor) user;
-            }
-        }
-        return null;
     }
 
     private AppointmentOutcomeRecord findOutcomeByAppointmentID(ArrayList<AppointmentOutcomeRecord> outcomeRecords, String appointmentID) {
