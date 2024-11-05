@@ -36,7 +36,7 @@ public class App {
         diagnoses = CsvDB.readDiagnoses();
         treatments = CsvDB.readTreatments();
 
-        AuthenticationService auth = new AuthenticationService(users);
+        AuthenticationService auth = new AuthenticationService();
         while (true) {
 
             if (user != null) {
@@ -55,7 +55,7 @@ public class App {
                     // Admin functions here
                 }
             } else {
-                user = auth.authenticate();
+                user = auth.authenticate(users);
             }
 
             // Display user menu and functions logic here (to be removed)

@@ -184,6 +184,8 @@ public class Patient extends User {
                     System.out.println("Invalid option. Please try again.");
             }
         }
+
+        sc.close();
     }
 
     public void viewAvailableAppointment(ArrayList<Schedule> schedules, ArrayList<User> users) {
@@ -295,6 +297,8 @@ public class Patient extends User {
                 currentDate = currentDate.plusDays(2);  // Skip Saturday and Sunday
             }
         }
+
+        sc.close();
     }
 
     public void scheduleAppointment(ArrayList<Schedule> schedules, ArrayList<User> users, String patientID) throws IOException {
