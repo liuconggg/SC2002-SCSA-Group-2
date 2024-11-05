@@ -164,7 +164,7 @@ public class App {
                 sc.nextLine();
                 System.out.println("Press Enter to continue...");
                 sc.nextLine();
-            break;
+                break;
             case 9: // Log out
                 userLoggedIn = null;
                 loggedOut = true;
@@ -185,6 +185,7 @@ public class App {
 
         switch (choice) {
             case 1:
+                doctor.viewPatientMedicalRecords(schedules, users);
                 break;
             case 2:
                 break;

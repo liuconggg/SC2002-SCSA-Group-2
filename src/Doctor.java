@@ -568,4 +568,83 @@ public class Doctor extends User {
             }
         }
     }
+
+    public void viewPatientMedicalRecords(ArrayList<Schedule> schedules, ArrayList<User> users) {
+        Scanner sc = new Scanner(System.in);
+        ArrayList<String> uniquePatientIds = new ArrayList<>();
+        ArrayList<User> patientsUnderCare = new ArrayList<>();
+
+        // Step 1: Filter all confirmed schedules for the logged-in doctor
+        for (Schedule schedule : schedules) {
+            if (schedule.getDoctorID().equals(getHospitalID())) {
+                for (int i = 0; i < schedule.getSession().length; i++) {
+                    String sessionInfo = schedule.getSession()[i];
+                    if (sessionInfo.contains("-Confirmed")) {
+                        String patientId = sessionInfo.split("-")[0];  // Extract the patient ID
+                        if (!uniquePatientIds.contains(patientId)) {
+                            uniquePatientIds.add(patientId);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Step 2: Retrieve all user (patient) objects based on unique patient IDs
+        for (String patientId : uniquePatientIds) {
+            for (User user : users) {
+                if (user.getHospitalID().equals(patientId) && user instanceof Patient) {
+                    patientsUnderCare.add(user);
+                    break;
+                }
+            }
+        }
+
+        // Step 3: Display the list of patients under the doctor's care
+        if (patientsUnderCare.isEmpty()) {
+            System.out.println("No patients are currently under your care.");
+            return;
+        }
+
+        boolean viewingRecords = true;
+        while (viewingRecords) {
+            System.out.println("\n=== Patients Under Your Care ===");
+            int index = 1;
+            for (User patient : patientsUnderCare) {
+                System.out.printf("%d. Patient Name: %s, Age: %d, Gender: %s\n", index, patient.getName(), patient.getAge(), patient.getGender());
+                index++;
+            }
+
+            // Step 4: Let the doctor select a patient to view their medical records
+            System.out.println("\nSelect a patient to view their medical records (or press Enter to return):");
+            String input = sc.nextLine();
+
+            if (input.trim().isEmpty()) {
+                System.out.println("Returning to previous menu...");
+                viewingRecords = false;  // Exit the loop
+                continue;
+            }
+
+            try {
+                int choice = Integer.parseInt(input);
+
+                if (choice > 0 && choice <= patientsUnderCare.size()) {
+                    // Retrieve the chosen patient object
+                    User selectedPatient = patientsUnderCare.get(choice - 1);
+
+                    // Display the patient's medical record information (assuming a method exists)
+                    System.out.println("\n=== Medical Records for " + selectedPatient.getName() + " ===");
+                    if (selectedPatient instanceof Patient) {
+                        Patient patient = (Patient) selectedPatient;
+                        patient.viewMedicalRecord();  // Assuming `viewMedicalRecord()` is a method in Patient
+                    }
+                } else {
+                    System.out.println("Invalid choice. Please select a valid patient number.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            } catch (IOException e) {
+                System.err.println("Error displaying medical records: " + e.getMessage());
+            }
+        }
+    }
 }
