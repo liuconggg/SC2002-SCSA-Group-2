@@ -19,15 +19,6 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
     }
 
     @Override
-    public String toString() {
-        String hospitalID = this.getHospitalID();
-        String name = this.getName();
-        int age = this.getAge();
-        String gender = this.getGender();
-        return String.format("Pharmacist ID: %s | Name: %s | Age: %d | Gender: %s", hospitalID, name, age, gender);
-    }
-
-    @Override
     public void viewAppointmentOutcome(ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords) {
         System.out.println("\n=== Appointment Outcome Records ===");
         for (AppointmentOutcomeRecord record : apptOutcomeRecords) {

@@ -18,15 +18,6 @@ public class Administrator extends User implements Inventory {
         System.out.println("5. Logout");
     }
 
-    @Override
-    public String toString() {
-        String hospitalID = this.getHospitalID();
-        String name = this.getName();
-        int age = this.getAge();
-        String gender = this.getGender();
-        return String.format("Admin ID: %s | Name: %s | Age: %d | Gender: %s", hospitalID, name, age, gender);
-    }
-
     public void addUser(ArrayList<User> users) {
         Scanner sc = new Scanner(System.in);
         System.out.println("What type of user would you like to add?");
@@ -230,7 +221,11 @@ public class Administrator extends User implements Inventory {
             boolean matchesAge = user.getAge() >= minAge && user.getAge() <= maxAge;
     
             if (matchesRole && matchesGender && matchesAge) {
-                System.out.println(user);
+                System.out.printf("Hospital ID: %s | Name: %s | Age: %d | Gender: %s\n", user.getHospitalID(), user.getName(), user.getAge(), user.getGender());
+                userFound = true;
+            } else if (matchesRole && matchesGender && matchesAge && (user instanceof Patient)) {
+                System.out.printf("Hospital ID: %s | Name: %s | Age: %d | Gender: %s\n", 
+                user.getHospitalID(), user.getName(), user.getAge(), user.getGender());
                 userFound = true;
             }
         }

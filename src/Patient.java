@@ -87,19 +87,6 @@ public class Patient extends User {
         System.out.println("9. Logout");
     }
 
-    @Override
-    public String toString() {
-        String hospitalID = this.getHospitalID();
-        String name = this.getName();
-        int age = this.getAge();
-        String gender = this.getGender();
-        String DOB = this.getDateOfBirth();
-        String phoneNumber = getPhoneNumber();
-        String email = this.getEmail();
-        String bloodType = this.getBloodType();
-        return String.format("Patient ID: %s | Name: %s | Age: %d | Gender: %s | DOB: %s | PhoneNo: %s | Email: %s | Blood Type: %s", hospitalID, name, age, gender, DOB, phoneNumber, email, bloodType);
-    }
-
     public void viewMedicalRecord(ArrayList<AppointmentOutcomeRecord> outcomeRecords, ArrayList<Diagnosis> diagnoses, ArrayList<Treatment> treatments) throws IOException {
         System.out.println("\n==================== Medical Record ====================");
         System.out.printf("ID            : %s\n", getHospitalID());
