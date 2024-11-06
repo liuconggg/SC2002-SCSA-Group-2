@@ -496,17 +496,15 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
     public void updateInventory(ArrayList<Medication> inventory) {
         Scanner sc = new Scanner(System.in);
         boolean medicationFound = false;
-        String stockStatus = "LOW";
-        boolean alert = false;
-
+    
         System.out.print("Enter the name of the medication to update (or press enter to return to main menu): ");
         String medicationName = sc.nextLine();
-
+    
         if (medicationName.trim().isEmpty()) {
             System.out.println("Returning to main menu...");
             return;
         }
-
+    
         System.out.print("Enter the quantity to add: ");
         while (!sc.hasNextInt()) {
             System.out.print("Please enter a valid integer for the quantity: ");
@@ -514,12 +512,16 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
         }
         int quantity = sc.nextInt();
         sc.nextLine(); // Consume newline left after nextInt()
-
+    
         // Loop through the inventory to find if the medication already exists
         for (Medication med : inventory) {
             if (med.getMedicationName().equalsIgnoreCase(medicationName)) {
                 // Update the quantity of the existing medication
                 int newQuantity = med.getTotalQuantity() + quantity;
+    
+                // Determine stock status based on the new quantity
+                String stockStatus = "LOW";
+                boolean alert = false;
                 if (newQuantity < 10) {
                     stockStatus = "LOW";
                     alert = true;
@@ -528,6 +530,7 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
                 } else if (newQuantity > 50) {
                     stockStatus = "HIGH";
                 }
+    
                 med.setTotalQuantity(newQuantity);
                 med.setStockStatus(stockStatus);
                 med.setAlert(alert);
@@ -536,32 +539,68 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
                 break;
             }
         }
-
-        // If medication was not found in the inventory, add it
+    
         if (!medicationFound) {
-            String medicationID = "M000" + (inventory.size() + 1);
-            if (quantity < 10) {
-                stockStatus = "LOW";
-                alert = true;
-            } else if (quantity >= 10 && quantity <= 50) {
-                stockStatus = "MEDIUM";
-            } else if (quantity > 50) {
-                stockStatus = "HIGH";
-            }
-            Medication newMedication = new Medication(medicationID, medicationName, stockStatus, alert, quantity);
-            inventory.add(newMedication);
-            System.out.println("Added new medication: " + newMedication.getMedicationName() + " with quantity: "
-                    + newMedication.getTotalQuantity());
+            System.out.println("Medication not found in inventory. Please use 'addInventory' to add a new medication.");
+            return;
         }
-
+    
         // Save the updated inventory to the CSV file
         try {
             CsvDB.saveMedications(inventory);
-            System.out.println("Inventory updated successfully.");
+            System.out.println("Inventory Item updated successfully.");
         } catch (IOException e) {
             System.out.println("Error saving inventory: " + e.getMessage());
         }
     }
+    
+    public void addInventory(ArrayList<Medication> inventory) {
+        Scanner sc = new Scanner(System.in);
+    
+        System.out.print("Enter the name of the medication to add (or press enter to return to main menu): ");
+        String medicationName = sc.nextLine();
+    
+        if (medicationName.trim().isEmpty()) {
+            System.out.println("Returning to main menu...");
+            return;
+        }
+    
+        System.out.print("Enter the quantity to add: ");
+        while (!sc.hasNextInt()) {
+            System.out.print("Please enter a valid integer for the quantity: ");
+            sc.next(); // Discard invalid input
+        }
+        int quantity = sc.nextInt();
+        sc.nextLine(); // Consume newline left after nextInt()
+    
+        // Determine stock status based on quantity
+        String stockStatus = "LOW";
+        boolean alert = false;
+        if (quantity < 10) {
+            stockStatus = "LOW";
+            alert = true;
+        } else if (quantity >= 10 && quantity <= 50) {
+            stockStatus = "MEDIUM";
+        } else if (quantity > 50) {
+            stockStatus = "HIGH";
+        }
+    
+        // Create a new medication and add to inventory
+        String medicationID = "M000" + (inventory.size() + 1);
+        Medication newMedication = new Medication(medicationID, medicationName, stockStatus, alert, quantity);
+        inventory.add(newMedication);
+        System.out.println("Added new medication: " + newMedication.getMedicationName() + " with quantity: "
+                + newMedication.getTotalQuantity());
+    
+        // Save the updated inventory to the CSV file
+        try {
+            CsvDB.saveMedications(inventory);
+            System.out.println("Inventory Item added successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving inventory: " + e.getMessage());
+        }
+    }
+    
 
     public void deleteInventory(ArrayList<Medication> inventory) {
         Scanner sc = new Scanner(System.in);
@@ -592,7 +631,7 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
         // Save the updated inventory to the CSV file
         try {
             CsvDB.saveMedications(inventory);
-            System.out.println("Inventory updated successfully.");
+            System.out.println("Inventory Item deleted successfully.");
         } catch (IOException e) {
             System.out.println("Error saving inventory: " + e.getMessage());
         }

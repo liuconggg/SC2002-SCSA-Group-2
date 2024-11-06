@@ -327,10 +327,11 @@ public class App {
                     case 3:
                         ////////////////////// View and Manage Medication Inventory //////////////////////
                         System.out.println("What would you like to do?");
-                        System.out.println("1. View Inventory");
-                        System.out.println("2. Add or Update Inventory Item");
-                        System.out.println("3. Delete Inventory Item");
-                        System.out.println("4. Return to main menu");
+                        System.out.println("1. Add Inventory Item");
+                        System.out.println("2. View Inventory");
+                        System.out.println("3. Update Inventory Item");
+                        System.out.println("4. Delete Inventory Item");
+                        System.out.println("5. Return to main menu");
                         System.out.print("Enter your choice: ");
 
                         int subChoice = sc.nextInt(); // Get user input for sub-choice
@@ -338,18 +339,22 @@ public class App {
 
                         switch (subChoice) {
                             case 1:
+                                // Add Inventory
+                                administrator.addInventory(inventory);
+                                break;
+                            case 2:
                                 // View Inventory
                                 administrator.viewInventory(inventory);
                                 break;
-                            case 2:
+                            case 3:
                                 // Update Inventory
                                 administrator.updateInventory(inventory);
                                 break;
-                            case 3:
+                            case 4:
                                 // Delete Inventory Item
                                 administrator.deleteInventory(inventory);
                                 break;
-                            case 4:
+                            case 5:
                                 break;
                             default:
                                 System.out.println("Invalid choice. Returning to main menu...");
