@@ -34,6 +34,7 @@ public class Administrator extends User implements Inventory {
         System.out.println("2. Doctor");
         System.out.println("3. Pharmacist");
         System.out.println("4. Administrator");
+        System.out.println("5. Go back to previous menu");
         System.out.print("Enter your choice: ");
         int choice = sc.nextInt();
         sc.nextLine();
@@ -122,7 +123,8 @@ public class Administrator extends User implements Inventory {
                 Administrator newAdministrator = new Administrator(hospitalID, password, name, age, gender);
                 users.add(newAdministrator);
                 break;
-
+            case 5:
+                break;
             default:
                 System.out.println("Invalid choice. Returning to main menu...");
                 return;
@@ -209,9 +211,15 @@ public class Administrator extends User implements Inventory {
             ArrayList<User> users = CsvDB.readUsers();
 
             Scanner sc = new Scanner(System.in);
-            System.out.print("\nEnter the Hospital ID of the staff to update: ");
+            System.out.print(
+                    "\nEnter the Hospital ID of the staff to update (or press enter to return to main menu: ");
             String staffIDToUpdate = sc.nextLine();
             boolean userFound = false;
+
+            if (staffIDToUpdate.trim().isEmpty()) {
+                System.out.println("Returning to main menu...");
+                return;
+            }
 
             for (User user : users) {
                 if (user.getHospitalID().equalsIgnoreCase(staffIDToUpdate)) {
@@ -302,6 +310,11 @@ public class Administrator extends User implements Inventory {
             String staffIDToDelete = sc.nextLine();
             User userToRemove = null;
 
+            if (staffIDToDelete.trim().isEmpty()) {
+                System.out.println("Returning to main menu...");
+                return;
+            }
+
             for (User user : users) {
                 if (user.getHospitalID().equalsIgnoreCase(staffIDToDelete)) {
                     userToRemove = user;
@@ -336,7 +349,7 @@ public class Administrator extends User implements Inventory {
         System.out.println("4. View All");
         System.out.print("Enter your choice (or press enter to return to main menu): ");
 
-        String input = sc.nextLine();  // Capture the input as a string
+        String input = sc.nextLine(); // Capture the input as a string
         // If user presses "Enter" only, return to main menu
         if (input.trim().isEmpty()) {
             System.out.println("Returning to main menu...");
@@ -346,7 +359,7 @@ public class Administrator extends User implements Inventory {
         // If input is not empty, try to parse it as an integer
         int choice;
         try {
-            choice = Integer.parseInt(input);  // Convert input to integer
+            choice = Integer.parseInt(input); // Convert input to integer
         } catch (NumberFormatException e) {
             System.out.println("Invalid choice. Please enter a valid number.");
             return;
@@ -419,10 +432,27 @@ public class Administrator extends User implements Inventory {
         }
     }
 
-    public void updateInventory(ArrayList<Medication> inventory, String medicationName, int quantity) {
+    public void updateInventory(ArrayList<Medication> inventory) {
+        Scanner sc = new Scanner(System.in);
         boolean medicationFound = false;
         String stockStatus = "LOW";
         boolean alert = false;
+
+        System.out.print("Enter the name of the medication to update (or press enter to return to main menu): ");
+        String medicationName = sc.nextLine();
+
+        if (medicationName.trim().isEmpty()) {
+            System.out.println("Returning to main menu...");
+            return;
+        }
+
+        System.out.print("Enter the quantity to add: ");
+        while (!sc.hasNextInt()) {
+            System.out.print("Please enter a valid integer for the quantity: ");
+            sc.next(); // Discard invalid input
+        }
+        int quantity = sc.nextInt();
+        sc.nextLine(); // Consume newline left after nextInt()
 
         // Loop through the inventory to find if the medication already exists
         for (Medication med : inventory) {
@@ -462,10 +492,26 @@ public class Administrator extends User implements Inventory {
             System.out.println("Added new medication: " + newMedication.getMedicationName() + " with quantity: "
                     + newMedication.getTotalQuantity());
         }
+
+        // Save the updated inventory to the CSV file
+        try {
+            CsvDB.saveMedications(inventory);
+            System.out.println("Inventory updated successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving inventory: " + e.getMessage());
+        }
     }
 
-    public void deleteInventory(ArrayList<Medication> inventory, String medicationToDelete) {
+    public void deleteInventory(ArrayList<Medication> inventory) {
+        Scanner sc = new Scanner(System.in);
         boolean medicationFound = false;
+        System.out.print("Enter the name of the medication to delete (or press enter to return main menu): ");
+        String medicationToDelete = sc.nextLine();
+
+        if (medicationToDelete.trim().isEmpty()) {
+            System.out.println("Returning to main menu...");
+            return;
+        }
 
         // Iterate through inventory and find the medication to delete
         for (int i = 0; i < inventory.size(); i++) {
@@ -501,7 +547,8 @@ public class Administrator extends User implements Inventory {
         medication.setTotalQuantity(quantity);
     }
 
-    public void approveReplenishmentRequests(ArrayList<ReplenishmentRequest> replenishmentRequests, ArrayList<Medication> inventory) {
+    public void approveReplenishmentRequests(ArrayList<ReplenishmentRequest> replenishmentRequests,
+            ArrayList<Medication> inventory) {
         Scanner sc = new Scanner(System.in);
         boolean requestFound = false;
 

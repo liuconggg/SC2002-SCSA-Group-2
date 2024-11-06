@@ -343,33 +343,11 @@ public class App {
                                 break;
                             case 2:
                                 // Update Inventory
-                                System.out.print("Enter the name of the medication to update: ");
-                                String medicationName = sc.nextLine();
-
-                                System.out.print("Enter the quantity to add: ");
-                                while (!sc.hasNextInt()) {
-                                    System.out.print("Please enter a valid integer for the quantity: ");
-                                    sc.next(); // Discard invalid input
-                                }
-                                int quantity = sc.nextInt();
-                                sc.nextLine(); // Consume newline left after nextInt()
-
-                                // Update the inventory in memory
-                                administrator.updateInventory(inventory, medicationName, quantity);
-
-                                // Save the updated inventory to the CSV file
-                                try {
-                                    CsvDB.saveMedications(inventory);
-                                    System.out.println("Inventory updated successfully.");
-                                } catch (IOException e) {
-                                    System.out.println("Error saving inventory: " + e.getMessage());
-                                }
+                                administrator.updateInventory(inventory);
                                 break;
                             case 3:
                                 // Delete Inventory Item
-                                System.out.print("Enter the name of the medication to delete: ");
-                                String medicationToDelete = sc.nextLine();
-                                administrator.deleteInventory(inventory, medicationToDelete);
+                                administrator.deleteInventory(inventory);
                                 break;
                             case 4:
                                 break;

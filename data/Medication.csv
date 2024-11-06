@@ -2,6 +2,5 @@ Medication ID,Medication Name,Stock Status,Alert,Quantity
 M0001,Paracetamol,LOW,true,8
 M0002,Ibuprofen,MEDIUM,false,11
 M0003,Cough Syrup,HIGH,false,107
-M0004,Polarine,HIGH,false,100
-M0005,Vigra ,HIGH,false,123
+M0004,Polarine,HIGH,false,140
 M0006,Viagra,MEDIUM,false,10
