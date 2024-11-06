@@ -92,7 +92,6 @@ public class CsvDB {
         ArrayList<Administrator> administrators = new ArrayList<Administrator>();
 
         PrintWriter out;
-
         for (User user : users) { // Store the users into their respective arrays
             if (user instanceof Patient) {
                 patients.add((Patient) user);
