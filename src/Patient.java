@@ -837,7 +837,7 @@ public class Patient extends User {
         return patientFound;
     }
 
-    private AppointmentOutcomeRecord findOutcomeByAppointmentID(ArrayList<AppointmentOutcomeRecord> outcomeRecords, String appointmentID) {
+    public AppointmentOutcomeRecord findOutcomeByAppointmentID(ArrayList<AppointmentOutcomeRecord> outcomeRecords, String appointmentID) {
         for (AppointmentOutcomeRecord outcome : outcomeRecords) {
             if (outcome.getAppointmentID().equals(appointmentID)) {
                 return outcome;

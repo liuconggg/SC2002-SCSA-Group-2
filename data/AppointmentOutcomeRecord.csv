@@ -1,2 +1,3 @@
 Appointment ID,Type of Service,Consultation Notes,Prescriptions,Prescription Status
 A0004,x ray ,bone crooked,M0003:Cough Syrup:2,DISPENSED
+A0005,normal consult,flu,M0003:Cough Syrup:2,DISPENSED

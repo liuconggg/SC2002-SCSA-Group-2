@@ -328,7 +328,7 @@ public class Administrator extends User implements Inventory {
     }
 
     // Method to view appointments, now accepting appointments as a parameter
-    public void viewAppointments(ArrayList<Appointment> appointments) {
+    public void viewAppointments(ArrayList<Appointment> appointments) throws IOException {
         Scanner sc = new Scanner(System.in);
 
         // Prompt the user for the type of appointment they want to view
@@ -378,22 +378,53 @@ public class Administrator extends User implements Inventory {
         }
     }
 
-    // Method to filter and display appointments based on their status
-    private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, String status) {
-        boolean found = false;
-        for (Appointment appt : appointments) {
-            if (appt.getStatus().equalsIgnoreCase(status)) {
-                System.out.printf(
-                        "Appointment ID: %s | Patient ID: %s | Doctor ID: %s | Date: %s | Session: %d | Status: %s\n",
-                        appt.getAppointmentID(), appt.getPatientID(), appt.getDoctorID(), appt.getDate(),
-                        appt.getSession(), appt.getStatus());
-                found = true;
-            }
-        }
-        if (!found) {
-            System.out.println("No appointments found with status: " + status);
+    // Modified Method to filter and display appointments based on their status
+private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, String status) throws IOException {
+    boolean found = false;
+
+    // Read Appointment Outcome Records (only if status is Completed)
+    ArrayList<AppointmentOutcomeRecord> outcomeRecords = new ArrayList<>();
+    if (status.equalsIgnoreCase("Completed")) {
+        try {
+            outcomeRecords = CsvDB.readAppointmentOutcomeRecords();
+        } catch (IOException e) {
+            System.out.println("Error reading appointment outcome records: " + e.getMessage());
+            return;
         }
     }
+
+    for (Appointment appt : appointments) {
+        if (appt.getStatus().equalsIgnoreCase(status)) {
+            // Display the basic appointment details
+            System.out.printf(
+                    "Appointment ID: %s | Patient ID: %s | Doctor ID: %s | Date: %s | Session: %d | Status: %s\n",
+                    appt.getAppointmentID(), appt.getPatientID(), appt.getDoctorID(), appt.getDate(),
+                    appt.getSession(), appt.getStatus());
+            found = true;
+
+            // If the appointment is "Completed", display additional outcome details
+            if (status.equalsIgnoreCase("Completed")) {
+                // Find the corresponding appointment outcome record
+                AppointmentOutcomeRecord outcomeRecord = new Patient().findOutcomeByAppointmentID(outcomeRecords, appt.getAppointmentID());
+                if (outcomeRecord != null) {
+                    // System.out.printf("  Diagnosis: %s\n", outcomeRecord.getDiagnosis());
+                    // System.out.printf("  Treatment: %s\n", outcomeRecord.getTreatment());
+                    System.out.printf("Appointment ID: %s | Type of Service: %s | Consultation Notes: %s | Prescriptions: %s | Prescription Status: %s\n", 
+                    outcomeRecord.getAppointmentID(), outcomeRecord.getTypeOfService(), outcomeRecord.getConsultationNotes(), outcomeRecord.getPrescriptions(), outcomeRecord.getPrescriptionStatus());
+                } else {
+                    System.out.println("  No outcome record available for this appointment.");
+                }
+                //new Patient().viewAppointmentOutcomeRecords(appointments, outcomeRecords);
+            }
+
+            System.out.println("-------------------------------------------------------");
+        }
+    }
+
+    if (!found) {
+        System.out.println("No appointments found with status: " + status);
+    }
+}
 
     // Method to display all appointments
     private void displayAllAppointments(ArrayList<Appointment> appointments) {
