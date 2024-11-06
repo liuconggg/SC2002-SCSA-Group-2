@@ -290,10 +290,12 @@ public class App {
                         System.out.println("2. View Staff");
                         System.out.println("3. Update Staff");
                         System.out.println("4. Delete Staff");
+                        System.out.println("5. Return to main menu");
                         System.out.print("Enter your choice: ");
 
                         int staffChoice = sc.nextInt();
                         sc.nextLine();
+
                         switch (staffChoice) {
                             case 1: // Add Staff
                                 administrator.addUser(users);
@@ -307,6 +309,8 @@ public class App {
                             case 4: // Delete Staff
                                 administrator.deleteUser();
                                 break;
+                            case 5:
+                                break;
                             default:
                                 System.out.println("Invalid choice. Returning to main menu...");
                                 break;
@@ -318,16 +322,15 @@ public class App {
                         break;
                     case 2:
                         ////////////////////// View Appointment details //////////////////////
+                        administrator.viewAppointments(appts);
                         break;
                     case 3:
-                        ////////////////////// View and Manage Medication Inventory
-                        ////////////////////// //////////////////////
-                
-
+                        ////////////////////// View and Manage Medication Inventory //////////////////////
                         System.out.println("What would you like to do?");
                         System.out.println("1. View Inventory");
                         System.out.println("2. Add or Update Inventory Item");
                         System.out.println("3. Delete Inventory Item");
+                        System.out.println("4. Return to main menu");
                         System.out.print("Enter your choice: ");
 
                         int subChoice = sc.nextInt(); // Get user input for sub-choice
@@ -338,7 +341,6 @@ public class App {
                                 // View Inventory
                                 administrator.viewInventory(inventory);
                                 break;
-
                             case 2:
                                 // Update Inventory
                                 System.out.print("Enter the name of the medication to update: ");
@@ -363,14 +365,14 @@ public class App {
                                     System.out.println("Error saving inventory: " + e.getMessage());
                                 }
                                 break;
-
                             case 3:
                                 // Delete Inventory Item
                                 System.out.print("Enter the name of the medication to delete: ");
                                 String medicationToDelete = sc.nextLine();
                                 administrator.deleteInventory(inventory, medicationToDelete);
                                 break;
-
+                            case 4:
+                                break;
                             default:
                                 System.out.println("Invalid choice. Returning to main menu...");
                                 break;
@@ -382,10 +384,8 @@ public class App {
                         break;
                     case 4:
                         ////////////////////// Approve Replenishment Requests //////////////////////
-                            administrator.approveReplenishmentRequests(replenishmentRequests, inventory);
-
+                        administrator.approveReplenishmentRequests(replenishmentRequests, inventory);
                         break;
-
                     case 5:
                         break;
                     default:
@@ -398,15 +398,12 @@ public class App {
                 sc.nextLine();
             }
         }
-
         ////////////////////// Logout //////////////////////
-
         if (choice == 5) {
             user = null;
             System.out.println("You have logged out ");
 
         }
-
     }
 
 }

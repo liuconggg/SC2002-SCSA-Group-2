@@ -64,7 +64,8 @@ public class Administrator extends User implements Inventory {
                 bloodType = sc.nextLine();
 
                 // Create Patient and add to list
-                Patient newPatient = new Patient(hospitalID, password, name, age, gender, dateOfBirth, phoneNumber, email, bloodType);
+                Patient newPatient = new Patient(hospitalID, password, name, age, gender, dateOfBirth, phoneNumber,
+                        email, bloodType);
                 users.add(newPatient);
                 break;
 
@@ -323,6 +324,89 @@ public class Administrator extends User implements Inventory {
         }
     }
 
+    // Method to view appointments, now accepting appointments as a parameter
+    public void viewAppointments(ArrayList<Appointment> appointments) {
+        Scanner sc = new Scanner(System.in);
+
+        // Prompt the user for the type of appointment they want to view
+        System.out.println("\nWhat type of appointments would you like to view?");
+        System.out.println("1. Completed");
+        System.out.println("2. Cancelled");
+        System.out.println("3. Pending");
+        System.out.println("4. View All");
+        System.out.print("Enter your choice (or press enter to return to main menu): ");
+
+        String input = sc.nextLine();  // Capture the input as a string
+        // If user presses "Enter" only, return to main menu
+        if (input.trim().isEmpty()) {
+            System.out.println("Returning to main menu...");
+            return;
+        }
+
+        // If input is not empty, try to parse it as an integer
+        int choice;
+        try {
+            choice = Integer.parseInt(input);  // Convert input to integer
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid choice. Please enter a valid number.");
+            return;
+        }
+
+        // Filter and display appointments based on user's choice
+        switch (choice) {
+            case 1:
+                System.out.println("\n=== Completed Appointments ===");
+                filterAndDisplayAppointments(appointments, "Completed");
+                break;
+            case 2:
+                System.out.println("\n=== Cancelled Appointments ===");
+                filterAndDisplayAppointments(appointments, "Cancelled");
+                break;
+            case 3:
+                System.out.println("\n=== Pending Appointments ===");
+                filterAndDisplayAppointments(appointments, "Pending");
+                break;
+            case 4:
+                System.out.println("\n=== All Appointments ===");
+                displayAllAppointments(appointments);
+                break;
+            default:
+                System.out.println("Invalid choice. Returning to the main menu...");
+        }
+    }
+
+    // Method to filter and display appointments based on their status
+    private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, String status) {
+        boolean found = false;
+        for (Appointment appt : appointments) {
+            if (appt.getStatus().equalsIgnoreCase(status)) {
+                System.out.printf(
+                        "Appointment ID: %s | Patient ID: %s | Doctor ID: %s | Date: %s | Session: %d | Status: %s\n",
+                        appt.getAppointmentID(), appt.getPatientID(), appt.getDoctorID(), appt.getDate(),
+                        appt.getSession(), appt.getStatus());
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No appointments found with status: " + status);
+        }
+    }
+
+    // Method to display all appointments
+    private void displayAllAppointments(ArrayList<Appointment> appointments) {
+        if (appointments.isEmpty()) {
+            System.out.println("No appointments available.");
+            return;
+        }
+
+        for (Appointment appt : appointments) {
+            System.out.printf(
+                    "Appointment ID: %s | Patient ID: %s | Doctor ID: %s | Date: %s | Session: %d | Status: %s\n",
+                    appt.getAppointmentID(), appt.getPatientID(), appt.getDoctorID(), appt.getDate(), appt.getSession(),
+                    appt.getStatus());
+        }
+    }
+
     @Override
     public void viewInventory(ArrayList<Medication> inventory) {
         System.out.println("\n=== Inventory ===");
@@ -395,6 +479,7 @@ public class Administrator extends User implements Inventory {
 
         if (!medicationFound) {
             System.out.println("Medication '" + medicationToDelete + "' not found in inventory.");
+            return;
         }
 
         // Save the updated inventory to the CSV file
@@ -416,8 +501,7 @@ public class Administrator extends User implements Inventory {
         medication.setTotalQuantity(quantity);
     }
 
-    public void approveReplenishmentRequests(ArrayList<ReplenishmentRequest> replenishmentRequests,
-            ArrayList<Medication> inventory) {
+    public void approveReplenishmentRequests(ArrayList<ReplenishmentRequest> replenishmentRequests, ArrayList<Medication> inventory) {
         Scanner sc = new Scanner(System.in);
         boolean requestFound = false;
 
@@ -436,9 +520,14 @@ public class Administrator extends User implements Inventory {
             return;
         }
 
-        System.out.print("\nEnter the Request ID to approve: ");
+        System.out.print("\nEnter the Request ID to approve (or press enter to return to main menu): ");
         String requestIDToApprove = sc.nextLine();
         ReplenishmentRequest selectedRequest = null;
+        // If user presses "Enter" only, return to main menu
+        if (requestIDToApprove.trim().isEmpty()) {
+            System.out.println("Returning to main menu...");
+            return;
+        }
 
         // Find the selected request
         for (ReplenishmentRequest request : replenishmentRequests) {

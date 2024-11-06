@@ -1,2 +1,5 @@
 Request ID,Medication Batch,Status,Pharmacist ID
 R0001,M0001:Paracetamol:2;M0002:Ibuprofen:3,APPROVED,PH0001
+R0001,M0001:Paracetamol:2;M0002:Ibuprofen:3,PENDING,PH0001
+R0001,M0001:Paracetamol:2;M0002:Ibuprofen:3,PENDING,PH0001
+R0001,M0001:Paracetamol:2;M0002:Ibuprofen:3,PENDING,PH0001
