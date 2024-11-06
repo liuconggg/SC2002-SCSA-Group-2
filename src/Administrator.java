@@ -568,8 +568,7 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
         medication.setTotalQuantity(quantity);
     }
 
-    public void approveReplenishmentRequests(ArrayList<ReplenishmentRequest> replenishmentRequests,
-            ArrayList<Medication> inventory) {
+    public void approveReplenishmentRequests(ArrayList<ReplenishmentRequest> replenishmentRequests, ArrayList<Medication> inventory) {
         Scanner sc = new Scanner(System.in);
         boolean requestFound = false;
 
