@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Patient extends User {
@@ -154,46 +155,55 @@ public class Patient extends User {
     public void updatePersonalInformation(ArrayList<User> users) throws IOException {
         Scanner sc = new Scanner(System.in);
         boolean changing = true;
-        int action;
+        int action = -1;
 
         while (changing) {
             System.out.println("Select the information to update:");
-            System.out.println("1. Name");
-            System.out.println("2. Phone Number");
-            System.out.println("3. Email Address");
-            System.out.println("4. Confirm Changes & Exit");
-            System.out.println("5. Exit without changes");
+            System.out.println("1. Phone Number");
+            System.out.println("2. Email Address");
+            System.out.println("3. Exit");
             System.out.print("Your Choice: ");
-            action = sc.nextInt();
-            sc.nextLine();  // Consume newline
+            try {
+                action = sc.nextInt();
+                sc.nextLine();  // Consume newline
 
-            switch (action) {
-                case 1:
-                    System.out.print("Enter your new name: ");
-                    String newName = sc.nextLine();
-                    this.setName(newName);
-                    break;
-                case 2:
-                    System.out.print("Enter your new phone number: ");
-                    String newPhoneNumber = sc.nextLine();
-                    this.setPhoneNumber(newPhoneNumber);
-                    break;
-                case 3:
-                    System.out.print("Enter your new email address: ");
-                    String newEmail = sc.nextLine();
-                    this.setEmail(newEmail);
-                    break;
-                case 4:
-                    CsvDB.saveUsers(users);  // Save changes to the CSV file upon exiting
-                    System.out.println("Your changes have been saved.");
-                    changing = false;
-                    break;
-                case 5:
-                    changing = false;
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.");
+                switch (action) {
+                    case 1:
+                        System.out.print("Enter your new phone number: ");
+                        String newPhoneNumber = sc.nextLine();
+                        this.setPhoneNumber(newPhoneNumber);
+                        System.out.println("Phone number has been updated");
+                        break;
+                    case 2:
+                        System.out.print("Enter your new email address: ");
+                        String newEmail = sc.nextLine();
+                        this.setEmail(newEmail);
+                        System.out.println("Email address has been updated");
+                        break;
+                    case 3:
+                        changing = false;
+                        break;
+                    default:
+                        System.out.println("Invalid option. Please try again.");
+                }
+
+                //Update the Patient object in the ArrayList<User> users
+                if ((action > 0) && (action != 3)) {
+                    for (int i = 0; i < users.size(); i++) {
+                        if (users.get(i).getHospitalID().equals(this.getHospitalID())) {
+                            users.set(i, this);
+                            break;
+                        }
+                    }
+
+                    //Save all users
+                    CsvDB.saveUsers(users);
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                sc.nextLine();
             }
+
         }
     }
 
