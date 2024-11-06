@@ -1,3 +1,5 @@
 Appointment ID,Type of Service,Consultation Notes,Prescriptions,Prescription Status
-A0004,x ray ,bone crooked,M0003:Cough Syrup:2,DISPENSED
-A0005,normal consult,flu,M0003:Cough Syrup:2,DISPENSED
+A0001,consultation,dick brusied,M0001:Paracetamol:10,DISPENSED
+A0002,consultation,dick brusied,M0001:Paracetamol:10,DISPENSED
+A0003,consultation,dick brusied,M0001:Paracetamol:10,DISPENSED
+A0004,consultation,dick brusied,M0001:Paracetamol:10,PENDING

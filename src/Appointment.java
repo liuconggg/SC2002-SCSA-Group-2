@@ -92,7 +92,8 @@ public class Appointment {
         this.date = date;
     }
 
-    public static Appointment getAppointmentByScheduleAndSession(Schedule chosenSchedule, int sessionIndex, ArrayList<Appointment> appointments) {
+    public static Appointment getAppointmentByScheduleAndSession(Schedule chosenSchedule, int sessionIndex,
+            ArrayList<Appointment> appointments) {
         if (chosenSchedule == null || appointments == null) {
             throw new IllegalArgumentException("Schedule or appointment list cannot be null.");
         }
@@ -101,11 +102,11 @@ public class Appointment {
             if (appointment.getDoctorID().equals(chosenSchedule.getDoctorID())
                     && appointment.getDate().equals(chosenSchedule.getDate())
                     && (appointment.getSession() == sessionIndex + 1)
-                    && (appointment.getStatus().equalsIgnoreCase("Pending"))) {
+                    && (appointment.getStatus().equalsIgnoreCase(AppointmentStatus.PENDING.name()))) {
                 return appointment;
             }
         }
-        return null;  // Return null if no matching appointment is found
+        return null; // Return null if no matching appointment is found
     }
 
     public ArrayList<Appointment> getAppointmentsByPatientID(String patientID, ArrayList<Appointment> appointments) {
@@ -113,7 +114,9 @@ public class Appointment {
 
         // Only fetch the confirmed and pending appointments for the patients
         for (Appointment appointment : appointments) {
-            if (appointment.getPatientID().equals(patientID) && !(appointment.getStatus().equals("Completed")) && !(appointment.getStatus().equals("Cancelled"))) {
+            if (appointment.getPatientID().equals(patientID)
+                    && !(appointment.getStatus().equals(AppointmentStatus.COMPLETED.name()))
+                    && !(appointment.getStatus().equals(AppointmentStatus.CANCELLED.name()))) {
                 filteredAppt.add(appointment);
             }
         }
@@ -123,7 +126,7 @@ public class Appointment {
     public ArrayList<Appointment> getAppointmentsByDoctorID(String doctorID, ArrayList<Appointment> appointments) {
         ArrayList<Appointment> filteredAppt = new ArrayList<Appointment>();
 
-        //fetch all appointments for the doctor
+        // fetch all appointments for the doctor
         for (Appointment appointment : appointments) {
             if (appointment.getDoctorID().equals(doctorID)) {
                 filteredAppt.add(appointment);
@@ -133,11 +136,13 @@ public class Appointment {
         return filteredAppt;
     }
 
-    public static ArrayList<Appointment> getConfirmedAppointmentsByDoctorID(String doctorID, ArrayList<Appointment> appointments) {
+    public static ArrayList<Appointment> getConfirmedAppointmentsByDoctorID(String doctorID,
+            ArrayList<Appointment> appointments) {
         ArrayList<Appointment> filteredAppointments = new ArrayList<>();
 
         for (Appointment appointment : appointments) {
-            if (appointment.getDoctorID().equals(doctorID) && appointment.getStatus().equals("Confirmed")) {
+            if (appointment.getDoctorID().equals(doctorID)
+                    && appointment.getStatus().equals(ScheduleStatus.CONFIRMED.name())) {
                 filteredAppointments.add(appointment);
             }
         }

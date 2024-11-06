@@ -6,7 +6,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Doctor extends User {
+public class Doctor extends User
+        implements DoctorAppointmentManager, ScheduleManager, MedicalRecordManager, AppointmentOutcomeManager,
+        AppointmentOutcomeViewer {
 
     public Doctor() {
 
@@ -53,7 +55,7 @@ public class Doctor extends User {
 
         if (weeksInput.trim().isEmpty()) {
             System.out.println("Press Enter to return");
-            return;  // Return to the previous menu
+            return; // Return to the previous menu
         }
 
         int numberOfWeeks;
@@ -65,7 +67,7 @@ public class Doctor extends User {
         }
 
         LocalDate today = LocalDate.now();
-        LocalDate endDate = today.plusWeeks(numberOfWeeks);  // Calculate the end date based on the number of weeks
+        LocalDate endDate = today.plusWeeks(numberOfWeeks); // Calculate the end date based on the number of weeks
         ArrayList<Schedule> doctorSchedule = viewSchedule(getHospitalID(), schedules);
         ArrayList<Schedule> weeklySchedule = new ArrayList<>();
 
@@ -75,7 +77,7 @@ public class Doctor extends User {
             // Skip weekends (Saturday and Sunday)
             if (currentDate.getDayOfWeek().getValue() == 6 || currentDate.getDayOfWeek().getValue() == 7) {
                 currentDate = currentDate.plusDays(1);
-                continue;  // Skip Saturday (6) and Sunday (7)
+                continue; // Skip Saturday (6) and Sunday (7)
             }
 
             boolean scheduleExists = false;
@@ -119,13 +121,16 @@ public class Doctor extends User {
                     Patient scheduledPatient = (patientId != null) ? Patient.getPatientById(patientId, users) : null;
                     if (scheduledPatient != null) {
                         String status = schedule.getSessionStatus(i);
-                        if (status.equals("Pending")) {
-                            System.out.printf("Session %d (%s): Pending with %s\n", i + 1, sessionTime, scheduledPatient.getName());
+                        if (status.equals(ScheduleStatus.PENDING.name())) {
+                            System.out.printf("Session %d (%s): Pending with %s\n", i + 1, sessionTime,
+                                    scheduledPatient.getName());
                         } else {
-                            System.out.printf("Session %d (%s): Booked with %s\n", i + 1, sessionTime, scheduledPatient.getName());
+                            System.out.printf("Session %d (%s): Booked with %s\n", i + 1, sessionTime,
+                                    scheduledPatient.getName());
                         }
                     } else {
-                        System.out.printf("Session %d (%s): Booked (Unknown Patient, Patient ID: %s)\n", i + 1, sessionTime, patientId);
+                        System.out.printf("Session %d (%s): Booked (Unknown Patient, Patient ID: %s)\n", i + 1,
+                                sessionTime, patientId);
                     }
                 }
             }
@@ -133,7 +138,7 @@ public class Doctor extends User {
         }
 
         System.out.println("Press Enter to continue");
-        sc.nextLine();  // Wait for the user to press Enter
+        sc.nextLine(); // Wait for the user to press Enter
     }
 
     public void viewUpcomingAppointments(ArrayList<Schedule> schedules, ArrayList<User> users) {
@@ -147,21 +152,22 @@ public class Doctor extends User {
         // Iterate through the schedules to find upcoming confirmed appointments
         for (Schedule schedule : doctorSchedule) {
             if (schedule.getDate().isBefore(today)) {
-                continue;  // Skip past dates, only consider today or future dates
+                continue; // Skip past dates, only consider today or future dates
             }
 
             for (int i = 0; i < schedule.getSession().length; i++) {
                 String sessionInfo = schedule.getSession()[i];
 
                 // Check if the session is booked with a patient
-                if (sessionInfo.contains("-Confirmed")) {
+                if (sessionInfo.contains("-" + ScheduleStatus.CONFIRMED.name())) {
                     String patientId = schedule.getPatientIdFromSession(i);
                     Patient scheduledPatient = (patientId != null) ? Patient.getPatientById(patientId, users) : null;
                     if (scheduledPatient != null) {
                         // Display a new date header if the date has changed
                         if (lastDisplayedDate == null || !lastDisplayedDate.equals(schedule.getDate())) {
                             lastDisplayedDate = schedule.getDate();
-                            System.out.println("\nAppointments for " + lastDisplayedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ":");
+                            System.out.println("\nAppointments for "
+                                    + lastDisplayedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ":");
                             System.out.println("---------------------------------------------------------------");
                             System.out.printf("%-5s %-15s %s\n", "No.", "Time", "Patient Name");
                         }
@@ -186,10 +192,29 @@ public class Doctor extends User {
         }
 
         System.out.println("\nPress Enter to continue");
-        new Scanner(System.in).nextLine();  // Wait for the user to press Enter
+        new Scanner(System.in).nextLine(); // Wait for the user to press Enter
     }
 
-    public void acceptOrDeclineAppointmentRequests(ArrayList<Schedule> schedules, ArrayList<User> users, ArrayList<Appointment> appointments) {
+    public void updateAppointment(ArrayList<Appointment> appts, Schedule chosenSchedule, int sessionIndex,
+            String status) {
+        Appointment selectedAcAppointment = Appointment
+                .getAppointmentByScheduleAndSession(chosenSchedule, sessionIndex, appts);
+        if (selectedAcAppointment != null) {
+            selectedAcAppointment.setStatus(status);
+        } else {
+            System.err.println(
+                    "Appointment not found for the chosen schedule and session index. Please check the appointments list.");
+        }
+
+        try {
+            CsvDB.saveAppointments(appts);
+        } catch (IOException e) {
+            System.err.println("Error while saving appointments: " + e.getMessage());
+        }
+
+    }
+
+    public void updateSchedule(ArrayList<Schedule> schedules, ArrayList<User> users, ArrayList<Appointment> appts) {
         Scanner sc = new Scanner(System.in);
         boolean exit = false;
 
@@ -199,16 +224,16 @@ public class Doctor extends User {
             ArrayList<Schedule> pendingSchedules = new ArrayList<>();
             ArrayList<Integer> pendingSessionIndexes = new ArrayList<>();
 
-            // Gather all pending appointments 
+            // Gather all pending appointments
             for (Schedule schedule : doctorSchedule) {
                 if (schedule.getDate().isBefore(LocalDate.now())) {
-                    continue;  // Skip past dates
+                    continue; // Skip past dates
                 }
 
                 for (int i = 0; i < schedule.getSession().length; i++) {
                     String sessionInfo = schedule.getSession()[i];
 
-                    if (sessionInfo.contains("-Pending")) {
+                    if (sessionInfo.contains(ScheduleStatus.PENDING.name())) {
                         String patientId = sessionInfo.split("-")[0];
                         Patient scheduledPatient = Patient.getPatientById(patientId, users); // Assuming static method
 
@@ -289,36 +314,16 @@ public class Doctor extends User {
 
                     if (decision == 'A') {
                         chosenSchedule.acceptAppointment(sessionIndex);
-
-                        Appointment selectedAcAppointment = Appointment.getAppointmentByScheduleAndSession(chosenSchedule, sessionIndex, appointments);
-                        if (selectedAcAppointment != null) {
-                            selectedAcAppointment.setStatus("Confirmed");
-                        } else {
-                            System.err.println("Appointment not found for the chosen schedule and session index. Please check the appointments list.");
-                        }
-
-                        System.out.println("\nAppointment has been accepted.");
+                        updateAppointment(appts, chosenSchedule, sessionIndex, AppointmentStatus.CONFIRMED.name());
                     } else if (decision == 'D') {
                         chosenSchedule.declineAppointment(sessionIndex);
-
-                        Appointment selectedAcAppointment = Appointment.getAppointmentByScheduleAndSession(chosenSchedule, sessionIndex, appointments);
-                        if (selectedAcAppointment != null) {
-                            selectedAcAppointment.setStatus("Cancelled");
-                        } else {
-                            System.err.println("Appointment not found for the chosen schedule and session index. Please check the appointments list.");
-                        }
-
-                        System.out.println("\nAppointment has been declined. The patient will be notified.");
+                        updateAppointment(appts, chosenSchedule, sessionIndex, AppointmentStatus.CANCELLED.name());
                     } else {
                         System.out.println("Invalid input, please enter 'A' or 'D'.");
                     }
 
                     CsvDB.saveSchedules(schedules);
-                    try {
-                        CsvDB.saveAppointments(appointments);
-                    } catch (IOException e) {
-                        System.err.println("Error while saving appointments: " + e.getMessage());
-                    }
+
                 } else {
                     System.out.println("Invalid choice. Please select a valid appointment number.");
                 }
@@ -334,7 +339,8 @@ public class Doctor extends User {
 
         while (!exit) {
             // Ask for the date to change availability
-            System.out.println("Enter the date in format (dd/MM/yyyy) to view and change availability (Press Enter to return):");
+            System.out.println(
+                    "Enter the date in format (dd/MM/yyyy) to view and change availability (Press Enter to return):");
             String inputDate = sc.nextLine();
 
             if (inputDate.trim().isEmpty()) {
@@ -365,7 +371,8 @@ public class Doctor extends User {
                 boolean continueUpdating = true;
                 while (continueUpdating) {
                     // Display sessions to update
-                    System.out.printf("\nSchedule for %s:\n\n", selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    System.out.printf("\nSchedule for %s:\n\n",
+                            selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                     for (int i = 0; i < chosenSchedule.getSession().length; i++) {
                         String sessionInfo = chosenSchedule.getSession()[i];
                         String sessionTime = App.sessionTimings[i];
@@ -373,7 +380,8 @@ public class Doctor extends User {
                     }
 
                     // Prompt for session to update
-                    System.out.println("\nEnter the number of the session to update availability, or press Enter to return:");
+                    System.out.println(
+                            "\nEnter the number of the session to update availability, or press Enter to return:");
                     String sessionChoiceInput = sc.nextLine();
 
                     if (sessionChoiceInput.trim().isEmpty()) {
@@ -387,13 +395,16 @@ public class Doctor extends User {
                         if (sessionChoice > 0 && sessionChoice <= chosenSchedule.getSession().length) {
                             // Update availability
                             String currentStatus = chosenSchedule.getSession()[sessionChoice - 1];
-                            if (currentStatus.contains("-Pending")) {
+                            if (currentStatus.contains("-" + ScheduleStatus.PENDING.name())) {
                                 chosenSchedule.getSession()[sessionChoice - 1] = "Unavailable";
                                 // To add on patient appointment outcome logic
 
-                                Appointment selectedAcAppointment = Appointment.getAppointmentByScheduleAndSession(chosenSchedule, sessionChoice - 1, appointments);
-                                selectedAcAppointment.setStatus("Cancelled");
-                                System.out.printf("\nPatient (?) pending booking has been declined. Session %d has been updated to Unavailable as it was pending.\n", sessionChoice);
+                                Appointment selectedAcAppointment = Appointment.getAppointmentByScheduleAndSession(
+                                        chosenSchedule, sessionChoice - 1, appointments);
+                                selectedAcAppointment.setStatus(AppointmentStatus.CANCELLED.name());
+                                System.out.printf(
+                                        "\nPatient (?) pending booking has been declined. Session %d has been updated to Unavailable as it was pending.\n",
+                                        sessionChoice);
                             } else if (currentStatus.equals("Available")) {
                                 chosenSchedule.getSession()[sessionChoice - 1] = "Unavailable";
                                 System.out.printf("\nSession %d has been updated to Unavailable.\n", sessionChoice);
@@ -401,7 +412,8 @@ public class Doctor extends User {
                                 chosenSchedule.getSession()[sessionChoice - 1] = "Available";
                                 System.out.printf("\nSession %d has been updated to Available.\n", sessionChoice);
                             } else {
-                                System.out.println("\nYou cannot update this session as you have confirmed appointments.");
+                                System.out.println(
+                                        "\nYou cannot update this session as you have confirmed appointments.");
                                 continue;
                             }
 
@@ -413,7 +425,8 @@ public class Doctor extends User {
                                 System.err.println("Error while saving appointments: " + e.getMessage());
                             }
                         } else {
-                            System.out.println("\nInvalid choice. Please select a valid session number or press enter to exit.");
+                            System.out.println(
+                                    "\nInvalid choice. Please select a valid session number or press enter to exit.");
                         }
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input. Please enter a valid number.");
@@ -425,7 +438,9 @@ public class Doctor extends User {
         }
     }
 
-    public void recordAppointmentOutcome(ArrayList<Appointment> appointments, ArrayList<Medication> inventory, ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords, ArrayList<Diagnosis> diagnosises, ArrayList<Treatment> treatments) {
+    public void updateAppointmentOutcome(ArrayList<Appointment> appointments, ArrayList<Medication> inventory,
+            ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords, ArrayList<Diagnosis> diagnoses,
+            ArrayList<Treatment> treatments) {
         Scanner sc = new Scanner(System.in);
         boolean exit = false;
 
@@ -435,7 +450,8 @@ public class Doctor extends User {
 
             System.out.println("\n=== Confirmed Appointments ===");
 
-            ArrayList<Appointment> confirmedAppointments = Appointment.getConfirmedAppointmentsByDoctorID(getHospitalID(), appointments);
+            ArrayList<Appointment> confirmedAppointments = Appointment
+                    .getConfirmedAppointmentsByDoctorID(getHospitalID(), appointments);
 
             for (Appointment appointment : confirmedAppointments) {
                 System.out.printf("%d. Appointment ID: %s, Date: %s, Session: %s, Patient ID: %s\n",
@@ -476,8 +492,10 @@ public class Doctor extends User {
                     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
                     LocalTime sessionTime = LocalTime.parse(sessionTimeString, timeFormatter);
 
-                    if (appointmentDate.isAfter(currentDate) || (appointmentDate.isEqual(currentDate) && sessionTime.isAfter(currentTime))) {
-                        System.out.println("\nThe appointment time has not passed yet. You cannot record the outcome at this time.");
+                    if (appointmentDate.isAfter(currentDate)
+                            || (appointmentDate.isEqual(currentDate) && sessionTime.isAfter(currentTime))) {
+                        System.out.println(
+                                "\nThe appointment time has not passed yet. You cannot record the outcome at this time.");
                         continue;
                     }
 
@@ -503,7 +521,8 @@ public class Doctor extends User {
                         System.out.println("\nEnter treatment (enter na if none): ");
                         treatmentNotes = sc.nextLine();
 
-                        // Step 4: Display medication inventory and allow the user to prescribe medicines
+                        // Step 4: Display medication inventory and allow the user to prescribe
+                        // medicines
                         ArrayList<MedicationItem> prescribedMedicines = new ArrayList<>();
                         boolean addingMedicines = true;
 
@@ -516,7 +535,8 @@ public class Doctor extends User {
                                 medIndex++;
                             }
 
-                            System.out.println("\nSelect a medicine by number to prescribe (or press Enter to finish): ");
+                            System.out
+                                    .println("\nSelect a medicine by number to prescribe (or press Enter to finish): ");
                             String medInput = sc.nextLine();
 
                             if (medInput.trim().isEmpty()) {
@@ -541,10 +561,12 @@ public class Doctor extends User {
                                         prescribedMed.setQuantity(quantity);
                                         prescribedMedicines.add(prescribedMed);
                                         for (MedicationItem med : prescribedMedicines) {
-                                            System.out.printf("- %s: %d units\n", med.getMedicationName(), med.getQuantity());
+                                            System.out.printf("- %s: %d units\n", med.getMedicationName(),
+                                                    med.getQuantity());
                                         }
                                     } else {
-                                        System.out.println("Invalid quantity. Please enter a valid amount within the available units.");
+                                        System.out.println(
+                                                "Invalid quantity. Please enter a valid amount within the available units.");
                                     }
                                 } else {
                                     System.out.println("Invalid choice. Please select a valid medicine number.");
@@ -555,25 +577,29 @@ public class Doctor extends User {
                         }
 
                         // Save the details to an outcome record including prescribed medications
-                        AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(selectedAppointment.getAppointmentID(), typeOfService, consultationNotes, prescribedMedicines, "PENDING");
+                        AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(
+                                selectedAppointment.getAppointmentID(), typeOfService, consultationNotes,
+                                prescribedMedicines, AppointmentOutcomeStatus.PENDING.name());
 
-                        Treatment treatment = new Treatment(selectedAppointment.getAppointmentID(), selectedAppointment.getPatientID(), treatmentNotes);
-                        Diagnosis diagnosis = new Diagnosis(selectedAppointment.getAppointmentID(), selectedAppointment.getPatientID(), diagnosisNotes);
+                        Treatment treatment = new Treatment(selectedAppointment.getAppointmentID(),
+                                selectedAppointment.getPatientID(), treatmentNotes);
+                        Diagnosis diagnosis = new Diagnosis(selectedAppointment.getAppointmentID(),
+                                selectedAppointment.getPatientID(), diagnosisNotes);
 
                         treatments.add(treatment);
-                        diagnosises.add(diagnosis);
+                        diagnoses.add(diagnosis);
                         apptOutcomeRecords.add(outcomeRecord);
 
                         CsvDB.saveAppointmentOutcomeRecords(apptOutcomeRecords);
-                        CsvDB.saveDiagnosis(diagnosises);
+                        CsvDB.saveDiagnosis(diagnoses);
                         CsvDB.saveTreatment(treatments);
 
                         // CsvDB.saveAppointmentOutcomeRecords(apptOutcomeRecords);
-                        selectedAppointment.setStatus("Completed");
+                        selectedAppointment.setStatus(AppointmentStatus.COMPLETED.name());
                         System.out.println("\nAppointment outcome recorded successfully as 'Completed'.");
 
                     } else if (outcome.equals("N")) {
-                        selectedAppointment.setStatus("No-Show");
+                        selectedAppointment.setStatus(AppointmentStatus.NO_SHOW.name());
                         System.out.println("\nAppointment outcome recorded successfully as 'No-Show'.");
                     } else {
                         System.out.println("Invalid input. Please enter either 'Y' for Completed or 'N' for No-Show.");
@@ -598,18 +624,21 @@ public class Doctor extends User {
         }
     }
 
-    public void viewPatientMedicalRecords(ArrayList<Schedule> schedules, ArrayList<User> users, ArrayList<AppointmentOutcomeRecord> outcomeRecords, ArrayList<Diagnosis> diagnoses, ArrayList<Treatment> treatments) {
+    public void viewMedicalRecord(ArrayList<Schedule> schedules, ArrayList<User> users,
+            ArrayList<AppointmentOutcomeRecord> outcomeRecords, ArrayList<Diagnosis> diagnoses,
+            ArrayList<Treatment> treatments) {
         Scanner sc = new Scanner(System.in);
         ArrayList<String> uniquePatientIds = new ArrayList<>();
         ArrayList<User> patientsUnderCare = new ArrayList<>();
+        Patient currentPatient = null;
 
         // Step 1: Filter all confirmed schedules for the logged-in doctor
         for (Schedule schedule : schedules) {
             if (schedule.getDoctorID().equals(getHospitalID())) {
                 for (int i = 0; i < schedule.getSession().length; i++) {
                     String sessionInfo = schedule.getSession()[i];
-                    if (sessionInfo.contains("-Confirmed")) {
-                        String patientId = sessionInfo.split("-")[0];  // Extract the patient ID
+                    if (sessionInfo.contains(ScheduleStatus.CONFIRMED.name())) {
+                        String patientId = sessionInfo.split("-")[0]; // Extract the patient ID
                         if (!uniquePatientIds.contains(patientId)) {
                             uniquePatientIds.add(patientId);
                         }
@@ -639,7 +668,8 @@ public class Doctor extends User {
             System.out.println("\n=== Patients Under Your Care ===");
             int index = 1;
             for (User patient : patientsUnderCare) {
-                System.out.printf("%d. Patient Name: %s, Age: %d, Gender: %s\n", index, patient.getName(), patient.getAge(), patient.getGender());
+                System.out.printf("%d. Patient Name: %s, Age: %d, Gender: %s\n", index, patient.getName(),
+                        patient.getAge(), patient.getGender());
                 index++;
             }
 
@@ -649,7 +679,7 @@ public class Doctor extends User {
 
             if (input.trim().isEmpty()) {
                 System.out.println("Returning to previous menu...");
-                viewingRecords = false;  // Exit the loop
+                viewingRecords = false; // Exit the loop
                 continue;
             }
 
@@ -663,21 +693,80 @@ public class Doctor extends User {
                     // Display the patient's medical record information (assuming a method exists)
                     System.out.println("\n=== Medical Records for " + selectedPatient.getName() + " ===");
                     if (selectedPatient instanceof Patient) {
-                        Patient patient = (Patient) selectedPatient;
-                        patient.viewMedicalRecord(outcomeRecords, diagnoses, treatments);  // Assuming `viewMedicalRecord()` is a method in Patient
+                        currentPatient = (Patient) selectedPatient;
+                        System.out.println("\n==================== Medical Record ====================");
+                        System.out.printf("ID            : %s\n", currentPatient.getHospitalID());
+                        System.out.printf("Name          : %s\n", currentPatient.getName());
+                        System.out.printf("Date of Birth : %s\n", currentPatient.getDateOfBirth());
+                        System.out.printf("Gender        : %s\n", currentPatient.getGender());
+                        System.out.printf("Contact       : %s\n", currentPatient.getPhoneNumber());
+                        System.out.printf("Email         : %s\n", currentPatient.getEmail());
+                        System.out.printf("Blood Type    : %s\n", currentPatient.getBloodType());
+                        System.out.println("=======================================================");
+
+                        // Display diagnosis and treatment information with prescriptions only
+                        System.out.println("\n================= Diagnoses and Treatments =============");
+                        int recordNo = 1;
+                        boolean hasRecords = false;
+
+                        for (Diagnosis diagnosis : diagnoses) {
+                            for (Treatment treatment : treatments) {
+                                if (diagnosis.getPatientID().equals(currentPatient.getHospitalID())
+                                        && treatment.getPatientID().equals(currentPatient.getHospitalID())
+                                        && diagnosis.getAppointmentID().equals(treatment.getAppointmentID())) {
+
+                                    // Display basic record information
+                                    System.out.printf("Record %d:\n", recordNo++);
+                                    System.out.printf("  Appointment ID : %s\n", diagnosis.getAppointmentID());
+                                    System.out.printf("  Diagnosis      : %s\n", diagnosis.getDiagnosis());
+                                    System.out.printf("  Treatment      : %s\n", treatment.getTreatment());
+
+                                    // Find and display only the prescriptions
+                                    AppointmentOutcomeRecord outcome = getOutcomeByAppointmentID(outcomeRecords,
+                                            diagnosis.getAppointmentID());
+                                    if (outcome != null && !outcome.getPrescriptions().isEmpty()) {
+                                        String prescriptions = outcome.getPrescriptions().stream()
+                                                .map(MedicationItem::toString)
+                                                .reduce((p1, p2) -> p1 + ", " + p2)
+                                                .orElse("No prescriptions.");
+                                        System.out.printf("  Prescriptions  : %s\n", prescriptions);
+                                    } else {
+                                        System.out.println("  Prescriptions  : No prescriptions available.");
+                                    }
+
+                                    System.out.println("-------------------------------------------------------");
+                                    hasRecords = true;
+                                }
+                            }
+                        }
+
+                        if (!hasRecords) {
+                            System.out.println("No diagnoses or treatments found for this patient.");
+                        }
+                        System.out.println("=======================================================");
                     }
                 } else {
                     System.out.println("Invalid choice. Please select a valid patient number.");
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a valid number.");
-            } catch (IOException e) {
-                System.err.println("Error displaying medical records: " + e.getMessage());
             }
         }
     }
 
-    public void updateMedicalRecord(ArrayList<Schedule> schedules, ArrayList<User> users, ArrayList<AppointmentOutcomeRecord> outcomeRecords, ArrayList<Diagnosis> diagnoses, ArrayList<Treatment> treatments, ArrayList<Medication> inventory) {
+    public AppointmentOutcomeRecord getOutcomeByAppointmentID(ArrayList<AppointmentOutcomeRecord> outcomeRecords,
+            String appointmentID) {
+        for (AppointmentOutcomeRecord outcome : outcomeRecords) {
+            if (outcome.getAppointmentID().equals(appointmentID)) {
+                return outcome;
+            }
+        }
+        return null;
+    }
+
+    public void updateMedicalRecord(ArrayList<Schedule> schedules, ArrayList<User> users,
+            ArrayList<AppointmentOutcomeRecord> outcomeRecords, ArrayList<Diagnosis> diagnoses,
+            ArrayList<Treatment> treatments, ArrayList<Medication> inventory) {
         Scanner sc = new Scanner(System.in);
 
         while (true) {
@@ -799,7 +888,7 @@ public class Doctor extends User {
             }
 
             // Allow editing prescription if status is pending
-            if ("PENDING".equalsIgnoreCase(selectedOutcome.getPrescriptionStatus())) {
+            if (AppointmentStatus.PENDING.name().equalsIgnoreCase(selectedOutcome.getPrescriptionStatus())) {
                 System.out.println("Prescription Status: " + selectedOutcome.getPrescriptionStatus());
                 System.out.print("Do you want to edit the prescriptions? (y/n or press Enter to skip): ");
                 String editPrescriptionResponse = sc.nextLine();
@@ -842,10 +931,12 @@ public class Doctor extends User {
                                     prescribedMed.setQuantity(quantity);
                                     prescribedMedicines.add(prescribedMed);
                                     for (MedicationItem med : prescribedMedicines) {
-                                        System.out.printf("- %s: %d units\n", med.getMedicationName(), med.getQuantity());
+                                        System.out.printf("- %s: %d units\n", med.getMedicationName(),
+                                                med.getQuantity());
                                     }
                                 } else {
-                                    System.out.println("Invalid quantity. Please enter a valid amount within the available units.");
+                                    System.out.println(
+                                            "Invalid quantity. Please enter a valid amount within the available units.");
                                 }
                             } else {
                                 System.out.println("Invalid choice. Please select a valid medicine number.");

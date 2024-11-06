@@ -3,7 +3,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Administrator extends User implements Inventory {
+public class Administrator extends User
+        implements UserManager, AppointmentInterface, AppointmentOutcomeViewer, InventoryManager,
+        AdminReplenishmentManager {
 
     public Administrator(String hospitalID, String password, String name, int age, String gender) {
         super(hospitalID, password, name, age, gender);
@@ -132,7 +134,7 @@ public class Administrator extends User implements Inventory {
 
     public void viewUsers(ArrayList<User> users) {
         Scanner sc = new Scanner(System.in);
-    
+
         // Ask the user which type of staff they want to view
         System.out.println("\nWhich type of staff do you want to view?");
         System.out.println("1. Patients");
@@ -142,7 +144,7 @@ public class Administrator extends User implements Inventory {
         System.out.print("Enter your choice: ");
         int choice = sc.nextInt();
         sc.nextLine(); // Consume newline
-    
+
         String selectedStaffType = "";
         switch (choice) {
             case 1:
@@ -161,7 +163,7 @@ public class Administrator extends User implements Inventory {
                 System.out.println("Invalid choice. Returning to main menu...");
                 return;
         }
-    
+
         // Ask the user if they want to filter by gender
         System.out.println("\nWould you like to filter by gender?");
         System.out.println("1. Male");
@@ -170,7 +172,7 @@ public class Administrator extends User implements Inventory {
         System.out.print("Enter your choice: ");
         int genderChoice = sc.nextInt();
         sc.nextLine(); // Consume newline
-    
+
         String selectedGender = "";
         switch (genderChoice) {
             case 1:
@@ -186,20 +188,20 @@ public class Administrator extends User implements Inventory {
                 System.out.println("Invalid choice. Returning to main menu...");
                 return;
         }
-    
+
         // Ask the user if they want to filter by age range
         System.out.print("\nEnter minimum age (or press enter to skip): ");
         String minAgeInput = sc.nextLine().trim();
         int minAge = minAgeInput.isEmpty() ? Integer.MIN_VALUE : Integer.parseInt(minAgeInput);
-    
+
         System.out.print("Enter maximum age (or press enter to skip): ");
         String maxAgeInput = sc.nextLine().trim();
         int maxAge = maxAgeInput.isEmpty() ? Integer.MAX_VALUE : Integer.parseInt(maxAgeInput);
-    
+
         // Display filtered users
         System.out.println("\nViewing " + selectedStaffType + " Information:");
         boolean userFound = false;
-    
+
         for (User user : users) {
             boolean matchesRole = false;
             switch (choice) {
@@ -216,154 +218,154 @@ public class Administrator extends User implements Inventory {
                     matchesRole = user instanceof Administrator;
                     break;
             }
-    
+
             boolean matchesGender = selectedGender.isEmpty() || user.getGender().equalsIgnoreCase(selectedGender);
             boolean matchesAge = user.getAge() >= minAge && user.getAge() <= maxAge;
-    
+
             if (matchesRole && matchesGender && matchesAge) {
-                System.out.printf("Hospital ID: %s | Name: %s | Age: %d | Gender: %s\n", user.getHospitalID(), user.getName(), user.getAge(), user.getGender());
+                System.out.printf("Hospital ID: %s | Name: %s | Age: %d | Gender: %s\n", user.getHospitalID(),
+                        user.getName(), user.getAge(), user.getGender());
                 userFound = true;
             } else if (matchesRole && matchesGender && matchesAge && (user instanceof Patient)) {
-                System.out.printf("Hospital ID: %s | Name: %s | Age: %d | Gender: %s\n", 
-                user.getHospitalID(), user.getName(), user.getAge(), user.getGender());
+                System.out.printf("Hospital ID: %s | Name: %s | Age: %d | Gender: %s\n",
+                        user.getHospitalID(), user.getName(), user.getAge(), user.getGender());
                 userFound = true;
             }
         }
-    
+
         if (!userFound) {
             System.out.println("No users found matching the specified criteria.");
         }
     }
-    
 
     public void updateUser(ArrayList<User> users) {
-            Scanner sc = new Scanner(System.in);
-            System.out.print(
-                    "\nEnter the Hospital ID of the staff to update (or press enter to return to main menu: ");
-            String staffIDToUpdate = sc.nextLine();
-            boolean userFound = false;
+        Scanner sc = new Scanner(System.in);
+        System.out.print(
+                "\nEnter the Hospital ID of the staff to update (or press enter to return to main menu): ");
+        String staffIDToUpdate = sc.nextLine();
+        boolean userFound = false;
 
-            if (staffIDToUpdate.trim().isEmpty()) {
-                System.out.println("Returning to main menu...");
-                return;
-            }
+        if (staffIDToUpdate.trim().isEmpty()) {
+            System.out.println("Returning to main menu...");
+            return;
+        }
 
-            for (User user : users) {
-                if (user.getHospitalID().equalsIgnoreCase(staffIDToUpdate)) {
-                    System.out.println("Found user: " + user);
+        for (User user : users) {
+            if (user.getHospitalID().equalsIgnoreCase(staffIDToUpdate)) {
+                System.out.println("Found user: " + user);
 
-                    // Update common fields: password, name, age, gender
-                    System.out.print("Enter new password (or press Enter to keep current): ");
-                    String newPassword = sc.nextLine();
-                    if (!newPassword.trim().isEmpty()) {
-                        user.setPassword(newPassword);
-                    }
-
-                    System.out.print("Enter new name (or press Enter to keep current): ");
-                    String newName = sc.nextLine();
-                    if (!newName.trim().isEmpty()) {
-                        user.setName(newName);
-                    }
-
-                    System.out.print("Enter new age (or press Enter to keep current): ");
-                    String newAgeInput = sc.nextLine();
-                    if (!newAgeInput.trim().isEmpty()) {
-                        int newAge = Integer.parseInt(newAgeInput);
-                        user.setAge(newAge);
-                    }
-
-                    System.out.print("Enter new gender (or press Enter to keep current): ");
-                    String newGender = sc.nextLine();
-                    if (!newGender.trim().isEmpty()) {
-                        user.setGender(newGender);
-                    }
-
-                    // Additional fields for Patient only
-                    if (user instanceof Patient) {
-                        Patient patient = (Patient) user;
-
-                        System.out.print("Enter new date of birth (or press Enter to keep current): ");
-                        String newDOB = sc.nextLine();
-                        if (!newDOB.trim().isEmpty()) {
-                            patient.setDateOfBirth(newDOB);
-                        }
-
-                        System.out.print("Enter new phone number (or press Enter to keep current): ");
-                        String newPhoneNumber = sc.nextLine();
-                        if (!newPhoneNumber.trim().isEmpty()) {
-                            patient.setPhoneNumber(newPhoneNumber);
-                        }
-
-                        System.out.print("Enter new email (or press Enter to keep current): ");
-                        String newEmail = sc.nextLine();
-                        if (!newEmail.trim().isEmpty()) {
-                            patient.setEmail(newEmail);
-                        }
-
-                        System.out.print("Enter new blood type (or press Enter to keep current): ");
-                        String newBloodType = sc.nextLine();
-                        if (!newBloodType.trim().isEmpty()) {
-                            patient.setBloodType(newBloodType);
-                        }
-                    }
-
-                    System.out.println("User information updated successfully.");
-                    userFound = true;
-                    break;
+                // Update common fields: password, name, age, gender
+                System.out.print("Enter new password (or press Enter to keep current): ");
+                String newPassword = sc.nextLine();
+                if (!newPassword.trim().isEmpty()) {
+                    user.setPassword(newPassword);
                 }
-            }
 
-            if (!userFound) {
-                System.out.println("Staff with Hospital ID " + staffIDToUpdate + " not found.");
+                System.out.print("Enter new name (or press Enter to keep current): ");
+                String newName = sc.nextLine();
+                if (!newName.trim().isEmpty()) {
+                    user.setName(newName);
+                }
+
+                System.out.print("Enter new age (or press Enter to keep current): ");
+                String newAgeInput = sc.nextLine();
+                if (!newAgeInput.trim().isEmpty()) {
+                    int newAge = Integer.parseInt(newAgeInput);
+                    user.setAge(newAge);
+                }
+
+                System.out.print("Enter new gender (or press Enter to keep current): ");
+                String newGender = sc.nextLine();
+                if (!newGender.trim().isEmpty()) {
+                    user.setGender(newGender);
+                }
+
+                // Additional fields for Patient only
+                if (user instanceof Patient) {
+                    Patient patient = (Patient) user;
+
+                    System.out.print("Enter new date of birth (or press Enter to keep current): ");
+                    String newDOB = sc.nextLine();
+                    if (!newDOB.trim().isEmpty()) {
+                        patient.setDateOfBirth(newDOB);
+                    }
+
+                    System.out.print("Enter new phone number (or press Enter to keep current): ");
+                    String newPhoneNumber = sc.nextLine();
+                    if (!newPhoneNumber.trim().isEmpty()) {
+                        patient.setPhoneNumber(newPhoneNumber);
+                    }
+
+                    System.out.print("Enter new email (or press Enter to keep current): ");
+                    String newEmail = sc.nextLine();
+                    if (!newEmail.trim().isEmpty()) {
+                        patient.setEmail(newEmail);
+                    }
+
+                    System.out.print("Enter new blood type (or press Enter to keep current): ");
+                    String newBloodType = sc.nextLine();
+                    if (!newBloodType.trim().isEmpty()) {
+                        patient.setBloodType(newBloodType);
+                    }
+                }
+
+                System.out.println("User information updated successfully.");
+                userFound = true;
+                break;
             }
+        }
+
+        if (!userFound) {
+            System.out.println("Staff with Hospital ID " + staffIDToUpdate + " not found.");
+        }
+
+        try {
+            // Save the updated users to CSV
+            CsvDB.saveUsers(users);
+            System.out.println("User data saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error updating user " + e.getMessage());
+        }
+    }
+
+    // Method to delete a user
+    public void deleteUser(ArrayList<User> users) {
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("\nEnter the Hospital ID of the staff to delete: ");
+        String staffIDToDelete = sc.nextLine();
+        User userToRemove = null;
+
+        if (staffIDToDelete.trim().isEmpty()) {
+            System.out.println("Returning to main menu...");
+            return;
+        }
+
+        for (User user : users) {
+            if (user.getHospitalID().equalsIgnoreCase(staffIDToDelete)) {
+                userToRemove = user;
+                break;
+            }
+        }
+
+        if (userToRemove != null) {
+            users.remove(userToRemove);
+            System.out.println("User with Hospital ID " + staffIDToDelete + " has been removed.");
 
             try {
                 // Save the updated users to CSV
                 CsvDB.saveUsers(users);
                 System.out.println("User data saved successfully.");
             } catch (IOException e) {
-                System.out.println("Error updating user " + e.getMessage());
+                System.out.println("Error deleting user " + e.getMessage());
             }
-    }
-
-    // Method to delete a user
-    public void deleteUser(ArrayList<User> users) {
-
-            Scanner sc = new Scanner(System.in);
-            System.out.print("\nEnter the Hospital ID of the staff to delete: ");
-            String staffIDToDelete = sc.nextLine();
-            User userToRemove = null;
-
-            if (staffIDToDelete.trim().isEmpty()) {
-                System.out.println("Returning to main menu...");
-                return;
-            }
-
-            for (User user : users) {
-                if (user.getHospitalID().equalsIgnoreCase(staffIDToDelete)) {
-                    userToRemove = user;
-                    break;
-                }
-            }
-
-            if (userToRemove != null) {
-                users.remove(userToRemove);
-                System.out.println("User with Hospital ID " + staffIDToDelete + " has been removed.");
-
-                try {
-                    // Save the updated users to CSV
-                    CsvDB.saveUsers(users);
-                    System.out.println("User data saved successfully.");
-                } catch (IOException e) {
-                    System.out.println("Error deleting user " + e.getMessage());
-                }
-            } else {
-                System.out.println("Staff with Hospital ID " + staffIDToDelete + " not found.");
-            }
+        } else {
+            System.out.println("Staff with Hospital ID " + staffIDToDelete + " not found.");
+        }
     }
 
     // Method to view appointments, now accepting appointments as a parameter
-    public void viewAppointments(ArrayList<Appointment> appointments) throws IOException {
+    public void viewAppointment(ArrayList<Appointment> appointments) throws IOException {
         Scanner sc = new Scanner(System.in);
 
         // Prompt the user for the type of appointment they want to view
@@ -394,15 +396,15 @@ public class Administrator extends User implements Inventory {
         switch (choice) {
             case 1:
                 System.out.println("\n=== Completed Appointments ===");
-                filterAndDisplayAppointments(appointments, "Completed");
+                filterAndDisplayAppointments(appointments, AppointmentStatus.COMPLETED.name());
                 break;
             case 2:
                 System.out.println("\n=== Cancelled Appointments ===");
-                filterAndDisplayAppointments(appointments, "Cancelled");
+                filterAndDisplayAppointments(appointments, AppointmentStatus.CANCELLED.name());
                 break;
             case 3:
                 System.out.println("\n=== Pending Appointments ===");
-                filterAndDisplayAppointments(appointments, "Pending");
+                filterAndDisplayAppointments(appointments, AppointmentStatus.PENDING.name());
                 break;
             case 4:
                 System.out.println("\n=== All Appointments ===");
@@ -414,52 +416,55 @@ public class Administrator extends User implements Inventory {
     }
 
     // Modified Method to filter and display appointments based on their status
-private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, String status) throws IOException {
-    boolean found = false;
+    private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, String status) throws IOException {
+        boolean found = false;
 
-    // Read Appointment Outcome Records (only if status is Completed)
-    ArrayList<AppointmentOutcomeRecord> outcomeRecords = new ArrayList<>();
-    if (status.equalsIgnoreCase("Completed")) {
-        try {
-            outcomeRecords = CsvDB.readAppointmentOutcomeRecords();
-        } catch (IOException e) {
-            System.out.println("Error reading appointment outcome records: " + e.getMessage());
-            return;
-        }
-    }
-
-    for (Appointment appt : appointments) {
-        if (appt.getStatus().equalsIgnoreCase(status)) {
-            // Display the basic appointment details
-            System.out.printf(
-                    "Appointment ID: %s | Patient ID: %s | Doctor ID: %s | Date: %s | Session: %d | Status: %s\n",
-                    appt.getAppointmentID(), appt.getPatientID(), appt.getDoctorID(), appt.getDate(),
-                    appt.getSession(), appt.getStatus());
-            found = true;
-
-            // If the appointment is "Completed", display additional outcome details
-            if (status.equalsIgnoreCase("Completed")) {
-                // Find the corresponding appointment outcome record
-                AppointmentOutcomeRecord outcomeRecord = new Patient().findOutcomeByAppointmentID(outcomeRecords, appt.getAppointmentID());
-                if (outcomeRecord != null) {
-                    // System.out.printf("  Diagnosis: %s\n", outcomeRecord.getDiagnosis());
-                    // System.out.printf("  Treatment: %s\n", outcomeRecord.getTreatment());
-                    System.out.printf("Appointment ID: %s | Type of Service: %s | Consultation Notes: %s | Prescriptions: %s | Prescription Status: %s\n", 
-                    outcomeRecord.getAppointmentID(), outcomeRecord.getTypeOfService(), outcomeRecord.getConsultationNotes(), outcomeRecord.getPrescriptions(), outcomeRecord.getPrescriptionStatus());
-                } else {
-                    System.out.println("  No outcome record available for this appointment.");
-                }
-                //new Patient().viewAppointmentOutcomeRecords(appointments, outcomeRecords);
+        // Read Appointment Outcome Records (only if status is Completed)
+        ArrayList<AppointmentOutcomeRecord> outcomeRecords = new ArrayList<>();
+        if (status.equalsIgnoreCase(AppointmentStatus.COMPLETED.name())) {
+            try {
+                outcomeRecords = CsvDB.readAppointmentOutcomeRecords();
+            } catch (IOException e) {
+                System.out.println("Error reading appointment outcome records: " + e.getMessage());
+                return;
             }
+        }
 
-            System.out.println("-------------------------------------------------------");
+        for (Appointment appt : appointments) {
+            if (appt.getStatus().equalsIgnoreCase(status)) {
+                // Display the basic appointment details
+                System.out.printf(
+                        "Appointment ID: %s | Patient ID: %s | Doctor ID: %s | Date: %s | Session: %d | Status: %s\n",
+                        appt.getAppointmentID(), appt.getPatientID(), appt.getDoctorID(), appt.getDate(),
+                        appt.getSession(), appt.getStatus());
+                found = true;
+
+                // If the appointment is "Completed", display additional outcome details
+                if (status.equalsIgnoreCase(AppointmentStatus.COMPLETED.name())) {
+                    // Find the corresponding appointment outcome record
+                    AppointmentOutcomeRecord outcomeRecord = getOutcomeByAppointmentID(outcomeRecords,
+                            appt.getAppointmentID());
+                    if (outcomeRecord != null) {
+                        // System.out.printf(" Diagnosis: %s\n", outcomeRecord.getDiagnosis());
+                        // System.out.printf(" Treatment: %s\n", outcomeRecord.getTreatment());
+                        System.out.printf(
+                                "Appointment ID: %s | Type of Service: %s | Consultation Notes: %s | Prescriptions: %s | Prescription Status: %s\n",
+                                outcomeRecord.getAppointmentID(), outcomeRecord.getTypeOfService(),
+                                outcomeRecord.getConsultationNotes(), outcomeRecord.getPrescriptions(),
+                                outcomeRecord.getPrescriptionStatus());
+                    } else {
+                        System.out.println("  No outcome record available for this appointment.");
+                    }
+                }
+
+                System.out.println("-------------------------------------------------------");
+            }
+        }
+
+        if (!found) {
+            System.out.println("No appointments found with status: " + status);
         }
     }
-
-    if (!found) {
-        System.out.println("No appointments found with status: " + status);
-    }
-}
 
     // Method to display all appointments
     private void displayAllAppointments(ArrayList<Appointment> appointments) {
@@ -476,7 +481,16 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
         }
     }
 
-    @Override
+    public AppointmentOutcomeRecord getOutcomeByAppointmentID(ArrayList<AppointmentOutcomeRecord> outcomeRecords,
+            String appointmentID) {
+        for (AppointmentOutcomeRecord outcome : outcomeRecords) {
+            if (outcome.getAppointmentID().equals(appointmentID)) {
+                return outcome;
+            }
+        }
+        return null;
+    }
+
     public void viewInventory(ArrayList<Medication> inventory) {
         System.out.println("\n=== Inventory ===");
         for (Medication medication : inventory) {
@@ -491,15 +505,15 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
     public void updateInventory(ArrayList<Medication> inventory) {
         Scanner sc = new Scanner(System.in);
         boolean medicationFound = false;
-    
+
         System.out.print("Enter the name of the medication to update (or press enter to return to main menu): ");
         String medicationName = sc.nextLine();
-    
+
         if (medicationName.trim().isEmpty()) {
             System.out.println("Returning to main menu...");
             return;
         }
-    
+
         System.out.print("Enter the quantity to add: ");
         while (!sc.hasNextInt()) {
             System.out.print("Please enter a valid integer for the quantity: ");
@@ -507,25 +521,25 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
         }
         int quantity = sc.nextInt();
         sc.nextLine(); // Consume newline left after nextInt()
-    
+
         // Loop through the inventory to find if the medication already exists
         for (Medication med : inventory) {
             if (med.getMedicationName().equalsIgnoreCase(medicationName)) {
                 // Update the quantity of the existing medication
                 int newQuantity = med.getTotalQuantity() + quantity;
-    
+
                 // Determine stock status based on the new quantity
-                String stockStatus = "LOW";
+                String stockStatus = MedicationStatus.LOW.name();
                 boolean alert = false;
                 if (newQuantity < 10) {
-                    stockStatus = "LOW";
+                    stockStatus = MedicationStatus.LOW.name();
                     alert = true;
                 } else if (newQuantity >= 10 && newQuantity <= 50) {
-                    stockStatus = "MEDIUM";
+                    stockStatus = MedicationStatus.MEDIUM.name();
                 } else if (newQuantity > 50) {
-                    stockStatus = "HIGH";
+                    stockStatus = MedicationStatus.HIGH.name();
                 }
-    
+
                 med.setTotalQuantity(newQuantity);
                 med.setStockStatus(stockStatus);
                 med.setAlert(alert);
@@ -534,12 +548,12 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
                 break;
             }
         }
-    
+
         if (!medicationFound) {
             System.out.println("Medication not found in inventory. Please use 'addInventory' to add a new medication.");
             return;
         }
-    
+
         // Save the updated inventory to the CSV file
         try {
             CsvDB.saveMedications(inventory);
@@ -548,18 +562,18 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
             System.out.println("Error saving inventory: " + e.getMessage());
         }
     }
-    
+
     public void addInventory(ArrayList<Medication> inventory) {
         Scanner sc = new Scanner(System.in);
-    
+
         System.out.print("Enter the name of the medication to add (or press enter to return to main menu): ");
         String medicationName = sc.nextLine();
-    
+
         if (medicationName.trim().isEmpty()) {
             System.out.println("Returning to main menu...");
             return;
         }
-    
+
         System.out.print("Enter the quantity to add: ");
         while (!sc.hasNextInt()) {
             System.out.print("Please enter a valid integer for the quantity: ");
@@ -567,26 +581,26 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
         }
         int quantity = sc.nextInt();
         sc.nextLine(); // Consume newline left after nextInt()
-    
+
         // Determine stock status based on quantity
-        String stockStatus = "LOW";
+        String stockStatus = MedicationStatus.LOW.name();
         boolean alert = false;
         if (quantity < 10) {
-            stockStatus = "LOW";
+            stockStatus = MedicationStatus.LOW.name();
             alert = true;
         } else if (quantity >= 10 && quantity <= 50) {
-            stockStatus = "MEDIUM";
+            stockStatus = MedicationStatus.MEDIUM.name();
         } else if (quantity > 50) {
-            stockStatus = "HIGH";
+            stockStatus = MedicationStatus.HIGH.name();
         }
-    
+
         // Create a new medication and add to inventory
         String medicationID = "M000" + (inventory.size() + 1);
         Medication newMedication = new Medication(medicationID, medicationName, stockStatus, alert, quantity);
         inventory.add(newMedication);
         System.out.println("Added new medication: " + newMedication.getMedicationName() + " with quantity: "
                 + newMedication.getTotalQuantity());
-    
+
         // Save the updated inventory to the CSV file
         try {
             CsvDB.saveMedications(inventory);
@@ -595,7 +609,6 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
             System.out.println("Error saving inventory: " + e.getMessage());
         }
     }
-    
 
     public void deleteInventory(ArrayList<Medication> inventory) {
         Scanner sc = new Scanner(System.in);
@@ -632,24 +645,15 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
         }
     }
 
-    @Override
-    public void updateMedication(Medication medication, String medicationID, String medicationName, String stockStatus,
-            boolean alert, int quantity) {
-        medication.setMedicationID(medicationID);
-        medication.setMedicationName(medicationName);
-        medication.setStockStatus(stockStatus);
-        medication.setAlert(alert);
-        medication.setTotalQuantity(quantity);
-    }
-
-    public void approveReplenishmentRequests(ArrayList<ReplenishmentRequest> replenishmentRequests, ArrayList<Medication> inventory) {
+    public void approveReplenishmentRequest(ArrayList<ReplenishmentRequest> replenishmentRequests,
+            ArrayList<Medication> inventory) {
         Scanner sc = new Scanner(System.in);
         boolean requestFound = false;
 
         System.out.println("\n=== Pending Replenishment Requests ===");
         // Display all pending replenishment requests
         for (ReplenishmentRequest request : replenishmentRequests) {
-            if (request.getStatus().equalsIgnoreCase("PENDING")) {
+            if (request.getStatus().equalsIgnoreCase(ReplenishmentStatus.PENDING.name())) {
                 System.out.printf("Request ID: %s | Status: %s | Pharmacist ID: %s\n", request.getRequestID(),
                         request.getStatus(), request.getPharmacistID());
                 requestFound = true;
@@ -673,7 +677,7 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
         // Find the selected request
         for (ReplenishmentRequest request : replenishmentRequests) {
             if (request.getRequestID().equalsIgnoreCase(requestIDToApprove)
-                    && request.getStatus().equalsIgnoreCase("PENDING")) {
+                    && request.getStatus().equalsIgnoreCase(ReplenishmentStatus.PENDING.name())) {
                 selectedRequest = request;
                 break;
             }
@@ -685,7 +689,7 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
         }
 
         // Set the status to "APPROVED"
-        selectedRequest.setStatus("APPROVED");
+        selectedRequest.setStatus(ReplenishmentStatus.APPROVED.name());
 
         // Update inventory based on the approved replenishment request
         for (MedicationItem item : selectedRequest.getMedicationBatch()) {
@@ -702,17 +706,17 @@ private void filterAndDisplayAppointments(ArrayList<Appointment> appointments, S
             if (medicationToUpdate != null) {
                 // Update the quantity, stockStatus and alert level of the medication in the
                 // inventory
-                String stockStatus = "LOW";
+                String stockStatus = MedicationStatus.LOW.name();
                 boolean alert = false;
                 int newQuantity = medicationToUpdate.getTotalQuantity() + item.getQuantity();
 
                 if (newQuantity < 10) {
-                    stockStatus = "LOW";
+                    stockStatus = MedicationStatus.LOW.name();
                     alert = true;
                 } else if (newQuantity >= 10 && newQuantity <= 50) {
-                    stockStatus = "MEDIUM";
+                    stockStatus = MedicationStatus.MEDIUM.name();
                 } else if (newQuantity > 50) {
-                    stockStatus = "HIGH";
+                    stockStatus = MedicationStatus.HIGH.name();
                 }
 
                 medicationToUpdate.setTotalQuantity(newQuantity);

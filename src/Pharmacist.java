@@ -3,7 +3,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Pharmacist extends User implements Inventory, AppointmentOutcomeInterface {
+public class Pharmacist extends User
+        implements InventoryInterface, PharmacistReplenishmentManager, AppointmentOutcomeManager {
 
     public Pharmacist(String hospitalID, String password, String name, int age, String gender) {
         super(hospitalID, password, name, age, gender);
@@ -18,7 +19,6 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
         System.out.println("5. Logout");
     }
 
-    @Override
     public void viewAppointmentOutcome(ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords) {
         System.out.println("\n=== Appointment Outcome Records ===");
         for (AppointmentOutcomeRecord record : apptOutcomeRecords) {
@@ -42,28 +42,18 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
         }
     }
 
-    @Override
-    public void updateAppointmentOutcome(AppointmentOutcomeRecord apptOutcomeRecord, String appointmentID,
-            String typeOfService, String consultationNotes, ArrayList<MedicationItem> prescriptions,
-            String prescriptionStatus) {
-        apptOutcomeRecord.setAppointmentID(appointmentID);
-        apptOutcomeRecord.setTypeOfService(typeOfService);
-        apptOutcomeRecord.setConsultationNotes(consultationNotes);
-        apptOutcomeRecord.setPrescriptions(prescriptions);
+    public void updateAppointmentOutcome(AppointmentOutcomeRecord apptOutcomeRecord, String prescriptionStatus) {
         apptOutcomeRecord.setPrescriptionStatus(prescriptionStatus);
     }
 
-    @Override
-    public void updateMedication(Medication medication, String medicationID, String medicationName, String stockStatus,
-            boolean alert, int quantity) {
-        medication.setMedicationID(medicationID);
-        medication.setMedicationName(medicationName);
+    public void updateInventory(Medication medication, String stockStatus, boolean alert, int quantity) {
         medication.setStockStatus(stockStatus);
         medication.setAlert(alert);
         medication.setTotalQuantity(quantity);
     }
 
-    public void prescribeAndUpdate(ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords, ArrayList<Medication> inventory) {
+    public void prescribeAndUpdate(ArrayList<AppointmentOutcomeRecord> apptOutcomeRecords,
+            ArrayList<Medication> inventory) {
         Scanner scanner = new Scanner(System.in);
         boolean continueDispensing = true;
 
@@ -73,8 +63,9 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
             ArrayList<AppointmentOutcomeRecord> pendingRecords = new ArrayList<>();
             int index = 1;
             for (AppointmentOutcomeRecord record : apptOutcomeRecords) {
-                if (record.getPrescriptionStatus().equalsIgnoreCase("PENDING")) {
-                    System.out.printf("%d. Appointment ID: %s, Prescription: %s\n", index, record.getAppointmentID(), record.getPrescriptions());
+                if (record.getPrescriptionStatus().equalsIgnoreCase(ReplenishmentStatus.PENDING.name())) {
+                    System.out.printf("%d. Appointment ID: %s, Prescription: %s\n", index, record.getAppointmentID(),
+                            record.getPrescriptions());
                     pendingRecords.add(record);
                     index++;
                 }
@@ -86,8 +77,10 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
                 break;
             }
 
-            // Prompt the Pharmacist to select an appointment outcome record or press Enter to exit
-            System.out.println("\nEnter the number of the Appointment Outcome Record you want to dispense medication for (or press Enter to return): ");
+            // Prompt the Pharmacist to select an appointment outcome record or press Enter
+            // to exit
+            System.out.println(
+                    "\nEnter the number of the Appointment Outcome Record you want to dispense medication for (or press Enter to return): ");
             String input = scanner.nextLine();
 
             if (input.trim().isEmpty()) {
@@ -110,7 +103,8 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
                 ArrayList<MedicationItem> prescribedItems = selectedRecord.getPrescriptions();
                 boolean sufficientStock = true;
 
-                // Check if there is sufficient stock for all prescribed medications for this appointment outcome
+                // Check if there is sufficient stock for all prescribed medications for this
+                // appointment outcome
                 for (MedicationItem item : prescribedItems) {
                     for (Medication medication : inventory) {
                         if (medication.getMedicationID().equals(item.getMedicationID())) {
@@ -131,24 +125,21 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
 
                 // If sufficient stock for this appointment outcome, proceed with dispensing
                 if (sufficientStock) {
-                    updateAppointmentOutcome(selectedRecord, selectedRecord.getAppointmentID(), selectedRecord.getTypeOfService(),
-                            selectedRecord.getConsultationNotes(), selectedRecord.getPrescriptions(), "DISPENSED");
+                    updateAppointmentOutcome(selectedRecord, AppointmentOutcomeStatus.DISPENSED.name());
                     // Update inventory for each prescribed medication
                     for (MedicationItem item : prescribedItems) {
                         for (Medication medication : inventory) {
                             if (medication.getMedicationID().equals(item.getMedicationID())) {
                                 int newQuantity = medication.getTotalQuantity() - item.getQuantity();
                                 boolean alert = false;
-                                String stockStatus = "HIGH";
+                                String stockStatus = MedicationStatus.HIGH.name();
                                 if (newQuantity < 10) {
-                                    stockStatus = "LOW";
+                                    stockStatus = MedicationStatus.LOW.name();
                                     alert = true;
                                 } else if (10 <= newQuantity && newQuantity <= 50) {
-                                    stockStatus = "MEDIUM";
+                                    stockStatus = MedicationStatus.MEDIUM.name();
                                 }
-                                updateMedication(medication, medication.getMedicationID(),
-                                        medication.getMedicationName(),
-                                        stockStatus, alert, newQuantity);
+                                updateInventory(medication, stockStatus, alert, newQuantity);
                             }
                         }
                     }
@@ -173,7 +164,6 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
         }
     }
 
-    @Override
     public void viewInventory(ArrayList<Medication> inventory) {
         System.out.println("\n=== Inventory ===");
         for (Medication medication : inventory) {
@@ -268,7 +258,8 @@ public class Pharmacist extends User implements Inventory, AppointmentOutcomeInt
             } while (choiceToAddMore.equals("y"));
 
             if (!medicationBatch.isEmpty()) {
-                ReplenishmentRequest newRequest = new ReplenishmentRequest(newRequestID, medicationBatch, "PENDING",
+                ReplenishmentRequest newRequest = new ReplenishmentRequest(newRequestID, medicationBatch,
+                        ReplenishmentStatus.PENDING.name(),
                         pharmacist.getHospitalID());
                 replenishmentRequests.add(newRequest);
                 try {

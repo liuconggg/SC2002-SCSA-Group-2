@@ -69,7 +69,7 @@ public class Schedule {
     public static Schedule createDefaultSchedule(String doctorID, LocalDate date) {
         String[] defaultSessions = new String[8];
         for (int i = 0; i < defaultSessions.length; i++) {
-            defaultSessions[i] = "Available";  // Set all sessions as available by default
+            defaultSessions[i] = "Available"; // Set all sessions as available by default
         }
         return new Schedule(doctorID, date, defaultSessions);
     }
@@ -102,7 +102,7 @@ public class Schedule {
     }
 
     public void acceptAppointment(int sessionIndex) {
-        setSessionStatus(sessionIndex, "Confirmed");
+        setSessionStatus(sessionIndex, ScheduleStatus.CONFIRMED.name());
     }
 
     public void declineAppointment(int sessionIndex) {

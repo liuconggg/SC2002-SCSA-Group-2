@@ -7,14 +7,14 @@ import java.util.Scanner;
 public class App {
 
     public static final String[] sessionTimings = {
-        "09:00 - 10:00",
-        "10:00 - 11:00",
-        "11:00 - 12:00",
-        "12:00 - 13:00",
-        "13:00 - 14:00",
-        "14:00 - 15:00",
-        "15:00 - 16:00",
-        "16:00 - 17:00"
+            "09:00 - 10:00",
+            "10:00 - 11:00",
+            "11:00 - 12:00",
+            "12:00 - 13:00",
+            "13:00 - 14:00",
+            "14:00 - 15:00",
+            "15:00 - 16:00",
+            "16:00 - 17:00"
     };
 
     private static ArrayList<User> users;
@@ -31,7 +31,7 @@ public class App {
     public static void main(String[] args) throws Exception {
         users = CsvDB.readUsers();
 
-        //Load all CSV data
+        // Load all CSV data
         AuthenticationService auth = new AuthenticationService();
         while (true) {
 
@@ -85,7 +85,7 @@ public class App {
                         sc.nextLine();
                         break;
                     case 3: // View Available Appointment Slots
-                        patient.viewAvailableAppointment(schedules, users);
+                        patient.viewWeeklySchedule(schedules, users);
                         sc.nextLine();
                         System.out.println("Press Enter to continue...");
                         sc.nextLine();
@@ -116,7 +116,7 @@ public class App {
                         break;
                     case 8: // View Past Appointment Outcome Records
                         ArrayList<AppointmentOutcomeRecord> outcomeRecords = CsvDB.readAppointmentOutcomeRecords();
-                        patient.viewAppointmentOutcomeRecords(appts, outcomeRecords);
+                        patient.viewAppointmentOutcome(appts, outcomeRecords);
                         sc.nextLine();
                         System.out.println("Press Enter to continue...");
                         sc.nextLine();
@@ -164,10 +164,11 @@ public class App {
 
                 switch (choice) {
                     case 1:
-                        doctor.viewPatientMedicalRecords(schedules, users, apptOutcomeRecords, diagnoses, treatments);
+                        doctor.viewMedicalRecord(schedules, users, apptOutcomeRecords, diagnoses, treatments);
                         break;
                     case 2:
-                        doctor.updateMedicalRecord(schedules, users, apptOutcomeRecords, diagnoses, treatments, inventory);
+                        doctor.updateMedicalRecord(schedules, users, apptOutcomeRecords, diagnoses, treatments,
+                                inventory);
                         break;
                     case 3: // View Personal Schedule based on week
                         doctor.viewWeeklySchedule(schedules, users);
@@ -176,13 +177,13 @@ public class App {
                         doctor.setAvailability(schedules, appts);
                         break;
                     case 5:
-                        doctor.acceptOrDeclineAppointmentRequests(schedules, users, appts);
+                        doctor.updateSchedule(schedules, users, appts);
                         break;
                     case 6:
                         doctor.viewUpcomingAppointments(schedules, users);
                         break;
                     case 7:
-                        doctor.recordAppointmentOutcome(appts, inventory, apptOutcomeRecords, diagnoses, treatments);
+                        doctor.updateAppointmentOutcome(appts, inventory, apptOutcomeRecords, diagnoses, treatments);
                         break;
                     case 8:
                         break;
@@ -322,10 +323,11 @@ public class App {
                         break;
                     case 2:
                         ////////////////////// View Appointment details //////////////////////
-                        administrator.viewAppointments(appts);
+                        administrator.viewAppointment(appts);
                         break;
                     case 3:
-                        ////////////////////// View and Manage Medication Inventory //////////////////////
+                        ////////////////////// View and Manage Medication Inventory
+                        ////////////////////// //////////////////////
                         System.out.println("What would you like to do?");
                         System.out.println("1. Add Inventory Item");
                         System.out.println("2. View Inventory");
@@ -367,7 +369,7 @@ public class App {
                         break;
                     case 4:
                         ////////////////////// Approve Replenishment Requests //////////////////////
-                        administrator.approveReplenishmentRequests(replenishmentRequests, inventory);
+                        administrator.approveReplenishmentRequest(replenishmentRequests, inventory);
                         break;
                     case 5:
                         break;
