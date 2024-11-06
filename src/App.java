@@ -301,13 +301,13 @@ public class App {
                                 administrator.addUser(users);
                                 break;
                             case 2: // View Staff
-                                administrator.viewUsers();
+                                administrator.viewUsers(users);
                                 break;
                             case 3: // Update Staff
-                                administrator.updateUser();
+                                administrator.updateUser(users);
                                 break;
                             case 4: // Delete Staff
-                                administrator.deleteUser();
+                                administrator.deleteUser(users);
                                 break;
                             case 5:
                                 break;

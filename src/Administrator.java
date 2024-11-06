@@ -135,13 +135,11 @@ public class Administrator extends User implements Inventory {
             CsvDB.saveUsers(users);
             System.out.println("New user added and saved successfully.");
         } catch (IOException e) {
-            System.out.println("Error saving user data: " + e.getMessage());
+            System.out.println("Error creating user " + e.getMessage());
         }
     }
 
-    public void viewUsers() {
-        try {
-            ArrayList<User> users = CsvDB.readUsers();
+    public void viewUsers(ArrayList<User> users) {
             Scanner sc = new Scanner(System.in);
 
             // Ask the user which type of staff they want to view
@@ -201,15 +199,9 @@ public class Administrator extends User implements Inventory {
                         break;
                 }
             }
-        } catch (IOException e) {
-            System.out.println("Error loading user data: " + e.getMessage());
-        }
     }
 
-    public void updateUser() {
-        try {
-            ArrayList<User> users = CsvDB.readUsers();
-
+    public void updateUser(ArrayList<User> users) {
             Scanner sc = new Scanner(System.in);
             System.out.print(
                     "\nEnter the Hospital ID of the staff to update (or press enter to return to main menu: ");
@@ -290,20 +282,17 @@ public class Administrator extends User implements Inventory {
                 System.out.println("Staff with Hospital ID " + staffIDToUpdate + " not found.");
             }
 
-            // Save the updated users to CSV
-            CsvDB.saveUsers(users);
-            System.out.println("User data saved successfully.");
-        } catch (IOException e) {
-            System.out.println("Error saving user data: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input for age. Please enter a valid number.");
-        }
+            try {
+                // Save the updated users to CSV
+                CsvDB.saveUsers(users);
+                System.out.println("User data saved successfully.");
+            } catch (IOException e) {
+                System.out.println("Error updating user " + e.getMessage());
+            }
     }
 
     // Method to delete a user
-    public void deleteUser() {
-        try {
-            ArrayList<User> users = CsvDB.readUsers();
+    public void deleteUser(ArrayList<User> users) {
 
             Scanner sc = new Scanner(System.in);
             System.out.print("\nEnter the Hospital ID of the staff to delete: ");
@@ -326,15 +315,16 @@ public class Administrator extends User implements Inventory {
                 users.remove(userToRemove);
                 System.out.println("User with Hospital ID " + staffIDToDelete + " has been removed.");
 
-                // Save the updated users to CSV
-                CsvDB.saveUsers(users);
-                System.out.println("User data saved successfully.");
+                try {
+                    // Save the updated users to CSV
+                    CsvDB.saveUsers(users);
+                    System.out.println("User data saved successfully.");
+                } catch (IOException e) {
+                    System.out.println("Error deleting user " + e.getMessage());
+                }
             } else {
                 System.out.println("Staff with Hospital ID " + staffIDToDelete + " not found.");
             }
-        } catch (IOException e) {
-            System.out.println("Error saving user data: " + e.getMessage());
-        }
     }
 
     // Method to view appointments, now accepting appointments as a parameter
