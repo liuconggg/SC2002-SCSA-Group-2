@@ -1,1 +1,0 @@
-apptOutcomeRecords = CsvDB.readAppointmentOutcomeRecords();

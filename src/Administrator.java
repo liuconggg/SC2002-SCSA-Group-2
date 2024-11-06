@@ -140,66 +140,106 @@ public class Administrator extends User implements Inventory {
     }
 
     public void viewUsers(ArrayList<User> users) {
-            Scanner sc = new Scanner(System.in);
-
-            // Ask the user which type of staff they want to view
-            System.out.println("\nWhich type of staff do you want to view?");
-            System.out.println("1. Patients");
-            System.out.println("2. Pharmacists");
-            System.out.println("3. Doctors");
-            System.out.println("4. Administrators");
-            System.out.print("Enter your choice: ");
-            int choice = sc.nextInt();
-            sc.nextLine(); // Consume newline
-
-            String selectedStaffType = "";
+        Scanner sc = new Scanner(System.in);
+    
+        // Ask the user which type of staff they want to view
+        System.out.println("\nWhich type of staff do you want to view?");
+        System.out.println("1. Patients");
+        System.out.println("2. Pharmacists");
+        System.out.println("3. Doctors");
+        System.out.println("4. Administrators");
+        System.out.print("Enter your choice: ");
+        int choice = sc.nextInt();
+        sc.nextLine(); // Consume newline
+    
+        String selectedStaffType = "";
+        switch (choice) {
+            case 1:
+                selectedStaffType = "Patients";
+                break;
+            case 2:
+                selectedStaffType = "Pharmacists";
+                break;
+            case 3:
+                selectedStaffType = "Doctors";
+                break;
+            case 4:
+                selectedStaffType = "Administrators";
+                break;
+            default:
+                System.out.println("Invalid choice. Returning to main menu...");
+                return;
+        }
+    
+        // Ask the user if they want to filter by gender
+        System.out.println("\nWould you like to filter by gender?");
+        System.out.println("1. Male");
+        System.out.println("2. Female");
+        System.out.println("3. No Filter");
+        System.out.print("Enter your choice: ");
+        int genderChoice = sc.nextInt();
+        sc.nextLine(); // Consume newline
+    
+        String selectedGender = "";
+        switch (genderChoice) {
+            case 1:
+                selectedGender = "Male";
+                break;
+            case 2:
+                selectedGender = "Female";
+                break;
+            case 3:
+                selectedGender = ""; // No gender filter
+                break;
+            default:
+                System.out.println("Invalid choice. Returning to main menu...");
+                return;
+        }
+    
+        // Ask the user if they want to filter by age range
+        System.out.print("\nEnter minimum age (or press enter to skip): ");
+        String minAgeInput = sc.nextLine().trim();
+        int minAge = minAgeInput.isEmpty() ? Integer.MIN_VALUE : Integer.parseInt(minAgeInput);
+    
+        System.out.print("Enter maximum age (or press enter to skip): ");
+        String maxAgeInput = sc.nextLine().trim();
+        int maxAge = maxAgeInput.isEmpty() ? Integer.MAX_VALUE : Integer.parseInt(maxAgeInput);
+    
+        // Display filtered users
+        System.out.println("\nViewing " + selectedStaffType + " Information:");
+        boolean userFound = false;
+    
+        for (User user : users) {
+            boolean matchesRole = false;
             switch (choice) {
                 case 1:
-                    selectedStaffType = "Patients";
+                    matchesRole = user instanceof Patient;
                     break;
                 case 2:
-                    selectedStaffType = "Pharmacists";
+                    matchesRole = user instanceof Pharmacist;
                     break;
                 case 3:
-                    selectedStaffType = "Doctors";
+                    matchesRole = user instanceof Doctor;
                     break;
                 case 4:
-                    selectedStaffType = "Administrators";
+                    matchesRole = user instanceof Administrator;
                     break;
-                default:
-                    System.out.println("Invalid choice. Returning to main menu...");
-                    return;
             }
-
-            System.out.println("\nViewing " + selectedStaffType + " Information:");
-
-            for (User user : users) {
-                switch (choice) {
-                    case 1: // View Patients
-                        if (user instanceof Patient) {
-                            System.out.println(user);
-                        }
-                        break;
-                    case 2: // View Pharmacists
-                        if (user instanceof Pharmacist) {
-                            System.out.println(user);
-                        }
-                        break;
-                    case 3: // View Doctors
-                        if (user instanceof Doctor) {
-                            System.out.println(user);
-                        }
-                        break;
-                    case 4: // View Administrators
-                        if (user instanceof Administrator) {
-                            System.out.println(user);
-                        }
-                        break;
-                    default:
-                        break;
-                }
+    
+            boolean matchesGender = selectedGender.isEmpty() || user.getGender().equalsIgnoreCase(selectedGender);
+            boolean matchesAge = user.getAge() >= minAge && user.getAge() <= maxAge;
+    
+            if (matchesRole && matchesGender && matchesAge) {
+                System.out.println(user);
+                userFound = true;
             }
+        }
+    
+        if (!userFound) {
+            System.out.println("No users found matching the specified criteria.");
+        }
     }
+    
 
     public void updateUser(ArrayList<User> users) {
             Scanner sc = new Scanner(System.in);
