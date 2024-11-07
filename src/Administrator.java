@@ -373,7 +373,8 @@ public class Administrator extends User
         System.out.println("1. Completed");
         System.out.println("2. Cancelled");
         System.out.println("3. Pending");
-        System.out.println("4. View All");
+        System.out.println("4. No Show");
+        System.out.println("5. View All");
         System.out.print("Enter your choice (or press enter to return to main menu): ");
 
         String input = sc.nextLine(); // Capture the input as a string
@@ -407,6 +408,10 @@ public class Administrator extends User
                 filterAndDisplayAppointments(appointments, AppointmentStatus.PENDING.name());
                 break;
             case 4:
+                System.out.println("\n=== No Show Appointments ===");
+                filterAndDisplayAppointments(appointments, AppointmentStatus.NO_SHOW.name());
+                break;
+            case 5:
                 System.out.println("\n=== All Appointments ===");
                 displayAllAppointments(appointments);
                 break;
@@ -646,100 +651,118 @@ public class Administrator extends User
     }
 
     public void approveReplenishmentRequest(ArrayList<ReplenishmentRequest> replenishmentRequests,
-            ArrayList<Medication> inventory) {
-        Scanner sc = new Scanner(System.in);
-        boolean requestFound = false;
+                                        ArrayList<Medication> inventory) {
+    Scanner sc = new Scanner(System.in);
+    boolean requestFound = false;
 
-        System.out.println("\n=== Pending Replenishment Requests ===");
-        // Display all pending replenishment requests
-        for (ReplenishmentRequest request : replenishmentRequests) {
-            if (request.getStatus().equalsIgnoreCase(ReplenishmentStatus.PENDING.name())) {
-                System.out.printf("Request ID: %s | Status: %s | Pharmacist ID: %s\n", request.getRequestID(),
-                        request.getStatus(), request.getPharmacistID());
-                requestFound = true;
-            }
+    System.out.println("\n=== Pending Replenishment Requests ===");
+    // Display all pending replenishment requests
+    for (ReplenishmentRequest request : replenishmentRequests) {
+        if (request.getStatus().equalsIgnoreCase(ReplenishmentStatus.PENDING.name())) {
+            System.out.printf("Request ID: %s | Status: %s | Pharmacist ID: %s\n", request.getRequestID(),
+                    request.getStatus(), request.getPharmacistID());
+            requestFound = true;
         }
+    }
 
-        if (!requestFound) {
-            System.out.println("No pending replenishment requests found.");
-            return;
+    if (!requestFound) {
+        System.out.println("No pending replenishment requests found.");
+        return;
+    }
+
+    System.out.print("\nEnter the Request ID to approve or decline (or press enter to return to main menu): ");
+    String requestIDToApprove = sc.nextLine();
+    ReplenishmentRequest selectedRequest = null;
+    // If user presses "Enter" only, return to main menu
+    if (requestIDToApprove.trim().isEmpty()) {
+        System.out.println("Returning to main menu...");
+        return;
+    }
+
+    // Find the selected request
+    for (ReplenishmentRequest request : replenishmentRequests) {
+        if (request.getRequestID().equalsIgnoreCase(requestIDToApprove)
+                && request.getStatus().equalsIgnoreCase(ReplenishmentStatus.PENDING.name())) {
+            selectedRequest = request;
+            break;
         }
+    }
 
-        System.out.print("\nEnter the Request ID to approve (or press enter to return to main menu): ");
-        String requestIDToApprove = sc.nextLine();
-        ReplenishmentRequest selectedRequest = null;
-        // If user presses "Enter" only, return to main menu
-        if (requestIDToApprove.trim().isEmpty()) {
-            System.out.println("Returning to main menu...");
-            return;
-        }
+    if (selectedRequest == null) {
+        System.out.println("Invalid Request ID or request is not pending. Please try again.");
+        return;
+    }
 
-        // Find the selected request
-        for (ReplenishmentRequest request : replenishmentRequests) {
-            if (request.getRequestID().equalsIgnoreCase(requestIDToApprove)
-                    && request.getStatus().equalsIgnoreCase(ReplenishmentStatus.PENDING.name())) {
-                selectedRequest = request;
-                break;
-            }
-        }
+    // Ask the user to approve or decline the request
+    System.out.print("\nEnter 'A' to approve or 'D' to decline the request: ");
+    String decision = sc.nextLine().trim().toUpperCase();
 
-        if (selectedRequest == null) {
-            System.out.println("Invalid Request ID or request is not pending. Please try again.");
-            return;
-        }
+    switch (decision) {
+        case "A":
+            // Set the status to "APPROVED"
+            selectedRequest.setStatus(ReplenishmentStatus.APPROVED.name());
 
-        // Set the status to "APPROVED"
-        selectedRequest.setStatus(ReplenishmentStatus.APPROVED.name());
+            // Update inventory based on the approved replenishment request
+            for (MedicationItem item : selectedRequest.getMedicationBatch()) {
+                Medication medicationToUpdate = null;
 
-        // Update inventory based on the approved replenishment request
-        for (MedicationItem item : selectedRequest.getMedicationBatch()) {
-            Medication medicationToUpdate = null;
+                // Find the medication in the inventory
+                for (Medication medication : inventory) {
+                    if (medication.getMedicationID().equalsIgnoreCase(item.getMedicationID())) {
+                        medicationToUpdate = medication;
+                        break;
+                    }
+                }
 
-            // Find the medication in the inventory
-            for (Medication medication : inventory) {
-                if (medication.getMedicationID().equalsIgnoreCase(item.getMedicationID())) {
-                    medicationToUpdate = medication;
-                    break;
+                if (medicationToUpdate != null) {
+                    // Update the quantity, stockStatus and alert level of the medication in the inventory
+                    String stockStatus = MedicationStatus.LOW.name();
+                    boolean alert = false;
+                    int newQuantity = medicationToUpdate.getTotalQuantity() + item.getQuantity();
+
+                    if (newQuantity < 10) {
+                        stockStatus = MedicationStatus.LOW.name();
+                        alert = true;
+                    } else if (newQuantity >= 10 && newQuantity <= 50) {
+                        stockStatus = MedicationStatus.MEDIUM.name();
+                    } else if (newQuantity > 50) {
+                        stockStatus = MedicationStatus.HIGH.name();
+                    }
+
+                    medicationToUpdate.setTotalQuantity(newQuantity);
+                    medicationToUpdate.setStockStatus(stockStatus);
+                    medicationToUpdate.setAlert(alert);
+
+                    System.out.printf("Medication '%s' is restocked. New quantity: %d\n",
+                            medicationToUpdate.getMedicationName(),
+                            medicationToUpdate.getTotalQuantity());
+                } else {
+                    System.out.println("Medication with ID " + item.getMedicationID() + " not found in inventory.");
                 }
             }
 
-            if (medicationToUpdate != null) {
-                // Update the quantity, stockStatus and alert level of the medication in the
-                // inventory
-                String stockStatus = MedicationStatus.LOW.name();
-                boolean alert = false;
-                int newQuantity = medicationToUpdate.getTotalQuantity() + item.getQuantity();
+            break;
 
-                if (newQuantity < 10) {
-                    stockStatus = MedicationStatus.LOW.name();
-                    alert = true;
-                } else if (newQuantity >= 10 && newQuantity <= 50) {
-                    stockStatus = MedicationStatus.MEDIUM.name();
-                } else if (newQuantity > 50) {
-                    stockStatus = MedicationStatus.HIGH.name();
-                }
+        case "D":
+            // Set the status to "DECLINED"
+            selectedRequest.setStatus(ReplenishmentStatus.DECLINED.name());
+            System.out.println("Replenishment request has been declined.");
+            break;
 
-                medicationToUpdate.setTotalQuantity(newQuantity);
-                medicationToUpdate.setStockStatus(stockStatus);
-                medicationToUpdate.setAlert(alert);
+        default:
+            System.out.println("Invalid input. Returning to main menu...");
+            return;
+    }
 
-                System.out.printf("Medication '%s' is restocked. New quantity: %d\n",
-                        medicationToUpdate.getMedicationName(),
-                        medicationToUpdate.getTotalQuantity());
-            } else {
-                System.out.println("Medication with ID " + item.getMedicationID() + " not found in inventory.");
-            }
-        }
+    // Save the updated replenishment requests to the CSV file
+    try {
+        CsvDB.saveReplenishmentRequests(replenishmentRequests);
+    } catch (IOException e) {
+        System.out.println("Error saving replenishment requests: " + e.getMessage());
+    }
 
-        // Save the updated replenishment requests to the CSV file
-        try {
-            CsvDB.saveReplenishmentRequests(replenishmentRequests);
-            System.out.println("Replenishment request updated successfully.");
-        } catch (IOException e) {
-            System.out.println("Error saving replenishment requests: " + e.getMessage());
-        }
-
-        // Save the updated inventory to the CSV file
+    // Save the updated inventory to the CSV file
+    if (decision.equals("A")) {
         try {
             CsvDB.saveMedications(inventory);
             System.out.println("Inventory updated successfully.");
@@ -747,5 +770,7 @@ public class Administrator extends User
             System.out.println("Error saving inventory: " + e.getMessage());
         }
     }
+}
+
 
 }

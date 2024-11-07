@@ -1,2 +1,6 @@
 Request ID,Medication Batch,Status,Pharmacist ID
 R0001,M0001:Paracetamol:100;M0003:Cough Syrup:100,APPROVED,PH0001
+R0002,M0001:Paracetamol:12;M0003:Cough Syrup:28,PENDING,PH0001
+R0003,M0001:Paracetamol:12;M0003:Cough Syrup:16,PENDING,PH0001
+R0004,M0001:Paracetamol:20;M0003:Cough Syrup:45,DECLINED,PH0001
+R0005,M0001:Paracetamol:30;M0003:Cough Syrup:40,APPROVED,PH0001

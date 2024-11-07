@@ -1,4 +1,4 @@
 
 public enum ReplenishmentStatus {
-    PENDING, APPROVED
+    PENDING, APPROVED, DECLINED
 }
