@@ -1,5 +1,4 @@
-public enum AppointmentOutcomeStatus
 
-{
+public enum AppointmentOutcomeStatus {
     PENDING, DISPENSED
 }

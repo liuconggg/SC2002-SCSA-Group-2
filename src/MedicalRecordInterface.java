@@ -1,5 +1,7 @@
 
 public interface MedicalRecordInterface {
 
-   public default void viewMedicalRecord(){}; 
+    public default void viewMedicalRecord() {
+    }
+;
 }

@@ -1,3 +1,7 @@
+
 public interface PharmacistReplenishmentManager {
-    public default void submitReplenishmentRequest() {};
+
+    public default void submitReplenishmentRequest() {
+    }
+;
 }

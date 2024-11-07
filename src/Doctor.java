@@ -50,11 +50,11 @@ public class Doctor extends User
 
     public void viewWeeklySchedule(ArrayList<Schedule> schedules, ArrayList<User> users) {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Enter the number of weeks you want to view in advance (Press Enter to return): ");
+        System.out.print("\nEnter the number of weeks you want to view in advance (Press Enter to return): ");
         String weeksInput = sc.nextLine();
 
         if (weeksInput.trim().isEmpty()) {
-            System.out.println("Press Enter to return");
+            System.out.println("\nPress Enter to return");
             return; // Return to the previous menu
         }
 
@@ -62,7 +62,7 @@ public class Doctor extends User
         try {
             numberOfWeeks = Integer.parseInt(weeksInput);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid input. Please enter a valid number.");
+            System.out.println("\nInvalid input. Please enter a valid number.");
             return;
         }
 
@@ -106,7 +106,7 @@ public class Doctor extends User
 
         // Display the schedule for the specified number of weeks
         for (Schedule schedule : weeklySchedule) {
-            System.out.printf("Your Personal Schedule on %s:\n",
+            System.out.printf("\nYour Personal Schedule on %s:\n",
                     schedule.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 
             for (int i = 0; i < schedule.getSession().length; i++) {
@@ -137,7 +137,7 @@ public class Doctor extends User
             System.out.println();
         }
 
-        System.out.println("Press Enter to continue");
+        System.out.println("\nPress Enter to continue");
         sc.nextLine(); // Wait for the user to press Enter
     }
 
@@ -188,7 +188,7 @@ public class Doctor extends User
 
         // If no appointments were found
         if (appointmentDetails.isEmpty()) {
-            System.out.println("No upcoming confirmed appointments.");
+            System.out.println("\nNo upcoming confirmed appointments.");
         }
 
         System.out.println("\nPress Enter to continue");
@@ -203,13 +203,13 @@ public class Doctor extends User
             selectedAcAppointment.setStatus(status);
         } else {
             System.err.println(
-                    "Appointment not found for the chosen schedule and session index. Please check the appointments list.");
+                    "\nAppointment not found for the chosen schedule and session index. Please check the appointments list.");
         }
 
         try {
             CsvDB.saveAppointments(appts);
         } catch (IOException e) {
-            System.err.println("Error while saving appointments: " + e.getMessage());
+            System.err.println("\nError while saving appointments: " + e.getMessage());
         }
 
     }
@@ -253,7 +253,7 @@ public class Doctor extends User
 
             // If no pending appointments, inform the user and exit
             if (pendingAppointments.isEmpty()) {
-                System.out.println("No pending appointments.");
+                System.out.println("\nNo pending appointments.");
                 exit = true;
                 continue;
             }
@@ -287,7 +287,7 @@ public class Doctor extends User
             String choiceInput = sc.nextLine();
 
             if (choiceInput.trim().isEmpty()) {
-                System.out.println("Returning to previous menu...");
+                System.out.println("\nReturning to previous menu...");
                 exit = true;
                 continue;
             }
@@ -302,11 +302,11 @@ public class Doctor extends User
                     int sessionIndex = pendingSessionIndexes.get(sortedIndex);
 
                     // Accept or decline the appointment
-                    System.out.print("Enter 'A' to Accept or 'D' to Decline (Press Enter to return): ");
+                    System.out.print("\nEnter 'A' to Accept or 'D' to Decline (Press Enter to return): ");
                     String decisionInput = sc.nextLine();
 
                     if (decisionInput.trim().isEmpty()) {
-                        System.out.println("Returning to previous menu...");
+                        System.out.println("\nReturning to previous menu...");
                         continue;
                     }
 
@@ -319,16 +319,16 @@ public class Doctor extends User
                         chosenSchedule.declineAppointment(sessionIndex);
                         updateAppointment(appts, chosenSchedule, sessionIndex, AppointmentStatus.CANCELLED.name());
                     } else {
-                        System.out.println("Invalid input, please enter 'A' or 'D'.");
+                        System.out.println("\nInvalid input, please enter 'A' or 'D'.");
                     }
 
                     CsvDB.saveSchedules(schedules);
 
                 } else {
-                    System.out.println("Invalid choice. Please select a valid appointment number.");
+                    System.out.println("\nInvalid choice. Please select a valid appointment number.");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
+                System.out.println("\nInvalid input. Please enter a valid number.");
             }
         }
     }
@@ -340,11 +340,11 @@ public class Doctor extends User
         while (!exit) {
             // Ask for the date to change availability
             System.out.println(
-                    "Enter the date in format (dd/MM/yyyy) to view and change availability (Press Enter to return):");
+                    "\nEnter the date in format (dd/MM/yyyy) to view and change availability (Press Enter to return):");
             String inputDate = sc.nextLine();
 
             if (inputDate.trim().isEmpty()) {
-                System.out.println("Press Enter to return");
+                System.out.println("\nPress Enter to return");
                 exit = true;
                 continue;
             }
@@ -422,18 +422,18 @@ public class Doctor extends User
                             try {
                                 CsvDB.saveAppointments(appointments);
                             } catch (IOException e) {
-                                System.err.println("Error while saving appointments: " + e.getMessage());
+                                System.err.println("\nError while saving appointments: " + e.getMessage());
                             }
                         } else {
                             System.out.println(
                                     "\nInvalid choice. Please select a valid session number or press enter to exit.");
                         }
                     } catch (NumberFormatException e) {
-                        System.out.println("Invalid input. Please enter a valid number.");
+                        System.out.println("\nInvalid input. Please enter a valid number.");
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Invalid input format. Please use the correct format (dd/MM/yyyy).");
+                System.out.println("\nInvalid input format. Please use the correct format (dd/MM/yyyy).");
             }
         }
     }
@@ -472,7 +472,7 @@ public class Doctor extends User
             String input = sc.nextLine();
 
             if (input.trim().isEmpty()) {
-                System.out.println("Returning to main menu...");
+                System.out.println("\nReturning to main menu...");
                 exit = true;
                 continue;
             }
@@ -500,7 +500,7 @@ public class Doctor extends User
                     }
 
                     // Step 3: Prompt the user to record the outcome using Y/N input
-                    System.out.print("Enter the outcome for this appointment ('Y' for Completed or 'N' for No-Show): ");
+                    System.out.print("\nEnter the outcome for this appointment ('Y' for Completed or 'N' for No-Show): ");
                     String outcome = sc.nextLine().trim().toUpperCase();
 
                     if (outcome.equals("Y")) {
@@ -549,7 +549,7 @@ public class Doctor extends User
 
                                 if (medChoice > 0 && medChoice <= inventory.size()) {
                                     Medication selectedMed = inventory.get(medChoice - 1);
-                                    System.out.printf("Enter quantity for %s: ", selectedMed.getMedicationName());
+                                    System.out.printf("\nEnter quantity for %s: ", selectedMed.getMedicationName());
                                     String quantityInput = sc.nextLine();
                                     int quantity = Integer.parseInt(quantityInput);
 
@@ -566,13 +566,13 @@ public class Doctor extends User
                                         }
                                     } else {
                                         System.out.println(
-                                                "Invalid quantity. Please enter a valid amount within the available units.");
+                                                "\nInvalid quantity. Please enter a valid amount within the available units.");
                                     }
                                 } else {
-                                    System.out.println("Invalid choice. Please select a valid medicine number.");
+                                    System.out.println("\nInvalid choice. Please select a valid medicine number.");
                                 }
                             } catch (NumberFormatException e) {
-                                System.out.println("Invalid input. Please enter a valid number.");
+                                System.out.println("\nInvalid input. Please enter a valid number.");
                             }
                         }
 
@@ -602,7 +602,7 @@ public class Doctor extends User
                         selectedAppointment.setStatus(AppointmentStatus.NO_SHOW.name());
                         System.out.println("\nAppointment outcome recorded successfully as 'No-Show'.");
                     } else {
-                        System.out.println("Invalid input. Please enter either 'Y' for Completed or 'N' for No-Show.");
+                        System.out.println("\nInvalid input. Please enter either 'Y' for Completed or 'N' for No-Show.");
                         continue; // Continue to allow user to retry entering a valid input
                     }
 
@@ -610,13 +610,13 @@ public class Doctor extends User
                     try {
                         CsvDB.saveAppointments(appointments);
                     } catch (IOException e) {
-                        System.err.println("Error while saving appointments: " + e.getMessage());
+                        System.err.println("\nError while saving appointments: " + e.getMessage());
                     }
                 } else {
-                    System.out.println("Invalid choice. Please select a valid appointment number.");
+                    System.out.println("\nInvalid choice. Please select a valid appointment number.");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
+                System.out.println("\nInvalid input. Please enter a valid number.");
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -659,7 +659,7 @@ public class Doctor extends User
 
         // Step 3: Display the list of patients under the doctor's care
         if (patientsUnderCare.isEmpty()) {
-            System.out.println("No patients are currently under your care.");
+            System.out.println("\nNo patients are currently under your care.");
             return;
         }
 
@@ -678,7 +678,7 @@ public class Doctor extends User
             String input = sc.nextLine();
 
             if (input.trim().isEmpty()) {
-                System.out.println("Returning to previous menu...");
+                System.out.println("\nReturning to previous menu...");
                 viewingRecords = false; // Exit the loop
                 continue;
             }
@@ -741,15 +741,15 @@ public class Doctor extends User
                         }
 
                         if (!hasRecords) {
-                            System.out.println("No diagnoses or treatments found for this patient.");
+                            System.out.println("\nNo diagnoses or treatments found for this patient.");
                         }
                         System.out.println("=======================================================");
                     }
                 } else {
-                    System.out.println("Invalid choice. Please select a valid patient number.");
+                    System.out.println("\nInvalid choice. Please select a valid patient number.");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
+                System.out.println("\nInvalid input. Please enter a valid number.");
             }
         }
     }
@@ -771,14 +771,14 @@ public class Doctor extends User
 
         while (true) {
             // Display the appointment outcomes for user selection
-            System.out.println("Select an Appointment Outcome by number:");
+            System.out.println("\nSelect an Appointment Outcome by number:\n");
             for (int i = 0; i < outcomeRecords.size(); i++) {
                 AppointmentOutcomeRecord outcome = outcomeRecords.get(i);
                 System.out.println((i + 1) + ". Appointment ID: " + outcome.getAppointmentID());
             }
 
             // Get user input for appointment outcome selection
-            System.out.print("Enter the number of the Appointment Outcome (or press Enter to return): ");
+            System.out.print("\nEnter the number of the Appointment Outcome (or press Enter to return): ");
             String selectedOutcomeIndexInput = sc.nextLine();
 
             if (selectedOutcomeIndexInput.trim().isEmpty()) {
@@ -791,12 +791,12 @@ public class Doctor extends User
             try {
                 selectedOutcomeIndex = Integer.parseInt(selectedOutcomeIndexInput) - 1;
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
+                System.out.println("\nInvalid input. Please enter a valid number.");
                 continue;
             }
 
             if (selectedOutcomeIndex < 0 || selectedOutcomeIndex >= outcomeRecords.size()) {
-                System.out.println("Invalid selection. Please select a valid number.");
+                System.out.println("\nInvalid selection. Please select a valid number.");
                 continue;
             }
 
@@ -823,11 +823,26 @@ public class Doctor extends User
 
             // Ask the user if they want to update diagnosis
             if (selectedDiagnosis != null) {
-                System.out.println("Current Diagnosis: " + selectedDiagnosis.getDiagnosis());
-                System.out.print("Do you want to update the diagnosis? (y/n or press Enter to skip): ");
-                String updateDiagnosisResponse = sc.nextLine();
+                System.out.println("\nCurrent Diagnosis: " + selectedDiagnosis.getDiagnosis());
+                String updateDiagnosisResponse;
+                while (true) {
+                    System.out.print("\nDo you want to update the diagnosis? (y/n or press Enter to return to main menu): ");
+                    updateDiagnosisResponse = sc.nextLine();
+
+                    if (updateDiagnosisResponse.isEmpty()) {
+                        System.out.println("\nReturning to main menu...");
+                        return; // Exit the method and return to the main menu
+                    }
+
+                    if (updateDiagnosisResponse.equalsIgnoreCase("y") || updateDiagnosisResponse.equalsIgnoreCase("n")) {
+                        break;
+                    }
+
+                    System.out.println("\nInvalid input. Please enter 'y' to update, 'n' to skip, or press Enter to return to the main menu.");
+                }
+
                 if (updateDiagnosisResponse.equalsIgnoreCase("y")) {
-                    System.out.print("Enter new diagnosis details (or press Enter to cancel): ");
+                    System.out.print("\nEnter new diagnosis details (or press Enter to cancel): ");
                     String newDiagnosisDetails = sc.nextLine();
                     if (!newDiagnosisDetails.trim().isEmpty()) {
                         String currentDiagnosis = selectedDiagnosis.getDiagnosis();
@@ -845,22 +860,37 @@ public class Doctor extends User
                         }
 
                         selectedDiagnosis.setDiagnosis(updatedDiagnosis);
-                        System.out.println("Diagnosis updated.");
+                        System.out.println("\nDiagnosis updated.");
                     } else {
-                        System.out.println("Diagnosis update cancelled.");
+                        System.out.println("\nDiagnosis update cancelled.");
                     }
                 }
             } else {
-                System.out.println("No diagnosis found for this appointment.");
+                System.out.println("\nNo diagnosis found for this appointment.");
             }
 
             // Ask the user if they want to update treatment
             if (selectedTreatment != null) {
-                System.out.println("Current Treatment: " + selectedTreatment.getTreatment());
-                System.out.print("Do you want to update the treatment? (y/n or press Enter to skip): ");
-                String updateTreatmentResponse = sc.nextLine();
+                System.out.println("\nCurrent Treatment: " + selectedTreatment.getTreatment());
+                String updateTreatmentResponse;
+                while (true) {
+                    System.out.print("\nDo you want to update the treatment? (y/n or press Enter to return to main menu): ");
+                    updateTreatmentResponse = sc.nextLine();
+
+                    if (updateTreatmentResponse.isEmpty()) {
+                        System.out.println("\nReturning to main menu...");
+                        return; // Exit the method and return to the main menu
+                    }
+
+                    if (updateTreatmentResponse.equalsIgnoreCase("y") || updateTreatmentResponse.equalsIgnoreCase("n")) {
+                        break;
+                    }
+
+                    System.out.println("\nInvalid input. Please enter 'y' to update, 'n' to skip, or press Enter to return to the main menu.");
+                }
+
                 if (updateTreatmentResponse.equalsIgnoreCase("y")) {
-                    System.out.print("Enter new treatment details (or press Enter to cancel): ");
+                    System.out.print("\nEnter new treatment details (or press Enter to cancel): ");
                     String newTreatmentDetails = sc.nextLine();
                     if (!newTreatmentDetails.trim().isEmpty()) {
                         String currentTreatment = selectedTreatment.getTreatment();
@@ -878,22 +908,37 @@ public class Doctor extends User
                         }
 
                         selectedTreatment.setTreatment(updatedTreatment);
-                        System.out.println("Treatment updated.");
+                        System.out.println("\nTreatment updated.");
                     } else {
-                        System.out.println("Treatment update cancelled.");
+                        System.out.println("\nTreatment update cancelled.");
                     }
                 }
             } else {
-                System.out.println("No treatment found for this appointment.");
+                System.out.println("\nNo treatment found for this appointment.");
             }
 
-            // Allow editing prescription if status is pending
             if (AppointmentStatus.PENDING.name().equalsIgnoreCase(selectedOutcome.getPrescriptionStatus())) {
-                System.out.println("Prescription Status: " + selectedOutcome.getPrescriptionStatus());
-                System.out.print("Do you want to edit the prescriptions? (y/n or press Enter to skip): ");
-                String editPrescriptionResponse = sc.nextLine();
+                System.out.println("\nPrescription Status: " + selectedOutcome.getPrescriptionStatus());
+                String editPrescriptionResponse;
+
+                while (true) {
+                    System.out.print("\nDo you want to edit the prescriptions? (y/n or press Enter to skip): ");
+                    editPrescriptionResponse = sc.nextLine();
+
+                    if (editPrescriptionResponse.isEmpty()) {
+                        System.out.println("Skipping prescription edit...");
+                        return; // Exit to the main menu or continue to the next section
+                    }
+
+                    if (editPrescriptionResponse.equalsIgnoreCase("y") || editPrescriptionResponse.equalsIgnoreCase("n")) {
+                        break;
+                    }
+
+                    System.out.println("\nInvalid input. Please enter 'y' to edit, 'n' to skip, or press Enter to return.");
+                }
+
                 if (editPrescriptionResponse.equalsIgnoreCase("y")) {
-                    System.out.print("Enter new prescription details (or press Enter to cancel): ");
+                    System.out.print("\nEnter new prescription details (or press Enter to cancel): ");
                     ArrayList<MedicationItem> prescribedMedicines = new ArrayList<>();
                     boolean addingMedicines = true;
 
@@ -906,7 +951,7 @@ public class Doctor extends User
                             medIndex++;
                         }
 
-                        System.out.println("\nSelect a medicine by number to prescribe (or press Enter to finish): ");
+                        System.out.print("\nSelect a medicine by number to prescribe (or press Enter to finish): ");
                         String medInput = sc.nextLine();
 
                         if (medInput.trim().isEmpty()) {
@@ -919,7 +964,7 @@ public class Doctor extends User
 
                             if (medChoice > 0 && medChoice <= inventory.size()) {
                                 Medication selectedMed = inventory.get(medChoice - 1);
-                                System.out.printf("Enter quantity for %s: ", selectedMed.getMedicationName());
+                                System.out.printf("\nEnter quantity for %s: ", selectedMed.getMedicationName());
                                 String quantityInput = sc.nextLine();
                                 int quantity = Integer.parseInt(quantityInput);
 
@@ -935,21 +980,19 @@ public class Doctor extends User
                                                 med.getQuantity());
                                     }
                                 } else {
-                                    System.out.println(
-                                            "Invalid quantity. Please enter a valid amount within the available units.");
+                                    System.out.println("\nInvalid quantity. Please enter a valid amount within the available units.");
                                 }
                             } else {
-                                System.out.println("Invalid choice. Please select a valid medicine number.");
+                                System.out.println("\nInvalid choice. Please select a valid medicine number.");
                             }
                         } catch (NumberFormatException e) {
-                            System.out.println("Invalid input. Please enter a valid number.");
+                            System.out.println("\nInvalid input. Please enter a valid number.");
                         }
                     }
 
                     selectedOutcome.setPrescriptions(prescribedMedicines);
-
                 } else {
-                    System.out.println("Prescription status is 'DISPENSED'. Editing is not allowed.");
+                    System.out.println("\nPlease enter valid input");
                 }
             }
 

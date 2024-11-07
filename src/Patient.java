@@ -263,9 +263,9 @@ public class Patient extends User
 
         // Define session timings (assuming these are predefined)
         String[] sessionTimings = {
-                "09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00",
-                "13:00 - 14:00", "14:00 - 15:00", "15:00 - 16:00",
-                "16:00 - 17:00", "17:00 - 18:00"
+            "09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00",
+            "13:00 - 14:00", "14:00 - 15:00", "15:00 - 16:00",
+            "16:00 - 17:00", "17:00 - 18:00"
         };
 
         // Filter schedules for the specified doctor
@@ -695,9 +695,9 @@ public class Patient extends User
         ArrayList<Appointment> patientAppointments = new ArrayList<>();
 
         String[] sessionTimings = {
-                "09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00",
-                "13:00 - 14:00", "14:00 - 15:00", "15:00 - 16:00",
-                "16:00 - 17:00", "17:00 - 18:00"
+            "09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00",
+            "13:00 - 14:00", "14:00 - 15:00", "15:00 - 16:00",
+            "16:00 - 17:00", "17:00 - 18:00"
         };
 
         // Filter confirmed appointments for this patient
@@ -739,9 +739,9 @@ public class Patient extends User
 
         // Define session timings
         final String[] sessionTimings = {
-                "09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00",
-                "13:00 - 14:00", "14:00 - 15:00", "15:00 - 16:00",
-                "16:00 - 17:00", "17:00 - 18:00"
+            "09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00",
+            "13:00 - 14:00", "14:00 - 15:00", "15:00 - 16:00",
+            "16:00 - 17:00", "17:00 - 18:00"
         };
 
         // Filter to show only the patient's completed appointments
