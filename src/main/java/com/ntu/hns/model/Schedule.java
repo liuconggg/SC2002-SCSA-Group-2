@@ -2,6 +2,7 @@ package com.ntu.hns.model;
 
 import com.ntu.hns.enums.ScheduleStatus;
 import com.opencsv.bean.CsvBindByPosition;
+import com.opencsv.bean.CsvDate;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,7 +10,9 @@ import java.util.List;
 
 public class Schedule {
     @CsvBindByPosition(position = 0) private String doctorID;
-    @CsvBindByPosition(position = 1) private LocalDate date;
+    @CsvDate("dd/MM/yyyy")
+    @CsvBindByPosition(position = 1)
+    private LocalDate date;
     @CsvBindByPosition(position = 2) private String[] session = new String[8];
 
     /** Default constructor required for OpenCSV to instantiate object. */

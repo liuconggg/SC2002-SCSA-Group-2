@@ -511,8 +511,6 @@ public class AppointmentManager {
     }
 
     public void showAppointment() {
-        List<Appointment> appointments = csvDB.readAppointments();
-
         // Prompt the user for the type of appointment they want to view
         System.out.println("\nWhat type of appointments would you like to view?");
         System.out.println("1. Completed");
@@ -539,6 +537,7 @@ public class AppointmentManager {
         }
 
         // Filter and display appointments based on user's choice
+        List<Appointment> appointments = csvDB.readAppointments();
         switch (choice) {
             case 1:
                 System.out.println("\n=== Completed Appointments ===");
