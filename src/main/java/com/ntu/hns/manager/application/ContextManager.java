@@ -8,7 +8,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 @Service
-public class ContextManager {
+public class ContextManager implements ContextManagerInterface {
     private final Scanner scanner;
 
     @Autowired
@@ -17,6 +17,7 @@ public class ContextManager {
     }
 
     // Patient actions
+    @Override
     public void beginPatient(Patient patient) {
         int choice = -1;
 
@@ -90,6 +91,7 @@ public class ContextManager {
     }
 
     // Doctor actions
+    @Override
     public void beginDoctor(Doctor doctor) {
         int choice = -1;
 
@@ -136,6 +138,7 @@ public class ContextManager {
     }
 
     // Pharmacist actions
+    @Override
     public void beginPharmacist(Pharmacist pharmacist) {
         int choice = -1;
 
@@ -184,6 +187,7 @@ public class ContextManager {
     }
 
     // All Administrator functions and logic
+    @Override
     public void beginAdministrator(Administrator administrator) {
         int choice = -1;
 

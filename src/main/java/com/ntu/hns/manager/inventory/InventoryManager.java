@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Scanner;
 
 @Component
-public class InventoryManager {
+public class InventoryManager implements InventoryManagerInterface {
     private final CsvDB csvDB;
     private final Scanner scanner;
 
@@ -25,6 +25,7 @@ public class InventoryManager {
         this.scanner = scanner;
     }
 
+    @Override
     public void showInventory() {
         System.out.println("\n=== Inventory ===");
         for (Medication medication : csvDB.readMedications()) {
@@ -42,6 +43,7 @@ public class InventoryManager {
         medication.setTotalQuantity(quantity);
     }
 
+    @Override
     public void updateInventory() {
         List<Medication> inventory = csvDB.readMedications();
         boolean medicationFound = false;
@@ -99,6 +101,7 @@ public class InventoryManager {
         System.out.println("Inventory Item updated successfully.");
     }
 
+    @Override
     public void addInventory() {
         List<Medication> inventory = csvDB.readMedications();
         System.out.print("Enter the name of the medication to add (or press enter to return to main menu): ");
@@ -141,6 +144,7 @@ public class InventoryManager {
         System.out.println("Inventory Item added successfully.");
     }
 
+    @Override
     public void deleteInventory() {
         List<Medication> inventory = csvDB.readMedications();
         boolean medicationFound = false;
@@ -172,6 +176,7 @@ public class InventoryManager {
         System.out.println("Inventory Item deleted successfully.");
     }
 
+    @Override
     public void processReplenishmentRequest(Pharmacist pharmacist) {
         List<Medication> medications = csvDB.readMedications();
         List<ReplenishmentRequest> replenishmentRequests = csvDB.readReplenishmentRequests();
@@ -265,6 +270,7 @@ public class InventoryManager {
         }
     }
 
+    @Override
     public void handleReplenishmentRequest() {
         List<ReplenishmentRequest> replenishmentRequests = csvDB.readReplenishmentRequests();
         List<Medication> inventory = csvDB.readMedications();

@@ -1,7 +1,5 @@
 package com.ntu.hns.manager.medicalrecord;
 
-import static com.ntu.hns.CsvDB.*;
-
 import com.ntu.hns.CsvDB;
 import com.ntu.hns.enums.AppointmentStatus;
 import com.ntu.hns.enums.ScheduleStatus;
@@ -17,7 +15,7 @@ import java.util.List;
 import java.util.Scanner;
 
 @Component
-public class MedicalRecordManager {
+public class MedicalRecordManager implements MedicalRecordManagerInterface {
     private final CsvDB csvDB;
     private final Scanner scanner;
 
@@ -27,6 +25,7 @@ public class MedicalRecordManager {
         this.scanner = scanner;
     }
 
+    @Override
     public void showMedicalRecord(Patient patient) {
         System.out.println("\n==================== Medical Record ====================");
         System.out.printf("ID            : %s\n", patient.getHospitalID());
@@ -79,6 +78,7 @@ public class MedicalRecordManager {
         System.out.println("=======================================================");
     }
 
+    @Override
     public void showMedicalRecord(Doctor doctor) {
         ArrayList<String> uniquePatientIds = new ArrayList<>();
         ArrayList<User> patientsUnderCare = new ArrayList<>();
@@ -205,6 +205,7 @@ public class MedicalRecordManager {
         }
     }
 
+    @Override
     public void updateMedicalRecord() {
         List<AppointmentOutcomeRecord> appointmentOutcomeRecords = csvDB.readAppointmentOutcomeRecords();
         List<Diagnosis> diagnoses = csvDB.readDiagnoses();

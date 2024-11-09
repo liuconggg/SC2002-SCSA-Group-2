@@ -3,6 +3,7 @@ package com.ntu.hns.model.users;
 import static com.ntu.hns.enums.ReplenishmentStatus.PENDING;
 
 import com.ntu.hns.Displayable;
+import com.ntu.hns.PharmacistInterface;
 import com.ntu.hns.manager.appointment.AppointmentManager;
 import com.ntu.hns.model.AppointmentOutcomeRecord;
 import com.ntu.hns.model.Medication;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Scanner;
 
 @Component
-public class Pharmacist extends User implements Displayable {
+public class Pharmacist extends User implements Displayable, PharmacistInterface {
     @Autowired private CsvDB csvDB;
     @Autowired private Scanner scanner;
     @Autowired private InventoryManager inventoryManager;
@@ -47,6 +48,7 @@ public class Pharmacist extends User implements Displayable {
         appointmentManager.showAppointmentOutcome();
     }
 
+    @Override
     public void prescribeAndUpdate() {
         List<AppointmentOutcomeRecord> appointmentOutcomeRecords = csvDB.readAppointmentOutcomeRecords();
         List<Medication> medications = csvDB.readMedications();

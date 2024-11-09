@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Scanner;
 
 @Component
-public class ScheduleManager {
+public class ScheduleManager implements ScheduleManagerInterface {
     private final CsvDB csvDB;
     private final DateTimeFormatter dateFormatter;
     private final Scanner scanner;
@@ -38,6 +38,7 @@ public class ScheduleManager {
         this.utilProvider = utilProvider;
     }
 
+    @Override
     public void showWeeklySchedule() {
         List<Doctor> doctors = csvDB.readDoctors();
         List<Schedule> schedules = csvDB.readSchedules();
@@ -143,6 +144,7 @@ public class ScheduleManager {
         }
     }
 
+    @Override
     public void showWeeklySchedule(Doctor doctor) {
         System.out.print("\nEnter the number of weeks you want to view in advance (Press Enter to return): ");
         String weeksInput = scanner.nextLine();
@@ -235,6 +237,7 @@ public class ScheduleManager {
         scanner.nextLine(); // Wait for the user to press Enter
     }
 
+    @Override
     public void updateSchedule(Doctor doctor) {
         boolean exit = false;
 
@@ -354,6 +357,7 @@ public class ScheduleManager {
         }
     }
 
+    @Override
     public void setAvailability(Doctor doctor) {
         List<Schedule> schedules = csvDB.readSchedules();
         List<Appointment> appointments = csvDB.readAppointments();

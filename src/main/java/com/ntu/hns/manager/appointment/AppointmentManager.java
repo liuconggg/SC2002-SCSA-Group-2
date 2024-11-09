@@ -28,7 +28,7 @@ import static com.ntu.hns.model.Appointment.getAppointmentByScheduleAndSession;
 import static com.ntu.hns.model.Schedule.createDefaultSchedule;
 
 @Component
-public class AppointmentManager {
+public class AppointmentManager implements AppointmentManagerInterface {
     private final CsvDB csvDB;
     private final DateTimeFormatter dateFormatter;
     private final Scanner scanner;
@@ -46,6 +46,7 @@ public class AppointmentManager {
         this.utilProvider = utilProvider;
     }
 
+    @Override
     public void scheduleAppointment(Patient patient) {
         // Display the available doctors to the user
         System.out.println("\nAvailable Doctors: ");
@@ -171,6 +172,7 @@ public class AppointmentManager {
                 sessionNumber);
     }
 
+    @Override
     public void rescheduleAppointment(Patient patient) {
         List<Doctor> doctors = csvDB.readDoctors();
         List<Appointment> appointments = csvDB.readAppointments();
@@ -323,6 +325,7 @@ public class AppointmentManager {
                 newSessionNumber);
     }
 
+    @Override
     public void cancelAppointment(Patient patient) {
         List<Appointment> appointments = csvDB.readAppointments();
         List<Schedule> schedules = csvDB.readSchedules();
@@ -411,6 +414,7 @@ public class AppointmentManager {
         }
     }
 
+    @Override
     public void showAppointmentOutcome(Patient patient) {
         // Filter to show only the patient's completed appointments
         List<Appointment> completedAppointments = csvDB.readAppointments().stream()
@@ -486,6 +490,7 @@ public class AppointmentManager {
         }
     }
 
+    @Override
     public void showAppointmentOutcome() {
         List<AppointmentOutcomeRecord> appointmentOutcomeRecords = csvDB.readAppointmentOutcomeRecords();
         System.out.println("\n=== Appointment Outcome Records ===");
@@ -564,6 +569,7 @@ public class AppointmentManager {
         }
     }
 
+    @Override
     public void showScheduledAppointments(Patient patient) {
         // Filter confirmed appointments for this patient
         List<Appointment> patientAppointments = csvDB.readAppointments().stream()
@@ -594,6 +600,7 @@ public class AppointmentManager {
         }
     }
 
+    @Override
     public void showUpcomingAppointments(Doctor doctor) {
         List<Patient> patients = csvDB.readPatients();
         LocalDate today = LocalDate.now();
@@ -649,6 +656,7 @@ public class AppointmentManager {
         scanner.nextLine(); // Wait for the user to press Enter
     }
 
+    @Override
     public void updateAppointmentOutcome(Doctor doctor) {
         List<Appointment> appointments = csvDB.readAppointments();
         List<Medication> medications = csvDB.readMedications();

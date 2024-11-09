@@ -1,6 +1,7 @@
 package com.ntu.hns.model.users;
 
 import com.ntu.hns.Displayable;
+import com.ntu.hns.InfoUpdater;
 import com.ntu.hns.manager.appointment.AppointmentManager;
 import com.ntu.hns.manager.medicalrecord.MedicalRecordManager;
 import com.ntu.hns.manager.schedule.ScheduleManager;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class Patient extends User implements Displayable {
+public class Patient extends User implements Displayable, InfoUpdater {
     @CsvBindByPosition(position = 5) private String dateOfBirth;
     @CsvBindByPosition(position = 6) private String phoneNumber;
     @CsvBindByPosition(position = 7) private String email;
@@ -88,6 +89,7 @@ public class Patient extends User implements Displayable {
         System.out.print("Enter your choice: ");
     }
 
+    @Override
     public void updatePersonalInformation() {
         List<User> users = csvDB.readUsersCsv();
         boolean changing = true;
@@ -143,13 +145,9 @@ public class Patient extends User implements Displayable {
         }
     }
 
-    public void viewWeeklySchedule() {
-        scheduleManager.showWeeklySchedule();
-    }
+    public void viewWeeklySchedule() { scheduleManager.showWeeklySchedule(); }
 
-    public void viewMedicalRecord() {
-        medicalRecordManager.showMedicalRecord(this);
-    }
+    public void viewMedicalRecord() {medicalRecordManager.showMedicalRecord(this); }
 
     public void scheduleAppointment() {
         appointmentManager.scheduleAppointment(this);

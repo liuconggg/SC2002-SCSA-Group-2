@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 @Component
-public class UserManager {
+public class UserManager implements UserManagerInterface {
     private final CsvDB csvDB;
     private final Scanner scanner;
 
@@ -18,6 +18,7 @@ public class UserManager {
         this.scanner = scanner;
     }
 
+    @Override
     public void addUser() {
         List<User> users = csvDB.readUsersCsv();
         System.out.println("What type of user would you like to add?");
@@ -132,6 +133,7 @@ public class UserManager {
         System.out.println("New user added and saved successfully.");
     }
 
+    @Override
     public void showUsers() {
         List<User> users = csvDB.readUsersCsv();
 
@@ -234,6 +236,7 @@ public class UserManager {
         }
     }
 
+    @Override
     public void updateUser() {
         List<User> users = csvDB.readUsersCsv();
         System.out.print(
@@ -321,6 +324,7 @@ public class UserManager {
     }
 
     // Method to delete a user
+    @Override
     public void deleteUser() {
         List<User> users = csvDB.readUsersCsv();
         System.out.print("\nEnter the Hospital ID of the staff to delete: ");
