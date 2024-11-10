@@ -17,7 +17,6 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,6 +37,18 @@ public class CsvDB {
 
   // The respective files header (to write the header of the file)
   private static final String[] patient_header = {
+    "Patient ID",
+    "Password",
+    "Name",
+    "Age",
+    "Gender",
+    "Date of Birth",
+    "Phone Number",
+    "Email",
+    "Blood Type"
+  };
+  // The respective files header (to write the header of the file)
+  private static final String[] schedule_header = {
     "Patient ID",
     "Password",
     "Name",
@@ -257,6 +268,10 @@ public class CsvDB {
     writeCsv(createPath(PATIENT_CSV_PATH), patient_header, patients);
   }
 
+  public static void saveSchedules(List<Schedule> schedules) {
+    writeCsv(createPath(SCHEDULE_CSV_PATH), schedule_header, schedules);
+  }
+
   public static void saveUsers(List<User> users) {
     ArrayList<Patient> patients = new ArrayList<>();
     ArrayList<Doctor> doctors = new ArrayList<>();
@@ -448,31 +463,6 @@ public class CsvDB {
       }
     } finally {
       out.close();
-    }
-  }
-
-  public static void saveSchedules(List<Schedule> schedules) {
-    try (PrintWriter writer = new PrintWriter(new FileWriter(scheduleCSV, false))) {
-      // Write the header row
-      writer.println(SCHEDULE_HEADER);
-
-      // Write each schedule entry
-      DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-      for (Schedule schedule : schedules) {
-        StringBuilder line = new StringBuilder();
-        line.append(schedule.getDoctorID()).append(DELIMITER);
-        line.append(schedule.getDate().format(dateFormatter)).append(DELIMITER);
-
-        for (String session : schedule.getSession()) {
-          line.append(session).append(DELIMITER);
-        }
-
-        // Remove the trailing delimiter
-        line.setLength(line.length() - 1);
-        writer.println(line.toString());
-      }
-    } catch (IOException e) {
-      System.err.println("Error saving schedules: " + e.getMessage());
     }
   }
 }

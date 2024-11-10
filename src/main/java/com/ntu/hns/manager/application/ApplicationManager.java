@@ -29,20 +29,27 @@ public class ApplicationManager {
   public void start() {
     // Load all CSV data
     User user = null;
+
     while (true) {
-      if (user != null) {
-        if (user instanceof Patient) {
-          contextManager.beginPatient((Patient) user);
-        } else if (user instanceof Doctor) {
-          contextManager.beginDoctor((Doctor) user);
-        } else if (user instanceof Pharmacist) {
-          contextManager.beginPharmacist((Pharmacist) user);
-        } else if (user instanceof Administrator) {
-          contextManager.beginAdministrator((Administrator) user);
-        }
-      } else {
+      if (user == null) {
         user = authenticationService.authenticate();
+        continue;
       }
+
+      handleUserContext(user);
+      user = null;
+    }
+  }
+
+  private void handleUserContext(User user) {
+    if (user instanceof Patient) {
+      contextManager.beginPatient((Patient) user);
+    } else if (user instanceof Doctor) {
+      contextManager.beginDoctor((Doctor) user);
+    } else if (user instanceof Pharmacist) {
+      contextManager.beginPharmacist((Pharmacist) user);
+    } else if (user instanceof Administrator) {
+      contextManager.beginAdministrator((Administrator) user);
     }
   }
 

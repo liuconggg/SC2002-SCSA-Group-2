@@ -32,7 +32,21 @@ public class PatientActionsTest {
   @Test
   @DisplayName("Test Case 3: View Available Appointment Slots")
   public void testViewAvailableAppointmentSlots() {
-    provideInput("P0001\n123\n3\n6\n");
+    provideInput("P0001\n123\n3\n6\n2\n\n9\n");
+    startApplication();
+  }
+
+  @Test
+  @DisplayName("Test Case 4: Schedule an Appointment")
+  public void testScheduleAppointment() {
+    provideInput("P0001\n123\n4\n6\n11/11/2024\n1\n");
+    startApplication();
+  }
+
+  @Test
+  @DisplayName("Test Case 5: Reschedule an Appointment")
+  public void testRescheduleAppointment() {
+    provideInput("P0001\n123\n5\n1\n11/11/2024\n1\n");
     startApplication();
   }
 

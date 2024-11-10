@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,14 +46,13 @@ public class ScheduleManager implements ScheduleManagerInterface {
 
     // Display the available doctors to the user
     System.out.println("\nAvailable Doctors: ");
-    int doctorIndex = 0;
-    for (Doctor doc : doctors) {
-      System.out.println((++doctorIndex) + ". " + doc.getName());
-    }
+    IntStream.range(0, doctors.size())
+        .forEach(index -> System.out.println((index + 1) + ". " + doctors.get(index).getName()));
 
     // Prompt user to select a doctor by index
-    System.out.print("Select a doctor to view available slots (Press Enter to return): ");
+    System.out.println("Select a doctor to view available slots (Press Enter to return): ");
     String doctorInput = scanner.nextLine().trim();
+    System.out.println();
 
     // Allow patient to exit viewing process
     if (doctorInput.isEmpty()) {
