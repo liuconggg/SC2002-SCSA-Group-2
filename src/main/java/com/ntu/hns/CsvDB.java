@@ -6,7 +6,6 @@ import com.ntu.hns.model.users.Patient;
 import com.ntu.hns.model.users.Pharmacist;
 import com.ntu.hns.model.users.User;
 import com.ntu.hns.model.users.Administrator;
-import com.ntu.hns.spring.AppConfig;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -17,8 +16,7 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -30,7 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 //For all operations in the CSV file
-@Component
+@Service
 public class CsvDB {
     public static final String currentDir = System.getProperty("user.dir");
 

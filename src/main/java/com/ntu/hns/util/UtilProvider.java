@@ -1,6 +1,7 @@
 package com.ntu.hns.util;
 
 import com.ntu.hns.CsvDB;
+import com.ntu.hns.model.AppointmentOutcomeRecord;
 import com.ntu.hns.model.Schedule;
 import com.ntu.hns.model.users.Doctor;
 import com.ntu.hns.model.users.Patient;
@@ -36,5 +37,12 @@ public class UtilProvider {
         return csvDB.readSchedules().stream()
                 .filter(schedule -> schedule.getDoctorID().equals(doctorID))
                 .collect(Collectors.toList());
+    }
+
+    public AppointmentOutcomeRecord getOutcomeByAppointmentID(String appointmentID) {
+        return csvDB.readAppointmentOutcomeRecords().stream()
+                .filter(appointmentOutcomeRecord -> appointmentOutcomeRecord.getAppointmentID().equals(appointmentID))
+                .findFirst()
+                .orElse(null);
     }
 }

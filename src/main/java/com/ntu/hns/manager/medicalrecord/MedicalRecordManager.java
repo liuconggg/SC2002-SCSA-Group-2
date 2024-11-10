@@ -7,22 +7,25 @@ import com.ntu.hns.model.*;
 import com.ntu.hns.model.users.Doctor;
 import com.ntu.hns.model.users.Patient;
 import com.ntu.hns.model.users.User;
+import com.ntu.hns.util.UtilProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-@Component
+@Service
 public class MedicalRecordManager implements MedicalRecordManagerInterface {
     private final CsvDB csvDB;
     private final Scanner scanner;
+    private final UtilProvider utilProvider;
 
     @Autowired
-    public MedicalRecordManager(CsvDB csvDB, Scanner scanner) {
+    public MedicalRecordManager(CsvDB csvDB, Scanner scanner, UtilProvider utilProvider) {
         this.csvDB = csvDB;
         this.scanner = scanner;
+        this.utilProvider = utilProvider;
     }
 
     @Override
@@ -55,7 +58,7 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
                     System.out.printf("  Treatment      : %s\n", treatment.getTreatment());
 
                     // Find and display only the prescriptions
-                    AppointmentOutcomeRecord outcome = getOutcomeByAppointmentID(diagnosis.getAppointmentId());
+                    AppointmentOutcomeRecord outcome = utilProvider.getOutcomeByAppointmentID(diagnosis.getAppointmentId());
                     if (outcome != null && !outcome.getPrescriptions().isEmpty()) {
                         String prescriptions = outcome.getPrescriptions().stream()
                                 .map(MedicationItem::toString)
@@ -174,7 +177,7 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
                                     System.out.printf("  Treatment      : %s\n", treatment.getTreatment());
 
                                     // Find and display only the prescriptions
-                                    AppointmentOutcomeRecord outcome = getOutcomeByAppointmentID(diagnosis.getAppointmentId());
+                                    AppointmentOutcomeRecord outcome = utilProvider.getOutcomeByAppointmentID(diagnosis.getAppointmentId());
                                     if (outcome != null && !outcome.getPrescriptions().isEmpty()) {
                                         String prescriptions = outcome.getPrescriptions().stream()
                                                 .map(MedicationItem::toString)
@@ -446,12 +449,5 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
                 e.printStackTrace();
             }
         }
-    }
-
-    public AppointmentOutcomeRecord getOutcomeByAppointmentID(String appointmentID) {
-        return csvDB.readAppointmentOutcomeRecords().stream()
-                .filter(appointmentOutcomeRecord -> appointmentOutcomeRecord.getAppointmentID().equals(appointmentID))
-                .findFirst()
-                .orElse(null);
     }
 }

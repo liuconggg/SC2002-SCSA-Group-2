@@ -3,11 +3,12 @@ package com.ntu.hns.manager.user;
 import com.ntu.hns.CsvDB;
 import com.ntu.hns.model.users.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Scanner;
 
-@Component
+@Service
 public class UserManager implements UserManagerInterface {
     private final CsvDB csvDB;
     private final Scanner scanner;

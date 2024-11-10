@@ -1,5 +1,10 @@
 package com.ntu.hns.manager.appointment;
 
+import static com.ntu.hns.App.sessionTimings;
+import static com.ntu.hns.enums.AppointmentStatus.*;
+import static com.ntu.hns.model.Appointment.getAppointmentByScheduleAndSession;
+import static com.ntu.hns.model.Schedule.createDefaultSchedule;
+
 import com.ntu.hns.CsvDB;
 import com.ntu.hns.enums.AppointmentOutcomeStatus;
 import com.ntu.hns.enums.AppointmentStatus;
@@ -9,8 +14,7 @@ import com.ntu.hns.model.users.Doctor;
 import com.ntu.hns.model.users.Patient;
 import com.ntu.hns.util.UtilProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,12 +26,7 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.ntu.hns.App.sessionTimings;
-import static com.ntu.hns.enums.AppointmentStatus.*;
-import static com.ntu.hns.model.Appointment.getAppointmentByScheduleAndSession;
-import static com.ntu.hns.model.Schedule.createDefaultSchedule;
-
-@Component
+@Service
 public class AppointmentManager implements AppointmentManagerInterface {
     private final CsvDB csvDB;
     private final DateTimeFormatter dateFormatter;
@@ -178,8 +177,6 @@ public class AppointmentManager implements AppointmentManagerInterface {
         List<Appointment> appointments = csvDB.readAppointments();
         List<Schedule> schedules = csvDB.readSchedules();
 
-        Scanner sc = new Scanner(System.in);
-
         // Filter to show only pending or confirmed appointments
         List<Appointment> reschedulableAppointments = getAppointmentsForPatient(patient.getHospitalID()).stream()
                 .filter(appointment -> appointment.getStatus().equalsIgnoreCase(PENDING.name())
@@ -208,7 +205,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
         }
 
         System.out.println("Which appointment would you like to reschedule? (Press Enter to return): ");
-        String appointmentChoiceInput = sc.nextLine().trim();
+        String appointmentChoiceInput = scanner.nextLine().trim();
 
         // Allow the patient to exit the rescheduling process
         if (appointmentChoiceInput.isEmpty()) {
@@ -240,7 +237,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
         // Prompt for new date
         System.out.print("Enter the new appointment date (dd/MM/yyyy): ");
-        String newDateInput = sc.nextLine().trim();
+        String newDateInput = scanner.nextLine().trim();
         LocalDate newAppointmentDate;
         try {
             newAppointmentDate = LocalDate.parse(newDateInput, dateFormatter);
@@ -282,8 +279,8 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
         // Select a new session
         System.out.print("Select a session number for the new date: ");
-        int newSessionNumber = sc.nextInt();
-        sc.nextLine(); // Consume newline
+        int newSessionNumber = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
 
         if (newSessionNumber < 1 || newSessionNumber > newSession.length
                 || !newSession[newSessionNumber - 1].equals("Available")) {
@@ -330,7 +327,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
         List<Appointment> appointments = csvDB.readAppointments();
         List<Schedule> schedules = csvDB.readSchedules();
         List<Doctor> doctors = csvDB.readDoctors();
-        Scanner sc = new Scanner(System.in);
+
         // Filter to show only pending or confirmed appointments
         List<Appointment> cancellableAppointments = getAppointmentsForPatient(patient.getHospitalID()).stream()
                 .filter(
@@ -362,7 +359,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
         // Get user choice
         System.out.println("Which appointment would you like to cancel? (Press Enter to return): ");
-        String appointmentChoiceInput = sc.nextLine().trim();
+        String appointmentChoiceInput = scanner.nextLine().trim();
 
         // Allow the patient to exit the cancellation process
         if (appointmentChoiceInput.isEmpty()) {
@@ -663,7 +660,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
         List<AppointmentOutcomeRecord> appointmentOutcomeRecords = csvDB.readAppointmentOutcomeRecords();
         List<Diagnosis> diagnoses = csvDB.readDiagnoses();
         List<Treatment> treatments = csvDB.readTreatments();
-        Scanner sc = new Scanner(System.in);
+
         boolean exit = false;
 
         while (!exit) {
@@ -691,7 +688,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
             // Step 2: Get the user's selection for which appointment they want to modify
             System.out.println("\nSelect the appointment to record the outcome (or press Enter to return):");
-            String input = sc.nextLine();
+            String input = scanner.nextLine();
 
             if (input.trim().isEmpty()) {
                 System.out.println("\nReturning to main menu...");
@@ -723,7 +720,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
                     // Step 3: Prompt the user to record the outcome using Y/N input
                     System.out.print("\nEnter the outcome for this appointment ('Y' for Completed or 'N' for No-Show): ");
-                    String outcome = sc.nextLine().trim().toUpperCase();
+                    String outcome = scanner.nextLine().trim().toUpperCase();
 
                     if (outcome.equals("Y")) {
                         String consultationNotes = "";
@@ -732,16 +729,16 @@ public class AppointmentManager implements AppointmentManagerInterface {
                         String treatmentNotes = "";
 
                         System.out.println("\nEnter type of service (enter na if none): ");
-                        typeOfService = sc.nextLine();
+                        typeOfService = scanner.nextLine();
 
                         System.out.println("\nEnter consultation notes (enter na if none): ");
-                        consultationNotes = sc.nextLine();
+                        consultationNotes = scanner.nextLine();
 
                         System.out.println("\nEnter diagnosis (enter na if none): ");
-                        diagnosisNotes = sc.nextLine();
+                        diagnosisNotes = scanner.nextLine();
 
                         System.out.println("\nEnter treatment (enter na if none): ");
-                        treatmentNotes = sc.nextLine();
+                        treatmentNotes = scanner.nextLine();
 
                         // Step 4: Display medication inventory and allow the user to prescribe
                         // medicines
@@ -759,7 +756,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
                             System.out
                                     .println("\nSelect a medicine by number to prescribe (or press Enter to finish): ");
-                            String medInput = sc.nextLine();
+                            String medInput = scanner.nextLine();
 
                             if (medInput.trim().isEmpty()) {
                                 addingMedicines = false;
@@ -772,7 +769,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
                                 if (medChoice > 0 && medChoice <= medications.size()) {
                                     Medication selectedMed = medications.get(medChoice - 1);
                                     System.out.printf("\nEnter quantity for %s: ", selectedMed.getMedicationName());
-                                    String quantityInput = sc.nextLine();
+                                    String quantityInput = scanner.nextLine();
                                     int quantity = Integer.parseInt(quantityInput);
 
                                     if (quantity > 0 && quantity <= selectedMed.getTotalQuantity()) {

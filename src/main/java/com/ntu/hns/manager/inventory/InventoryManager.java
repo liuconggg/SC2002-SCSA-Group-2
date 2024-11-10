@@ -8,13 +8,13 @@ import com.ntu.hns.model.MedicationItem;
 import com.ntu.hns.model.ReplenishmentRequest;
 import com.ntu.hns.model.users.Pharmacist;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-@Component
+@Service
 public class InventoryManager implements InventoryManagerInterface {
     private final CsvDB csvDB;
     private final Scanner scanner;

@@ -12,14 +12,14 @@ import com.ntu.hns.model.users.Doctor;
 import com.ntu.hns.model.users.Patient;
 import com.ntu.hns.util.UtilProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-@Component
+@Service
 public class ScheduleManager implements ScheduleManagerInterface {
     private final CsvDB csvDB;
     private final DateTimeFormatter dateFormatter;
@@ -361,14 +361,14 @@ public class ScheduleManager implements ScheduleManagerInterface {
     public void setAvailability(Doctor doctor) {
         List<Schedule> schedules = csvDB.readSchedules();
         List<Appointment> appointments = csvDB.readAppointments();
-        Scanner sc = new Scanner(System.in);
+
         boolean exit = false;
 
         while (!exit) {
             // Ask for the date to change availability
             System.out.println(
                     "\nEnter the date in format (dd/MM/yyyy) to view and change availability (Press Enter to return):");
-            String inputDate = sc.nextLine();
+            String inputDate = scanner.nextLine();
 
             if (inputDate.trim().isEmpty()) {
                 System.out.println("\nPress Enter to return");
@@ -409,7 +409,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
                     // Prompt for session to update
                     System.out.println(
                             "\nEnter the number of the session to update availability, or press Enter to return:");
-                    String sessionChoiceInput = sc.nextLine();
+                    String sessionChoiceInput = scanner.nextLine();
 
                     if (sessionChoiceInput.trim().isEmpty()) {
                         continueUpdating = false;
