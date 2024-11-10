@@ -1,29 +1,30 @@
 package com.ntu.hns.manager.application;
 
 import com.ntu.hns.model.users.*;
+import com.ntu.hns.util.ScannerWrapper;
 import java.util.InputMismatchException;
-import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ContextManager implements ContextManagerInterface {
-  private final Scanner scanner;
+  private final ScannerWrapper scanner;
 
   @Autowired
-  public ContextManager(Scanner scanner) {
+  public ContextManager(ScannerWrapper scanner) {
     this.scanner = scanner;
   }
 
   // Patient actions
   @Override
   public void beginPatient(Patient patient) {
-    int choice = -1;
+    //    int choice = -1;
 
-    while (choice != 9) {
+    while (true) {
       try {
         patient.displayMenu();
-        choice = scanner.nextInt();
+        int choice = scanner.nextInt();
+        System.out.println();
 
         switch (choice) {
           case 1:
@@ -76,7 +77,8 @@ public class ContextManager implements ContextManagerInterface {
             break;
           case 9:
             System.out.println("You have logged out ");
-            break;
+            System.out.println();
+            return;
           default:
             System.out.println("Invalid input. Please try again.");
             break;
@@ -98,6 +100,7 @@ public class ContextManager implements ContextManagerInterface {
       try {
         doctor.displayMenu();
         choice = scanner.nextInt();
+        System.out.println();
 
         switch (choice) {
           case 1:
@@ -123,6 +126,7 @@ public class ContextManager implements ContextManagerInterface {
             break;
           case 8:
             System.out.println("You have logged out ");
+            System.out.println();
             break;
           default:
             System.out.println("Invalid input. Please try again.");
@@ -145,6 +149,8 @@ public class ContextManager implements ContextManagerInterface {
       try {
         pharmacist.displayMenu();
         choice = scanner.nextInt();
+        System.out.println();
+
         switch (choice) {
           case 1:
             pharmacist.viewAppointmentOutcome();
@@ -172,6 +178,7 @@ public class ContextManager implements ContextManagerInterface {
             break;
           case 5:
             System.out.println("You have logged out ");
+            System.out.println();
             break;
           default:
             System.out.println("Invalid input. Please try again.");
@@ -194,6 +201,7 @@ public class ContextManager implements ContextManagerInterface {
       try {
         administrator.displayMenu();
         choice = scanner.nextInt();
+        System.out.println();
 
         switch (choice) {
           case 1:
@@ -206,7 +214,7 @@ public class ContextManager implements ContextManagerInterface {
             System.out.print("Enter your choice: ");
 
             int staffChoice = scanner.nextInt();
-            scanner.nextLine();
+            System.out.println();
 
             switch (staffChoice) {
               case 1:
@@ -276,6 +284,7 @@ public class ContextManager implements ContextManagerInterface {
             break;
           case 5:
             System.out.println("You have logged out ");
+            System.out.println();
             break;
           default:
             System.out.println("Invalid input. Please try again.");

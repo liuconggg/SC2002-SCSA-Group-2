@@ -7,6 +7,7 @@ import com.ntu.hns.InfoUpdater;
 import com.ntu.hns.manager.appointment.AppointmentManager;
 import com.ntu.hns.manager.medicalrecord.MedicalRecordManager;
 import com.ntu.hns.manager.schedule.ScheduleManager;
+import com.ntu.hns.util.ScannerWrapper;
 import com.opencsv.bean.CsvBindByPosition;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class Patient extends User implements InfoUpdater {
   private String bloodType;
 
   @Autowired private CsvDB csvDB;
-  @Autowired private Scanner scanner;
+  @Autowired private ScannerWrapper scanner;
   @Autowired private AppointmentManager appointmentManager;
   @Autowired private MedicalRecordManager medicalRecordManager;
   @Autowired private ScheduleManager scheduleManager;
@@ -90,7 +91,7 @@ public class Patient extends User implements InfoUpdater {
 
   @Override
   public void updatePersonalInformation() {
-    List<User> users = csvDB.readUsersCsv();
+    List<Patient> patients = csvDB.readPatients();
     boolean changing = true;
     int action = -1;
 
@@ -102,8 +103,6 @@ public class Patient extends User implements InfoUpdater {
       System.out.print("Your Choice: ");
       try {
         action = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-
         switch (action) {
           case 1:
             System.out.print("Enter your new phone number: ");
@@ -126,15 +125,16 @@ public class Patient extends User implements InfoUpdater {
 
         // Update the Patient object in the ArrayList<User> users
         if ((action > 0) && (action != 3)) {
-          for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getHospitalID().equals(this.getHospitalID())) {
-              users.set(i, this);
+          for (int i = 0; i < patients.size(); i++) {
+            if (patients.get(i).getHospitalID().equals(this.getHospitalID())) {
+              patients.set(i, this);
               break;
             }
           }
 
           // Save all users
-          CsvDB.saveUsers(users);
+          CsvDB.savePatients(patients);
+          //          CsvDB.saveUsers(patients);
         }
       } catch (InputMismatchException e) {
         System.out.println("Invalid input. Please enter a valid number.");

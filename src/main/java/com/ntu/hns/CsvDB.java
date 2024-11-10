@@ -17,7 +17,6 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,6 +36,29 @@ public class CsvDB {
       "ID,Password,Name,Age,Gender"; // Common Header in all user text file
 
   // The respective files header (to write the header of the file)
+  private static final String[] patient_header = {
+    "Patient ID",
+    "Password",
+    "Name",
+    "Age",
+    "Gender",
+    "Date of Birth",
+    "Phone Number",
+    "Email",
+    "Blood Type"
+  };
+  // The respective files header (to write the header of the file)
+  private static final String[] schedule_header = {
+    "Patient ID",
+    "Password",
+    "Name",
+    "Age",
+    "Gender",
+    "Date of Birth",
+    "Phone Number",
+    "Email",
+    "Blood Type"
+  };
   public static final String PATIENT_HEADER =
       "Patient ID,Password,Name,Age,Gender,Date of Birth,Phone Number,Email,Blood Type";
   public static final String DOCTOR_HEADER = "Doctor ID,Password,Name,Age,Gender";
@@ -183,8 +205,17 @@ public class CsvDB {
     return readCsv(APPOINTMENT_OUTCOME_RECORD_CSV_PATH, AppointmentOutcomeRecord.class);
   }
 
-  private static <T> void writeCsv(Path csvPath, List<T> csvBean) {
+  private static <T> void writeCsv(Path csvPath, String[] header, List<T> csvBean) {
     try (Writer writer = new FileWriter(csvPath.toFile())) {
+      CSVWriter csvWriter =
+          new CSVWriter(
+              writer,
+              CSVWriter.DEFAULT_SEPARATOR,
+              CSVWriter.NO_QUOTE_CHARACTER,
+              CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+              CSVWriter.DEFAULT_LINE_END);
+      csvWriter.writeNext(header);
+
       StatefulBeanToCsv<T> sbc =
           new StatefulBeanToCsvBuilder<T>(writer)
               .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
@@ -211,26 +242,34 @@ public class CsvDB {
         administrators.add((Administrator) user);
       }
     }
-    writeCsv(createPath(PATIENT_CSV_PATH), patients);
-    writeCsv(createPath(DOCTOR_CSV_PATH), doctors);
-    writeCsv(createPath(PHARMACIST_CSV_PATH), pharmacists);
-    writeCsv(createPath(ADMINISTRATOR_CSV_PATH), administrators);
+    //    writeCsv(createPath(PATIENT_CSV_PATH), patients);
+    //    writeCsv(createPath(DOCTOR_CSV_PATH), doctors);
+    //    writeCsv(createPath(PHARMACIST_CSV_PATH), pharmacists);
+    //    writeCsv(createPath(ADMINISTRATOR_CSV_PATH), administrators);
   }
 
   public static void saveTreatment(List<Treatment> treatments) {
-    writeCsv(createPath(TREATMENT_CSV_PATH), treatments);
+    //    writeCsv(createPath(TREATMENT_CSV_PATH), treatments);
   }
 
   public static void saveDiagnosis(List<Diagnosis> diagnoses) {
-    writeCsv(createPath(DIAGNOSIS_CSV_PATH), diagnoses);
+    //    writeCsv(createPath(DIAGNOSIS_CSV_PATH), diagnoses);
   }
 
   public static void saveAppointments(List<Appointment> appointments) {
-    writeCsv(createPath(APPOINTMENT_CSV_PATH), appointments);
+    //    writeCsv(createPath(APPOINTMENT_CSV_PATH), appointments);
   }
 
   public static void saveMedications(List<Medication> medications) {
-    writeCsv(createPath(MEDICATION_CSV_PATH), medications);
+    //    writeCsv(createPath(MEDICATION_CSV_PATH), medications);
+  }
+
+  public static void savePatients(List<Patient> patients) {
+    writeCsv(createPath(PATIENT_CSV_PATH), patient_header, patients);
+  }
+
+  public static void saveSchedules(List<Schedule> schedules) {
+    writeCsv(createPath(SCHEDULE_CSV_PATH), schedule_header, schedules);
   }
 
   public static void saveUsers(List<User> users) {
@@ -391,7 +430,7 @@ public class CsvDB {
     }
   }
 
-  // Update com.ntu.hms.ReplenishmentRequest.csv
+  // Update ReplenishmentRequest.csv
   public static void saveAppointmentOutcomeRecords(
       List<AppointmentOutcomeRecord> apptOutcomeRecords) throws IOException {
     PrintWriter out = new PrintWriter(new FileWriter(appointmentOutcomeRecordCSV, false));
@@ -424,31 +463,6 @@ public class CsvDB {
       }
     } finally {
       out.close();
-    }
-  }
-
-  public static void saveSchedules(List<Schedule> schedules) {
-    try (PrintWriter writer = new PrintWriter(new FileWriter(scheduleCSV, false))) {
-      // Write the header row
-      writer.println(SCHEDULE_HEADER);
-
-      // Write each schedule entry
-      DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-      for (Schedule schedule : schedules) {
-        StringBuilder line = new StringBuilder();
-        line.append(schedule.getDoctorID()).append(DELIMITER);
-        line.append(schedule.getDate().format(dateFormatter)).append(DELIMITER);
-
-        for (String session : schedule.getSession()) {
-          line.append(session).append(DELIMITER);
-        }
-
-        // Remove the trailing delimiter
-        line.setLength(line.length() - 1);
-        writer.println(line.toString());
-      }
-    } catch (IOException e) {
-      System.err.println("Error saving schedules: " + e.getMessage());
     }
   }
 }

@@ -8,6 +8,10 @@ public class TestManager {
     App.main(new String[] {});
   }
 
+  public static void stopApplication() {
+    App.stopApplication();
+  }
+
   public static void provideInput(String input) {
     System.setIn(new ByteArrayInputStream(input.getBytes()));
   }

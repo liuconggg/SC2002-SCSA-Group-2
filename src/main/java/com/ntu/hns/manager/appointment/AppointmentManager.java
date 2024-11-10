@@ -12,6 +12,7 @@ import com.ntu.hns.enums.ScheduleStatus;
 import com.ntu.hns.model.*;
 import com.ntu.hns.model.users.Doctor;
 import com.ntu.hns.model.users.Patient;
+import com.ntu.hns.util.ScannerWrapper;
 import com.ntu.hns.util.UtilProvider;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -20,7 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +30,14 @@ import org.springframework.stereotype.Service;
 public class AppointmentManager implements AppointmentManagerInterface {
   private final CsvDB csvDB;
   private final DateTimeFormatter dateFormatter;
-  private final Scanner scanner;
+  private final ScannerWrapper scanner;
   private final UtilProvider utilProvider;
 
   @Autowired
   public AppointmentManager(
       CsvDB csvDB,
       DateTimeFormatter dateTimeFormatter,
-      Scanner scanner,
+      ScannerWrapper scanner,
       UtilProvider utilProvider) {
     this.csvDB = csvDB;
     this.dateFormatter = dateTimeFormatter;
@@ -304,7 +304,6 @@ public class AppointmentManager implements AppointmentManagerInterface {
     // Select a new session
     System.out.print("Select a session number for the new date: ");
     int newSessionNumber = scanner.nextInt();
-    scanner.nextLine(); // Consume newline
 
     if (newSessionNumber < 1
         || newSessionNumber > newSession.length

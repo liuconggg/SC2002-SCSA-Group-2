@@ -2,18 +2,18 @@ package com.ntu.hns.manager.user;
 
 import com.ntu.hns.CsvDB;
 import com.ntu.hns.model.users.*;
+import com.ntu.hns.util.ScannerWrapper;
 import java.util.List;
-import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserManager implements UserManagerInterface {
   private final CsvDB csvDB;
-  private final Scanner scanner;
+  private final ScannerWrapper scanner;
 
   @Autowired
-  public UserManager(CsvDB csvDB, Scanner scanner) {
+  public UserManager(CsvDB csvDB, ScannerWrapper scanner) {
     this.csvDB = csvDB;
     this.scanner = scanner;
   }
@@ -29,13 +29,12 @@ public class UserManager implements UserManagerInterface {
     System.out.println("5. Go back to previous menu");
     System.out.print("Enter your choice: ");
     int choice = scanner.nextInt();
-    scanner.nextLine();
 
     String hospitalID, password, name, gender, dateOfBirth, phoneNumber, email, bloodType;
     int age;
 
     switch (choice) {
-      case 1: // Add com.ntu.hms.users.Patient
+      case 1: // Add Patient
         System.out.print("Enter Hospital ID: ");
         hospitalID = scanner.nextLine();
         System.out.print("Enter Password: ");
@@ -44,7 +43,6 @@ public class UserManager implements UserManagerInterface {
         name = scanner.nextLine();
         System.out.print("Enter Age: ");
         age = scanner.nextInt();
-        scanner.nextLine();
         System.out.print("Enter Gender: ");
         gender = scanner.nextLine();
         System.out.print("Enter Date of Birth: ");
@@ -71,7 +69,7 @@ public class UserManager implements UserManagerInterface {
         users.add(newPatient);
         break;
 
-      case 2: // Add com.ntu.hms.users.Doctor
+      case 2: // Add Doctor
         System.out.print("Enter Hospital ID: ");
         hospitalID = scanner.nextLine();
         System.out.print("Enter Password: ");
@@ -80,7 +78,6 @@ public class UserManager implements UserManagerInterface {
         name = scanner.nextLine();
         System.out.print("Enter Age: ");
         age = scanner.nextInt();
-        scanner.nextLine();
         System.out.print("Enter Gender: ");
         gender = scanner.nextLine();
 
@@ -97,7 +94,6 @@ public class UserManager implements UserManagerInterface {
         name = scanner.nextLine();
         System.out.print("Enter Age: ");
         age = scanner.nextInt();
-        scanner.nextLine();
         System.out.print("Enter Gender: ");
         gender = scanner.nextLine();
 
@@ -114,7 +110,6 @@ public class UserManager implements UserManagerInterface {
         name = scanner.nextLine();
         System.out.print("Enter Age: ");
         age = scanner.nextInt();
-        scanner.nextLine();
         System.out.print("Enter Gender: ");
         gender = scanner.nextLine();
 
@@ -146,7 +141,6 @@ public class UserManager implements UserManagerInterface {
     System.out.println("4. Administrators");
     System.out.print("Enter your choice: ");
     int choice = scanner.nextInt();
-    scanner.nextLine(); // Consume newline
 
     String selectedStaffType = "";
     switch (choice) {
@@ -174,7 +168,6 @@ public class UserManager implements UserManagerInterface {
     System.out.println("3. No Filter");
     System.out.print("Enter your choice: ");
     int genderChoice = scanner.nextInt();
-    scanner.nextLine(); // Consume newline
 
     String selectedGender = "";
     switch (genderChoice) {

@@ -10,12 +10,13 @@ import com.ntu.hns.model.Appointment;
 import com.ntu.hns.model.Schedule;
 import com.ntu.hns.model.users.Doctor;
 import com.ntu.hns.model.users.Patient;
+import com.ntu.hns.util.ScannerWrapper;
 import com.ntu.hns.util.UtilProvider;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +24,14 @@ import org.springframework.stereotype.Service;
 public class ScheduleManager implements ScheduleManagerInterface {
   private final CsvDB csvDB;
   private final DateTimeFormatter dateFormatter;
-  private final Scanner scanner;
+  private final ScannerWrapper scanner;
   private final UtilProvider utilProvider;
 
   @Autowired
   public ScheduleManager(
       CsvDB csvDB,
       DateTimeFormatter dateTimeFormatter,
-      Scanner scanner,
+      ScannerWrapper scanner,
       UtilProvider utilProvider) {
     this.csvDB = csvDB;
     this.dateFormatter = dateTimeFormatter;
@@ -45,14 +46,13 @@ public class ScheduleManager implements ScheduleManagerInterface {
 
     // Display the available doctors to the user
     System.out.println("\nAvailable Doctors: ");
-    int doctorIndex = 0;
-    for (Doctor doc : doctors) {
-      System.out.println((++doctorIndex) + ". " + doc.getName());
-    }
+    IntStream.range(0, doctors.size())
+        .forEach(index -> System.out.println((index + 1) + ". " + doctors.get(index).getName()));
 
     // Prompt user to select a doctor by index
-    System.out.print("Select a doctor to view available slots (Press Enter to return): ");
+    System.out.println("Select a doctor to view available slots (Press Enter to return): ");
     String doctorInput = scanner.nextLine().trim();
+    System.out.println();
 
     // Allow patient to exit viewing process
     if (doctorInput.isEmpty()) {
@@ -422,7 +422,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
         while (continueUpdating) {
           // Display sessions to update
           System.out.printf(
-              "\ncom.ntu.hms.Schedule for %s:\n\n",
+              "\nSchedule for %s:\n\n",
               selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
           for (int i = 0; i < chosenSchedule.getSession().length; i++) {
             String sessionInfo = chosenSchedule.getSession()[i];
