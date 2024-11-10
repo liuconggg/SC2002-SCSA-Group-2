@@ -3,45 +3,50 @@ package com.ntu.hns.model;
 import com.opencsv.bean.CsvBindByPosition;
 
 public class Treatment {
-    @CsvBindByPosition(position = 0) String patientID;
-    @CsvBindByPosition(position = 1) String treatment;
-    @CsvBindByPosition(position = 2) String appointmentID;
+  @CsvBindByPosition(position = 0)
+  String patientID;
 
-    /** Default constructor required for OpenCSV to instantiate object. */
-    public Treatment() {}
+  @CsvBindByPosition(position = 1)
+  String treatment;
 
-    public Treatment(String appointmentID, String patientID, String treatment) {
-        this.patientID = patientID;
-        this.appointmentID = appointmentID;
-        this.treatment = treatment;
-    }
+  @CsvBindByPosition(position = 2)
+  String appointmentID;
 
-    public void setPatientID(String patientID) {
-        this.patientID = patientID;
-    }
+  /** Default constructor required for OpenCSV to instantiate object. */
+  public Treatment() {}
 
-    public String getPatientID() {
-        return patientID;
-    }
+  public Treatment(String appointmentID, String patientID, String treatment) {
+    this.patientID = patientID;
+    this.appointmentID = appointmentID;
+    this.treatment = treatment;
+  }
 
-    public void setAppointmentID(String appointmentID) {
-        this.appointmentID = appointmentID;
-    }
+  public void setPatientID(String patientID) {
+    this.patientID = patientID;
+  }
 
-    public String getAppointmentID() {
-        return appointmentID;
-    }
+  public String getPatientID() {
+    return patientID;
+  }
 
-    public void setTreatment(String treatment) {
-        this.treatment = treatment;
-    }
+  public void setAppointmentID(String appointmentID) {
+    this.appointmentID = appointmentID;
+  }
 
-    public String getTreatment() {
-        return treatment;
-    }
+  public String getAppointmentID() {
+    return appointmentID;
+  }
 
-    @Override
-    public String toString() {
-        return String.format("%s,%s,%s", getAppointmentID(), getPatientID(), getTreatment());
-    }
+  public void setTreatment(String treatment) {
+    this.treatment = treatment;
+  }
+
+  public String getTreatment() {
+    return treatment;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%s,%s,%s", getAppointmentID(), getPatientID(), getTreatment());
+  }
 }

@@ -4,15 +4,15 @@ import com.ntu.hns.model.users.Pharmacist;
 
 public interface InventoryManagerInterface {
 
-    void showInventory();
+  void showInventory();
 
-    void processReplenishmentRequest(Pharmacist pharmacist);
+  void processReplenishmentRequest(Pharmacist pharmacist);
 
-    void addInventory();
+  void addInventory();
 
-    void updateInventory();
+  void updateInventory();
 
-    void deleteInventory();
+  void deleteInventory();
 
-    void handleReplenishmentRequest();
+  void handleReplenishmentRequest();
 }

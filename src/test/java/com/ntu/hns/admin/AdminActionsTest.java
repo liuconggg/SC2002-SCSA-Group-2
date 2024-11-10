@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 
 public class AdminActionsTest {
 
-    @Test
-    @DisplayName("Test Case 21: View Appointment Details")
-    public void testViewAppointmentDetails() {
-        provideInput("A0001\n123\n2\n");
-        startApplication();
-    }
+  @Test
+  @DisplayName("Test Case 21: View Appointment Details")
+  public void testViewAppointmentDetails() {
+    provideInput("A0001\n123\n2\n");
+    startApplication();
+  }
 }

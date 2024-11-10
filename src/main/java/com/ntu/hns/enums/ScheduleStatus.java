@@ -1,5 +1,7 @@
 package com.ntu.hns.enums;
 
 public enum ScheduleStatus {
-    CONFIRMED, PENDING, CANCELLED
+  CONFIRMED,
+  PENDING,
+  CANCELLED
 }

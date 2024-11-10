@@ -7,11 +7,11 @@ import com.ntu.hns.model.users.Pharmacist;
 
 public interface ContextManagerInterface {
 
-    void beginPatient(Patient patient);
+  void beginPatient(Patient patient);
 
-    void beginDoctor(Doctor patient);
+  void beginDoctor(Doctor patient);
 
-    void beginPharmacist(Pharmacist patient);
+  void beginPharmacist(Pharmacist patient);
 
-    void beginAdministrator(Administrator patient);
+  void beginAdministrator(Administrator patient);
 }

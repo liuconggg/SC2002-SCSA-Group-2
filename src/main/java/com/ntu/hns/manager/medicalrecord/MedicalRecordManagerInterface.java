@@ -5,9 +5,9 @@ import com.ntu.hns.model.users.Patient;
 
 public interface MedicalRecordManagerInterface {
 
-    void showMedicalRecord(Patient patient);
+  void showMedicalRecord(Patient patient);
 
-    void showMedicalRecord(Doctor doctor);
+  void showMedicalRecord(Doctor doctor);
 
-    void updateMedicalRecord();
+  void updateMedicalRecord();
 }

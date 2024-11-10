@@ -3,45 +3,50 @@ package com.ntu.hns.model;
 import com.opencsv.bean.CsvBindByPosition;
 
 public class MedicationItem {
-    @CsvBindByPosition(position = 0) private String medicationID;
-    @CsvBindByPosition(position = 1) private String medicationName;
-    @CsvBindByPosition(position = 2) private int quantity;
+  @CsvBindByPosition(position = 0)
+  private String medicationID;
 
-    /** Default constructor required for OpenCSV to instantiate object. */
-    public MedicationItem() {}
+  @CsvBindByPosition(position = 1)
+  private String medicationName;
 
-    public MedicationItem(String medicationID, String medicationName, int quantity) {
-        this.medicationID = medicationID;
-        this.medicationName = medicationName;
-        this.quantity = quantity;
-    }
+  @CsvBindByPosition(position = 2)
+  private int quantity;
 
-    public String getMedicationID() {
-        return medicationID;
-    }
+  /** Default constructor required for OpenCSV to instantiate object. */
+  public MedicationItem() {}
 
-    public void setMedicationID(String medicationID) {
-        this.medicationID = medicationID;
-    }
+  public MedicationItem(String medicationID, String medicationName, int quantity) {
+    this.medicationID = medicationID;
+    this.medicationName = medicationName;
+    this.quantity = quantity;
+  }
 
-    public String getMedicationName() {
-        return medicationName;
-    }
+  public String getMedicationID() {
+    return medicationID;
+  }
 
-    public void setMedicationName(String medicationName) {
-        this.medicationName = medicationName;
-    }
+  public void setMedicationID(String medicationID) {
+    this.medicationID = medicationID;
+  }
 
-    public int getQuantity() {
-        return quantity;
-    }
+  public String getMedicationName() {
+    return medicationName;
+  }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
+  public void setMedicationName(String medicationName) {
+    this.medicationName = medicationName;
+  }
 
-    @Override
-    public String toString() {
-        return medicationName + " (Quantity: " + quantity + ")";
-    }
+  public int getQuantity() {
+    return quantity;
+  }
+
+  public void setQuantity(int quantity) {
+    this.quantity = quantity;
+  }
+
+  @Override
+  public String toString() {
+    return medicationName + " (Quantity: " + quantity + ")";
+  }
 }

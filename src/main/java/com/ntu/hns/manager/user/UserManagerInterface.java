@@ -2,11 +2,11 @@ package com.ntu.hns.manager.user;
 
 public interface UserManagerInterface {
 
-    void addUser();
+  void addUser();
 
-    void showUsers();
+  void showUsers();
 
-    void updateUser();
+  void updateUser();
 
-    void deleteUser();
+  void deleteUser();
 }

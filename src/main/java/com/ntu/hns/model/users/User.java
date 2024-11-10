@@ -3,61 +3,71 @@ package com.ntu.hns.model.users;
 import com.opencsv.bean.CsvBindByPosition;
 
 public abstract class User {
-    @CsvBindByPosition(position = 0) private String hospitalID;
-    @CsvBindByPosition(position = 1) private String password;
-    @CsvBindByPosition(position = 2) private String name;
-    @CsvBindByPosition(position = 3) private int age;
-    @CsvBindByPosition(position = 4) private String gender;
+  @CsvBindByPosition(position = 0)
+  private String hospitalID;
 
-    /** Default constructor required for OpenCSV to instantiate object. */
-    public User() {}
+  @CsvBindByPosition(position = 1)
+  private String password;
 
-    public User(String hospitalID, String password, String name, int age, String gender) {
-        this.hospitalID = hospitalID;
-        this.password = password;
-        this.name = name;
-        this.age = age;
-        this.gender = gender;
-    }
+  @CsvBindByPosition(position = 2)
+  private String name;
 
-    public String getHospitalID() { return this.hospitalID; }
+  @CsvBindByPosition(position = 3)
+  private int age;
 
-    public void setHospitalID(String hospitalID) {
-        this.hospitalID = hospitalID;
-    }
+  @CsvBindByPosition(position = 4)
+  private String gender;
 
-    public String getPassword() {
-        return this.password;
-    }
+  /** Default constructor required for OpenCSV to instantiate object. */
+  public User() {}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public User(String hospitalID, String password, String name, int age, String gender) {
+    this.hospitalID = hospitalID;
+    this.password = password;
+    this.name = name;
+    this.age = age;
+    this.gender = gender;
+  }
 
-    public String getName() {
-        return this.name;
-    }
+  public String getHospitalID() {
+    return this.hospitalID;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setHospitalID(String hospitalID) {
+    this.hospitalID = hospitalID;
+  }
 
-    public int getAge() {
-        return this.age;
-    }
+  public String getPassword() {
+    return this.password;
+  }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public String getGender() {
-        return this.gender;
-    }
+  public String getName() {
+    return this.name;
+  }
 
-    public void setGender(String Gender) {
-        this.gender = Gender;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public abstract void displayMenu();
+  public int getAge() {
+    return this.age;
+  }
 
+  public void setAge(int age) {
+    this.age = age;
+  }
+
+  public String getGender() {
+    return this.gender;
+  }
+
+  public void setGender(String Gender) {
+    this.gender = Gender;
+  }
+
+  public abstract void displayMenu();
 }

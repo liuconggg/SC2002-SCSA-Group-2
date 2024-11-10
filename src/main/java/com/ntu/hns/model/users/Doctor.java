@@ -10,44 +10,46 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Doctor extends User {
-    @Autowired private AppointmentManager appointmentManager;
-    @Autowired private MedicalRecordManager medicalRecordManager;
-    @Autowired private ScheduleManager scheduleManager;
+  @Autowired private AppointmentManager appointmentManager;
+  @Autowired private MedicalRecordManager medicalRecordManager;
+  @Autowired private ScheduleManager scheduleManager;
 
-    /** Default constructor required for OpenCSV to instantiate object. */
-    public Doctor() {}
+  /** Default constructor required for OpenCSV to instantiate object. */
+  public Doctor() {}
 
-    public Doctor(String hospitalID, String password, String name, int age, String gender) {
-        super(hospitalID, password, name, age, gender);
-    }
+  public Doctor(String hospitalID, String password, String name, int age, String gender) {
+    super(hospitalID, password, name, age, gender);
+  }
 
-    public void displayMenu() { displayDoctorMenu(); }
+  public void displayMenu() {
+    displayDoctorMenu();
+  }
 
-    public void viewWeeklySchedule() {
-        scheduleManager.showWeeklySchedule(this);
-    }
+  public void viewWeeklySchedule() {
+    scheduleManager.showWeeklySchedule(this);
+  }
 
-    public void viewUpcomingAppointments() {
-        appointmentManager.showUpcomingAppointments(this);
-    }
+  public void viewUpcomingAppointments() {
+    appointmentManager.showUpcomingAppointments(this);
+  }
 
-    public void updateSchedule() {
-        scheduleManager.updateSchedule(this);
-    }
+  public void updateSchedule() {
+    scheduleManager.updateSchedule(this);
+  }
 
-    public void setAvailability() {
-        scheduleManager.setAvailability(this);
-    }
+  public void setAvailability() {
+    scheduleManager.setAvailability(this);
+  }
 
-    public void updateAppointmentOutcome() {
-        appointmentManager.updateAppointmentOutcome(this);
-    }
+  public void updateAppointmentOutcome() {
+    appointmentManager.updateAppointmentOutcome(this);
+  }
 
-    public void viewMedicalRecord() {
-        medicalRecordManager.showMedicalRecord(this);
-    }
+  public void viewMedicalRecord() {
+    medicalRecordManager.showMedicalRecord(this);
+  }
 
-    public void updateMedicalRecord() {
-        medicalRecordManager.updateMedicalRecord();
-    }
+  public void updateMedicalRecord() {
+    medicalRecordManager.updateMedicalRecord();
+  }
 }

@@ -3,90 +3,86 @@ package com.ntu.hns.model;
 import com.opencsv.bean.CsvBindByPosition;
 
 public class Medication {
-    @CsvBindByPosition(position = 0) private String medicationID;
-    @CsvBindByPosition(position = 1) private String medicationName;
-    @CsvBindByPosition(position = 2) private String stockStatus;
-    @CsvBindByPosition(position = 3) private boolean alert;
-    @CsvBindByPosition(position = 4) private int totalQuantity;
+  @CsvBindByPosition(position = 0)
+  private String medicationID;
 
-    /** Default constructor required for OpenCSV to instantiate object. */
-    public Medication() {}
+  @CsvBindByPosition(position = 1)
+  private String medicationName;
 
-    public Medication(
-            String medicationID,
-            String medicationName,
-            String stockStatus,
-            boolean alert,
-            int totalQuantity) {
-        this.medicationID = medicationID;
-        this.medicationName = medicationName;
-        this.stockStatus = stockStatus;
-        this.alert = alert;
-        this.totalQuantity = totalQuantity;
-    }
+  @CsvBindByPosition(position = 2)
+  private String stockStatus;
 
-    public String getMedicationID() {
-        return this.medicationID;
-    }
+  @CsvBindByPosition(position = 3)
+  private boolean alert;
 
-    /**
-     *
-     * @param medicationID
-     */
-    public void setMedicationID(String medicationID) {
-        this.medicationID = medicationID;
-    }
+  @CsvBindByPosition(position = 4)
+  private int totalQuantity;
 
-    public String getMedicationName() {
-        return this.medicationName;
-    }
+  /** Default constructor required for OpenCSV to instantiate object. */
+  public Medication() {}
 
-    /**
-     *
-     * @param medicationName
-     */
-    public void setMedicationName(String medicationName) {
-        this.medicationName = medicationName;
-    }
+  public Medication(
+      String medicationID,
+      String medicationName,
+      String stockStatus,
+      boolean alert,
+      int totalQuantity) {
+    this.medicationID = medicationID;
+    this.medicationName = medicationName;
+    this.stockStatus = stockStatus;
+    this.alert = alert;
+    this.totalQuantity = totalQuantity;
+  }
 
-    public String getStockStatus() {
-        return this.stockStatus;
-    }
+  public String getMedicationID() {
+    return this.medicationID;
+  }
 
-    /**
-     *
-     * @param stockStatus
-     */
-    public void setStockStatus(String stockStatus) {
-        this.stockStatus = stockStatus;
-    }
+  /** @param medicationID */
+  public void setMedicationID(String medicationID) {
+    this.medicationID = medicationID;
+  }
 
-    public boolean getAlert() {
-        return this.alert;
-    }
+  public String getMedicationName() {
+    return this.medicationName;
+  }
 
-    /**
-     *
-     * @param alert
-     */
-    public void setAlert(boolean alert) {
-        this.alert = alert;
-    }
+  /** @param medicationName */
+  public void setMedicationName(String medicationName) {
+    this.medicationName = medicationName;
+  }
 
-    public int getTotalQuantity() {
-        return this.totalQuantity;
-    }
+  public String getStockStatus() {
+    return this.stockStatus;
+  }
 
-    /**
-     *
-     * @param totalQuantity
-     */
-    public void setTotalQuantity(int totalQuantity) {
-        this.totalQuantity = totalQuantity;
-    }
+  /** @param stockStatus */
+  public void setStockStatus(String stockStatus) {
+    this.stockStatus = stockStatus;
+  }
 
-    @Override
-    public String toString() {
-        return String.format("%s,%s,%s,%b,%d", getMedicationID(), getMedicationName(), getStockStatus(), getAlert(), getTotalQuantity());
-    }
+  public boolean getAlert() {
+    return this.alert;
+  }
+
+  /** @param alert */
+  public void setAlert(boolean alert) {
+    this.alert = alert;
+  }
+
+  public int getTotalQuantity() {
+    return this.totalQuantity;
+  }
+
+  /** @param totalQuantity */
+  public void setTotalQuantity(int totalQuantity) {
+    this.totalQuantity = totalQuantity;
+  }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "%s,%s,%s,%b,%d",
+        getMedicationID(), getMedicationName(), getStockStatus(), getAlert(), getTotalQuantity());
+  }
 }
