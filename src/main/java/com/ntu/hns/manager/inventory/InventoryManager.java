@@ -8,7 +8,6 @@ import com.ntu.hns.model.MedicationItem;
 import com.ntu.hns.model.ReplenishmentRequest;
 import com.ntu.hns.model.users.Pharmacist;
 import com.ntu.hns.util.ScannerWrapper;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -276,12 +275,8 @@ public class InventoryManager implements InventoryManagerInterface {
                 ReplenishmentStatus.PENDING.name(),
                 pharmacist.getHospitalID());
         replenishmentRequests.add(newRequest);
-        try {
-          CsvDB.saveReplenishmentRequests(replenishmentRequests);
-          System.out.println("Replenishment request created successfully.");
-        } catch (IOException e) {
-          System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
-        }
+        CsvDB.saveReplenishmentRequests(replenishmentRequests);
+        System.out.println("Replenishment request created successfully.");
       } else {
         System.out.println("No valid medications were added to the replenishment request.");
       }
@@ -397,11 +392,7 @@ public class InventoryManager implements InventoryManagerInterface {
     }
 
     // Save the updated replenishment requests to the CSV file
-    try {
-      CsvDB.saveReplenishmentRequests(replenishmentRequests);
-    } catch (IOException e) {
-      System.out.println("Error saving replenishment requests: " + e.getMessage());
-    }
+    CsvDB.saveReplenishmentRequests(replenishmentRequests);
 
     // Save the updated inventory to the CSV file
     if (decision.equals("A")) {

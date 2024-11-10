@@ -18,8 +18,6 @@ public class ContextManager implements ContextManagerInterface {
   // Patient actions
   @Override
   public void beginPatient(Patient patient) {
-    //    int choice = -1;
-
     while (true) {
       try {
         patient.displayMenu();
@@ -94,12 +92,10 @@ public class ContextManager implements ContextManagerInterface {
   // Doctor actions
   @Override
   public void beginDoctor(Doctor doctor) {
-    int choice = -1;
-
-    while (choice != 8) {
+    while (true) {
       try {
         doctor.displayMenu();
-        choice = scanner.nextInt();
+        int choice = scanner.nextInt();
         System.out.println();
 
         switch (choice) {
@@ -127,7 +123,7 @@ public class ContextManager implements ContextManagerInterface {
           case 8:
             System.out.println("You have logged out ");
             System.out.println();
-            break;
+            return;
           default:
             System.out.println("Invalid input. Please try again.");
             break;
@@ -143,12 +139,10 @@ public class ContextManager implements ContextManagerInterface {
   // Pharmacist actions
   @Override
   public void beginPharmacist(Pharmacist pharmacist) {
-    int choice = -1;
-
-    while (choice != 5) {
+    while (true) {
       try {
         pharmacist.displayMenu();
-        choice = scanner.nextInt();
+        int choice = scanner.nextInt();
         System.out.println();
 
         switch (choice) {
@@ -179,7 +173,7 @@ public class ContextManager implements ContextManagerInterface {
           case 5:
             System.out.println("You have logged out ");
             System.out.println();
-            break;
+            return;
           default:
             System.out.println("Invalid input. Please try again.");
             break;
@@ -195,12 +189,10 @@ public class ContextManager implements ContextManagerInterface {
   // All Administrator functions and logic
   @Override
   public void beginAdministrator(Administrator administrator) {
-    int choice = -1;
-
-    while (choice != 5) {
+    while (true) {
       try {
         administrator.displayMenu();
-        choice = scanner.nextInt();
+        int choice = scanner.nextInt();
         System.out.println();
 
         switch (choice) {
@@ -285,7 +277,7 @@ public class ContextManager implements ContextManagerInterface {
           case 5:
             System.out.println("You have logged out ");
             System.out.println();
-            break;
+            return;
           default:
             System.out.println("Invalid input. Please try again.");
             break;

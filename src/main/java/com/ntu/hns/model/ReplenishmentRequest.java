@@ -1,13 +1,15 @@
 package com.ntu.hns.model;
 
+import com.ntu.hns.util.MedicationItemListConverter;
 import com.opencsv.bean.CsvBindByPosition;
+import com.opencsv.bean.CsvCustomBindByPosition;
 import java.util.List;
 
 public class ReplenishmentRequest {
   @CsvBindByPosition(position = 0)
   private String requestID;
 
-  @CsvBindByPosition(position = 1)
+  @CsvCustomBindByPosition(position = 1, converter = MedicationItemListConverter.class)
   private List<MedicationItem> medicationBatch;
 
   @CsvBindByPosition(position = 2)

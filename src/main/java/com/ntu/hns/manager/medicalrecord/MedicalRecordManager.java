@@ -9,7 +9,6 @@ import com.ntu.hns.model.users.Patient;
 import com.ntu.hns.model.users.User;
 import com.ntu.hns.util.ScannerWrapper;
 import com.ntu.hns.util.UtilProvider;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -468,15 +467,9 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
         }
       }
 
-      try {
-        CsvDB.saveAppointmentOutcomeRecords(appointmentOutcomeRecords);
-        CsvDB.saveDiagnosis(diagnoses);
-        CsvDB.saveTreatment(treatments);
-
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
+      CsvDB.saveAppointmentOutcomeRecords(appointmentOutcomeRecords);
+      CsvDB.saveDiagnosis(diagnoses);
+      CsvDB.saveTreatment(treatments);
     }
   }
 }
