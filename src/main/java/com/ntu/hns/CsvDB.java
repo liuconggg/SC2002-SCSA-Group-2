@@ -27,10 +27,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CsvDB {
-  private static final String[] appointment_header = {
+  private static final String[] APPOINTMENT_HEADER = {
     "Appointment ID", "Patient ID", "Doctor ID", "Date", "Session", "Status"
   };
-  private static final String[] patient_header = {
+  private static final String[] PATIENT_HEADER = {
     "Patient ID",
     "Password",
     "Name",
@@ -41,14 +41,14 @@ public class CsvDB {
     "Email",
     "Blood Type"
   };
-  private static final String[] doctor_header = {"Doctor ID", "Password", "Name", "Age", "Gender"};
-  private static final String[] pharmacist_header = {
+  private static final String[] DOCTOR_HEADER = {"Doctor ID", "Password", "Name", "Age", "Gender"};
+  private static final String[] PHARMACIST_HEADER = {
     "Pharmacist ID", "Password", "Name", "Age", "Gender"
   };
-  private static final String[] administrator_header = {
+  private static final String[] ADMINISTRATOR_HEADER = {
     "Administrator ID", "Password", "Name", "Age", "Gender"
   };
-  private static final String[] schedule_header = {
+  private static final String[] SCHEDULE_HEADER = {
     "Doctor ID",
     "Date",
     "Session 1",
@@ -60,15 +60,15 @@ public class CsvDB {
     "Session 7",
     "Session 8"
   };
-  private static final String[] medication_header = {
+  private static final String[] MEDICATION_HEADER = {
     "Medication ID", "Medication Name", "Stock Status", "Alert", "Quantity"
   };
-  private static final String[] diagnosis_header = {"Appointment ID", "Patient ID", "Diagnosis"};
-  private static final String[] treatment_header = {"Appointment ID", "Patient ID", "Treatment"};
-  private static final String[] appointment_outcome_record_header = {
+  private static final String[] DIAGNOSIS_HEADER = {"Appointment ID", "Patient ID", "Diagnosis"};
+  private static final String[] TREATMENT_HEADER = {"Appointment ID", "Patient ID", "Treatment"};
+  private static final String[] APPOINTMENT_OUTCOME_RECORD_HEADER = {
     "Request ID", "Medication Batch", "Status", "Pharmacist ID"
   };
-  private static final String[] replenishment_request_header = {
+  private static final String[] REPLENISHMENT_REQUEST_HEADER = {
     "Appointment ID",
     "Type of Service",
     "Consultation Notes",
@@ -222,53 +222,53 @@ public class CsvDB {
   }
 
   public static void saveTreatment(List<Treatment> treatments) {
-    writeCsv(createPath(TREATMENT_CSV_PATH), treatment_header, treatments);
+    writeCsv(createPath(TREATMENT_CSV_PATH), TREATMENT_HEADER, treatments);
   }
 
   public static void saveDiagnosis(List<Diagnosis> diagnoses) {
-    writeCsv(createPath(DIAGNOSIS_CSV_PATH), diagnosis_header, diagnoses);
+    writeCsv(createPath(DIAGNOSIS_CSV_PATH), DIAGNOSIS_HEADER, diagnoses);
   }
 
   public static void saveAppointments(List<Appointment> appointments) {
-    writeCsv(createPath(APPOINTMENT_CSV_PATH), appointment_header, appointments);
+    writeCsv(createPath(APPOINTMENT_CSV_PATH), APPOINTMENT_HEADER, appointments);
   }
 
   public static void saveMedications(List<Medication> medications) {
-    writeCsv(createPath(MEDICATION_CSV_PATH), medication_header, medications);
+    writeCsv(createPath(MEDICATION_CSV_PATH), MEDICATION_HEADER, medications);
   }
 
   public static void savePatients(List<Patient> patients) {
-    writeCsv(createPath(PATIENT_CSV_PATH), patient_header, patients);
+    writeCsv(createPath(PATIENT_CSV_PATH), PATIENT_HEADER, patients);
   }
 
   public static void saveDoctors(List<Doctor> doctors) {
-    writeCsv(createPath(DOCTOR_CSV_PATH), doctor_header, doctors);
+    writeCsv(createPath(DOCTOR_CSV_PATH), DOCTOR_HEADER, doctors);
   }
 
   public static void savePharmacists(List<Pharmacist> pharmacists) {
-    writeCsv(createPath(PHARMACIST_CSV_PATH), pharmacist_header, pharmacists);
+    writeCsv(createPath(PHARMACIST_CSV_PATH), PHARMACIST_HEADER, pharmacists);
   }
 
   public static void saveAdministrators(List<Administrator> administrators) {
-    writeCsv(createPath(ADMINISTRATOR_CSV_PATH), administrator_header, administrators);
+    writeCsv(createPath(ADMINISTRATOR_CSV_PATH), ADMINISTRATOR_HEADER, administrators);
   }
 
   public static void saveSchedules(List<Schedule> schedules) {
-    writeCsv(createPath(SCHEDULE_CSV_PATH), schedule_header, schedules);
+    writeCsv(createPath(SCHEDULE_CSV_PATH), SCHEDULE_HEADER, schedules);
   }
 
   public static void saveAppointmentOutcomeRecords(
       List<AppointmentOutcomeRecord> appointmentOutcomeRecords) {
     writeCsv(
         createPath(APPOINTMENT_OUTCOME_RECORD_CSV_PATH),
-        appointment_outcome_record_header,
+        APPOINTMENT_OUTCOME_RECORD_HEADER,
         appointmentOutcomeRecords);
   }
 
   public static void saveReplenishmentRequests(List<ReplenishmentRequest> replenishmentRequests) {
     writeCsv(
         createPath(REPLENISHMENT_REQUEST_CSV_PATH),
-        replenishment_request_header,
+        REPLENISHMENT_REQUEST_HEADER,
         replenishmentRequests);
   }
 }
