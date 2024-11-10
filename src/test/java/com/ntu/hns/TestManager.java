@@ -1,6 +1,7 @@
 package com.ntu.hns;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 public class TestManager {
 
@@ -14,5 +15,9 @@ public class TestManager {
 
   public static void provideInput(String input) {
     System.setIn(new ByteArrayInputStream(input.getBytes()));
+  }
+
+  public static String[] parseOutput(ByteArrayOutputStream byteArrayOutputStream) {
+    return byteArrayOutputStream.toString().split(System.lineSeparator());
   }
 }
