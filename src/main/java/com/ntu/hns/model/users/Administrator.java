@@ -1,20 +1,15 @@
 package com.ntu.hns.model.users;
 
-import com.ntu.hns.*;
-import com.ntu.hns.enums.MedicationStatus;
-import com.ntu.hns.enums.ReplenishmentStatus;
+import static com.ntu.hns.MenuDisplayer.displayAdministratorMenu;
+
 import com.ntu.hns.manager.appointment.AppointmentManager;
 import com.ntu.hns.manager.inventory.InventoryManager;
 import com.ntu.hns.manager.user.UserManager;
-import com.ntu.hns.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import java.io.IOException;
-import java.util.List;
-import java.util.Scanner;
 
 @Component
-public class Administrator extends User implements Displayable {
+public class Administrator extends User {
     @Autowired private UserManager userManager;
     @Autowired private InventoryManager inventoryManager;
     @Autowired private AppointmentManager appointmentManager;
@@ -26,15 +21,8 @@ public class Administrator extends User implements Displayable {
         super(hospitalID, password, name, age, gender);
     }
 
-    @Override
     public void displayMenu() {
-        System.out.println("=== Administrator Menu ===");
-        System.out.println("1. View and Manage Hospital Staff");
-        System.out.println("2. View Appointment Details");
-        System.out.println("3. View and Manage Medication Inventory");
-        System.out.println("4. Approve Replenishment Requests");
-        System.out.println("5. Logout");
-        System.out.print("Enter your choice: ");
+        displayAdministratorMenu();
     }
 
     public void addUser() {
@@ -49,12 +37,10 @@ public class Administrator extends User implements Displayable {
         userManager.updateUser();
     }
 
-    // Method to delete a user
     public void deleteUser() {
         userManager.deleteUser();
     }
 
-    // Method to view appointments, now accepting appointments as a parameter
     public void viewAppointment() {
         appointmentManager.showAppointment();
     }

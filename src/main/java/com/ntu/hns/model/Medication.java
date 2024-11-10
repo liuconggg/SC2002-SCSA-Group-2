@@ -12,8 +12,12 @@ public class Medication {
     /** Default constructor required for OpenCSV to instantiate object. */
     public Medication() {}
 
-    public Medication(String medicationID, String medicationName, String stockStatus, boolean alert,
-                      int totalQuantity) {
+    public Medication(
+            String medicationID,
+            String medicationName,
+            String stockStatus,
+            boolean alert,
+            int totalQuantity) {
         this.medicationID = medicationID;
         this.medicationName = medicationName;
         this.stockStatus = stockStatus;

@@ -1,8 +1,8 @@
 package com.ntu.hns.model.users;
 
 import static com.ntu.hns.enums.ReplenishmentStatus.PENDING;
+import static com.ntu.hns.MenuDisplayer.displayPharmacistMenu;
 
-import com.ntu.hns.Displayable;
 import com.ntu.hns.PharmacistInterface;
 import com.ntu.hns.manager.appointment.AppointmentManager;
 import com.ntu.hns.model.AppointmentOutcomeRecord;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Scanner;
 
 @Component
-public class Pharmacist extends User implements Displayable, PharmacistInterface {
+public class Pharmacist extends User implements PharmacistInterface {
     @Autowired private CsvDB csvDB;
     @Autowired private Scanner scanner;
     @Autowired private InventoryManager inventoryManager;
@@ -33,15 +33,8 @@ public class Pharmacist extends User implements Displayable, PharmacistInterface
         super(hospitalID, password, name, age, gender);
     }
 
-    @Override
     public void displayMenu() {
-        System.out.println("\n=== Pharmacist Menu ===");
-        System.out.println("1. View Appointment Outcome Record");
-        System.out.println("2. Update Prescription Status");
-        System.out.println("3. View Medication Inventory");
-        System.out.println("4. Submit Replenishment Request");
-        System.out.println("5. Logout");
-        System.out.print("Enter your choice: ");
+        displayPharmacistMenu();
     }
 
     public void viewAppointmentOutcome() {

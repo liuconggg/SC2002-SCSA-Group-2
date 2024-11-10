@@ -1,6 +1,7 @@
 package com.ntu.hns.model.users;
 
-import com.ntu.hns.Displayable;
+import static com.ntu.hns.MenuDisplayer.displayPatientMenu;
+
 import com.ntu.hns.InfoUpdater;
 import com.ntu.hns.manager.appointment.AppointmentManager;
 import com.ntu.hns.manager.medicalrecord.MedicalRecordManager;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class Patient extends User implements Displayable, InfoUpdater {
+public class Patient extends User implements InfoUpdater {
     @CsvBindByPosition(position = 5) private String dateOfBirth;
     @CsvBindByPosition(position = 6) private String phoneNumber;
     @CsvBindByPosition(position = 7) private String email;
@@ -44,6 +45,8 @@ public class Patient extends User implements Displayable, InfoUpdater {
         this.bloodType = bloodType;
     }
 
+    public void displayMenu() { displayPatientMenu(); }
+
     public String getDateOfBirth() {
         return this.dateOfBirth;
     }
@@ -72,21 +75,6 @@ public class Patient extends User implements Displayable, InfoUpdater {
 
     public void setBloodType(String bloodType) {
         this.bloodType = bloodType;
-    }
-
-    @Override
-    public void displayMenu() {
-        System.out.println("\n=== Patient Menu ===");
-        System.out.println("1. View Medical Record");
-        System.out.println("2. Update Personal Information");
-        System.out.println("3. View Available Appointment Slots"); // schedule.csv
-        System.out.println("4. Schedule an Appointment"); // schedule.csv
-        System.out.println("5. Reschedule an Appointment"); // apointment.csv
-        System.out.println("6. Cancel an Appointment"); // appointment.csv
-        System.out.println("7. View Scheduled Appointment"); // appointment.csv
-        System.out.println("8. View Past Appointment Outcome Records");
-        System.out.println("9. Logout");
-        System.out.print("Enter your choice: ");
     }
 
     @Override
