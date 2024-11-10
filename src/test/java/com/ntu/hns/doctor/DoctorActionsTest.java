@@ -70,10 +70,19 @@ public class DoctorActionsTest {
     startApplication();
   }
 
+  /**
+   * Test Case 13: Accept or Decline Appointment Requests
+   *
+   * <ul>
+   *   <li>Doctor accepts or declines an appointment request from a patient.
+   *   <li>Verify that the appointment status changes to "confirmed" when accepted or “cancelled”
+   *       when declined , and the patient is able to see the updated status of the appointment.
+   * </ul>
+   */
   @Test
   @DisplayName("Test Case 13: Accept or Decline Appointment Requests")
   public void testAcceptOrDeclineAppointmentRequests() {
-    provideInput("login\nD0001\n123\n5\n");
+    provideInput("login\nD0001\n123\n5\n8\nexit\n");
     startApplication();
   }
 
@@ -92,10 +101,18 @@ public class DoctorActionsTest {
     startApplication();
   }
 
+  /**
+   * Test Case 15: Record Appointment Outcome
+   *
+   * <ul>
+   *   <li>Doctor records the outcome of a completed appointment.
+   *   <li>Verify that the appointment outcome is recorded, and relevant updates are visible to the
+   *       patient under “View Past Appointment Outcome Records”.
+   */
   @Test
   @DisplayName("Test Case 15: Record Appointment Outcome")
   public void testRecordAppointmentOutcome() {
-    provideInput("login\nD0001\n123\n7\n");
+    provideInput("login\nD0001\n123\n7\n8\nexit\n");
     startApplication();
   }
 }
