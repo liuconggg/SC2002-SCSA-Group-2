@@ -12,17 +12,17 @@ import com.ntu.hns.manager.inventory.InventoryManager;
 import com.ntu.hns.model.AppointmentOutcomeRecord;
 import com.ntu.hns.model.Medication;
 import com.ntu.hns.model.MedicationItem;
+import com.ntu.hns.util.ScannerWrapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Pharmacist extends User implements PharmacistInterface {
   @Autowired private CsvDB csvDB;
-  @Autowired private Scanner scanner;
+  @Autowired private ScannerWrapper scanner;
   @Autowired private InventoryManager inventoryManager;
   @Autowired private AppointmentManager appointmentManager;
 

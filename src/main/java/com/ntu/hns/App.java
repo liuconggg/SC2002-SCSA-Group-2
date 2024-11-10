@@ -1,11 +1,6 @@
 package com.ntu.hns;
 
-import com.ntu.hns.manager.application.ContextManager;
-import com.ntu.hns.model.users.Administrator;
-import com.ntu.hns.model.users.Doctor;
-import com.ntu.hns.model.users.Patient;
-import com.ntu.hns.model.users.Pharmacist;
-import com.ntu.hns.model.users.User;
+import com.ntu.hns.manager.application.ApplicationManager;
 import com.ntu.hns.spring.AppConfig;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -23,27 +18,15 @@ public class App {
     "17:00 - 18:00"
   };
 
+  private static ApplicationManager applicationManager;
+
   public static void main(String[] args) {
     ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-    AuthenticationService authenticationService = context.getBean(AuthenticationService.class);
-    ContextManager contextManager = context.getBean(ContextManager.class);
+    applicationManager = context.getBean(ApplicationManager.class);
+    applicationManager.start();
+  }
 
-    // Load all CSV data
-    User user = null;
-    while (true) {
-      if (user != null) {
-        if (user instanceof Patient) {
-          contextManager.beginPatient((Patient) user);
-        } else if (user instanceof Doctor) {
-          contextManager.beginDoctor((Doctor) user);
-        } else if (user instanceof Pharmacist) {
-          contextManager.beginPharmacist((Pharmacist) user);
-        } else if (user instanceof Administrator) {
-          contextManager.beginAdministrator((Administrator) user);
-        }
-      } else {
-        user = authenticationService.authenticate();
-      }
-    }
+  public static void stopApplication() {
+    applicationManager.stop();
   }
 }

@@ -1,17 +1,17 @@
 package com.ntu.hns.manager.application;
 
 import com.ntu.hns.model.users.*;
+import com.ntu.hns.util.ScannerWrapper;
 import java.util.InputMismatchException;
-import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ContextManager implements ContextManagerInterface {
-  private final Scanner scanner;
+  private final ScannerWrapper scanner;
 
   @Autowired
-  public ContextManager(Scanner scanner) {
+  public ContextManager(ScannerWrapper scanner) {
     this.scanner = scanner;
   }
 
@@ -206,7 +206,6 @@ public class ContextManager implements ContextManagerInterface {
             System.out.print("Enter your choice: ");
 
             int staffChoice = scanner.nextInt();
-            scanner.nextLine();
 
             switch (staffChoice) {
               case 1:

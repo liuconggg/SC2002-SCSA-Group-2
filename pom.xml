@@ -46,7 +46,6 @@
                 <version>2.7</version> <!-- Choose a version that is compatible with Java 8 -->
                 <configuration>
                     <style>GOOGLE</style>
-                    <indentWithTabs>true</indentWithTabs>
                 </configuration>
                 <executions>
                     <execution>

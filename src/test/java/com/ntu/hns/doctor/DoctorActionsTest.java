@@ -21,4 +21,11 @@ public class DoctorActionsTest {
     provideInput("D0001\n123\n3\n");
     startApplication();
   }
+
+  @Test
+  @DisplayName("Test Case 12: Set Availability for Appointments")
+  public void testSetAvailablity() {
+    provideInput("D0001\n123\n4\n07/11/2024\n");
+    startApplication();
+  }
 }

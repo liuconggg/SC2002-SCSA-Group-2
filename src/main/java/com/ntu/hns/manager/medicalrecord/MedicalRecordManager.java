@@ -7,22 +7,22 @@ import com.ntu.hns.model.*;
 import com.ntu.hns.model.users.Doctor;
 import com.ntu.hns.model.users.Patient;
 import com.ntu.hns.model.users.User;
+import com.ntu.hns.util.ScannerWrapper;
 import com.ntu.hns.util.UtilProvider;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MedicalRecordManager implements MedicalRecordManagerInterface {
   private final CsvDB csvDB;
-  private final Scanner scanner;
+  private final ScannerWrapper scanner;
   private final UtilProvider utilProvider;
 
   @Autowired
-  public MedicalRecordManager(CsvDB csvDB, Scanner scanner, UtilProvider utilProvider) {
+  public MedicalRecordManager(CsvDB csvDB, ScannerWrapper scanner, UtilProvider utilProvider) {
     this.csvDB = csvDB;
     this.scanner = scanner;
     this.utilProvider = utilProvider;

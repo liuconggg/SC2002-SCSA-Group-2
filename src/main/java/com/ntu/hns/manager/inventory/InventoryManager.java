@@ -7,20 +7,20 @@ import com.ntu.hns.model.Medication;
 import com.ntu.hns.model.MedicationItem;
 import com.ntu.hns.model.ReplenishmentRequest;
 import com.ntu.hns.model.users.Pharmacist;
+import com.ntu.hns.util.ScannerWrapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class InventoryManager implements InventoryManagerInterface {
   private final CsvDB csvDB;
-  private final Scanner scanner;
+  private final ScannerWrapper scanner;
 
   @Autowired
-  public InventoryManager(CsvDB csvDB, Scanner scanner) {
+  public InventoryManager(CsvDB csvDB, ScannerWrapper scanner) {
     this.csvDB = csvDB;
     this.scanner = scanner;
   }
@@ -65,7 +65,6 @@ public class InventoryManager implements InventoryManagerInterface {
       scanner.next(); // Discard invalid input
     }
     int quantity = scanner.nextInt();
-    scanner.nextLine(); // Consume newline left after nextInt()
 
     // Loop through the inventory to find if the medication already exists
     for (Medication med : inventory) {
@@ -123,7 +122,6 @@ public class InventoryManager implements InventoryManagerInterface {
       scanner.next(); // Discard invalid input
     }
     int quantity = scanner.nextInt();
-    scanner.nextLine(); // Consume newline left after nextInt()
 
     // Determine stock status based on quantity
     String stockStatus = MedicationStatus.LOW.name();
@@ -250,7 +248,6 @@ public class InventoryManager implements InventoryManagerInterface {
         if (selectedMedication != null) {
           System.out.println("Enter the quantity to replenish: ");
           int quantity = scanner.nextInt();
-          scanner.nextLine(); // Consume newline
           MedicationItem medicationItem =
               new MedicationItem(
                   selectedMedication.getMedicationID(),
