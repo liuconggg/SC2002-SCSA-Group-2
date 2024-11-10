@@ -3,10 +3,12 @@ package com.ntu.hns.patient;
 import static com.ntu.hns.TestManager.parseOutput;
 import static com.ntu.hns.TestManager.provideInput;
 import static com.ntu.hns.TestManager.startApplication;
+import static com.ntu.hns.TestManager.stopApplication;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,11 @@ public class PatientActionsTest {
   @BeforeEach
   public void setUp() {
     System.setOut(new PrintStream(outputStream));
+  }
+
+  @AfterEach
+  public void tearDown() {
+    stopApplication();
   }
 
   /**
