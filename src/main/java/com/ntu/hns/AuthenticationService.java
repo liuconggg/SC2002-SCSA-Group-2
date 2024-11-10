@@ -40,7 +40,7 @@ public class AuthenticationService {
 
       String password = new String(passwordArray);
 
-      List<User> users = csvDB.readUsersCsv();
+      List<User> users = csvDB.readUsers();
       for (User user : users) {
         if (user.getHospitalID().equals(id) && user.getPassword().equals(password)) {
           if (user.getPassword().equals(DEFAULT_PASSWORD)) {
@@ -58,7 +58,7 @@ public class AuthenticationService {
       System.out.println("Password: ");
       String password = scanner.nextLine();
 
-      List<User> users = csvDB.readUsersCsv();
+      List<User> users = csvDB.readUsers();
       for (User user : users) {
         if (user.getHospitalID().equals(id) && user.getPassword().equals(password)) {
           if (user.getPassword().equals(DEFAULT_PASSWORD)) {
@@ -83,7 +83,7 @@ public class AuthenticationService {
 
       if (newPassword.equals(confirmPassword)) {
         user.setPassword(newPassword);
-        CsvDB.saveUsers(users);
+        csvDB.saveUsers(users);
         System.out.println("Password changed successfully!");
         break;
       } else {

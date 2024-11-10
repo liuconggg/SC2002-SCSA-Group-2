@@ -13,7 +13,6 @@ import com.ntu.hns.model.AppointmentOutcomeRecord;
 import com.ntu.hns.model.Medication;
 import com.ntu.hns.model.MedicationItem;
 import com.ntu.hns.util.ScannerWrapper;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,12 +147,8 @@ public class Pharmacist extends User implements PharmacistInterface {
         }
 
         // Save the updated appointment outcome records and inventory
-        try {
-          CsvDB.saveAppointmentOutcomeRecords(appointmentOutcomeRecords);
-          CsvDB.saveMedications(medications);
-        } catch (IOException e) {
-          System.out.println("Error reading or writing replenishment requests: " + e.getMessage());
-        }
+        CsvDB.saveAppointmentOutcomeRecords(appointmentOutcomeRecords);
+        CsvDB.saveMedications(medications);
 
       } catch (NumberFormatException e) {
         System.out.println("Invalid input. Please enter a valid number.");

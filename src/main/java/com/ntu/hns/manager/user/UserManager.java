@@ -20,7 +20,7 @@ public class UserManager implements UserManagerInterface {
 
   @Override
   public void addUser() {
-    List<User> users = csvDB.readUsersCsv();
+    List<User> users = csvDB.readUsers();
     System.out.println("What type of user would you like to add?");
     System.out.println("1. Patient");
     System.out.println("2. Doctor");
@@ -125,13 +125,13 @@ public class UserManager implements UserManagerInterface {
     }
 
     // Save the updated user list
-    CsvDB.saveUsers(users);
+    csvDB.saveUsers(users);
     System.out.println("New user added and saved successfully.");
   }
 
   @Override
   public void showUsers() {
-    List<User> users = csvDB.readUsersCsv();
+    List<User> users = csvDB.readUsers();
 
     // Ask the user which type of staff they want to view
     System.out.println("\nWhich type of staff do you want to view?");
@@ -234,7 +234,7 @@ public class UserManager implements UserManagerInterface {
 
   @Override
   public void updateUser() {
-    List<User> users = csvDB.readUsersCsv();
+    List<User> users = csvDB.readUsers();
     System.out.print(
         "\nEnter the Hospital ID of the staff to update (or press enter to return to main menu): ");
     String staffIDToUpdate = scanner.nextLine();
@@ -315,14 +315,14 @@ public class UserManager implements UserManagerInterface {
     }
 
     // Save the updated com.ntu.hms.users to CSV
-    CsvDB.saveUsers(users);
+    csvDB.saveUsers(users);
     System.out.println("User data saved successfully.");
   }
 
   // Method to delete a user
   @Override
   public void deleteUser() {
-    List<User> users = csvDB.readUsersCsv();
+    List<User> users = csvDB.readUsers();
     System.out.print("\nEnter the Hospital ID of the staff to delete: ");
     String staffIDToDelete = scanner.nextLine();
     User userToRemove = null;
@@ -344,7 +344,7 @@ public class UserManager implements UserManagerInterface {
       System.out.println("User with Hospital ID " + staffIDToDelete + " has been removed.");
 
       // Save the updated com.ntu.hms.users to CSV
-      CsvDB.saveUsers(users);
+      csvDB.saveUsers(users);
       System.out.println("User data saved successfully.");
     } else {
       System.out.println("Staff with Hospital ID " + staffIDToDelete + " not found.");

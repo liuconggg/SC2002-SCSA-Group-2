@@ -1,6 +1,8 @@
 package com.ntu.hns.model;
 
+import com.ntu.hns.util.MedicationItemListConverter;
 import com.opencsv.bean.CsvBindByPosition;
+import com.opencsv.bean.CsvCustomBindByPosition;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,7 @@ public class AppointmentOutcomeRecord {
   @CsvBindByPosition(position = 2)
   private String consultationNotes;
 
-  @CsvBindByPosition(position = 3)
+  @CsvCustomBindByPosition(position = 3, converter = MedicationItemListConverter.class)
   private List<MedicationItem> prescriptions;
 
   @CsvBindByPosition(position = 4)

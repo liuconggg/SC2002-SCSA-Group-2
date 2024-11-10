@@ -56,4 +56,11 @@ public class PatientActionsTest {
     provideInput("P0001\n123\n7\n");
     startApplication();
   }
+
+  @Test
+  @DisplayName("Test Case 8: View Past Appointment Outcome Records")
+  public void testViewPastAppointmentOutcomeRecords() {
+    provideInput("P0001\n123\n8\n1\n");
+    startApplication();
+  }
 }

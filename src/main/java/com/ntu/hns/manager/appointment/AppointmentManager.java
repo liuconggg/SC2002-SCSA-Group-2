@@ -14,7 +14,6 @@ import com.ntu.hns.model.users.Doctor;
 import com.ntu.hns.model.users.Patient;
 import com.ntu.hns.util.ScannerWrapper;
 import com.ntu.hns.util.UtilProvider;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -718,7 +717,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
       for (Appointment appointment : confirmedAppointments) {
         System.out.printf(
-            "%d. com.ntu.hms.Appointment ID: %s, Date: %s, Session: %s, com.ntu.hms.users.Patient ID: %s\n",
+            "%d. Appointment ID: %s, Date: %s, Session: %s, Patient ID: %s\n",
             appointmentIndex,
             appointment.getAppointmentID(),
             appointment.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
@@ -896,9 +895,6 @@ public class AppointmentManager implements AppointmentManagerInterface {
         }
       } catch (NumberFormatException e) {
         System.out.println("\nInvalid input. Please enter a valid number.");
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
       }
     }
   }
