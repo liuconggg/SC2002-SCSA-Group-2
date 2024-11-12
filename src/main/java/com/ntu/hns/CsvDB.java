@@ -146,6 +146,14 @@ public class CsvDB {
     return readCsv(DOCTOR_CSV_PATH, Doctor.class);
   }
 
+  public List<Pharmacist> readPharmacists() {
+    return readCsv(PHARMACIST_CSV_PATH, Pharmacist.class);
+  }
+
+  public List<Administrator> readAdministrators() {
+    return readCsv(ADMINISTRATOR_CSV_PATH, Administrator.class);
+  }
+
   // Appointment.csv file
   public List<Appointment> readAppointments() {
     return readCsv(APPOINTMENT_CSV_PATH, Appointment.class);

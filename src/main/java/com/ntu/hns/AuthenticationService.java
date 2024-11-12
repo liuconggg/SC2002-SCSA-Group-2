@@ -53,9 +53,9 @@ public class AuthenticationService {
       System.out.println("Login failed! Please try again!\n");
     } else if (environment == Environment.DEV) {
       System.out.println("=== Hospital Management System ===");
-      System.out.println("Hospital ID: ");
+      System.out.print("Hospital ID: ");
       String id = scanner.nextLine();
-      System.out.println("Password: ");
+      System.out.print("Password: ");
       String password = scanner.nextLine();
 
       List<User> users = csvDB.readUsers();
