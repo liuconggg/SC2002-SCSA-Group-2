@@ -5,14 +5,11 @@ import static com.ntu.hns.MenuDisplayer.displayDoctorMenu;
 import com.ntu.hns.manager.appointment.AppointmentManager;
 import com.ntu.hns.manager.medicalrecord.MedicalRecordManager;
 import com.ntu.hns.manager.schedule.ScheduleManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class Doctor extends User {
-  @Autowired private AppointmentManager appointmentManager;
-  @Autowired private MedicalRecordManager medicalRecordManager;
-  @Autowired private ScheduleManager scheduleManager;
+  private AppointmentManager appointmentManager;
+  private MedicalRecordManager medicalRecordManager;
+  private ScheduleManager scheduleManager;
 
   /** Default constructor required for OpenCSV to instantiate object. */
   public Doctor() {}
@@ -51,5 +48,17 @@ public class Doctor extends User {
 
   public void updateMedicalRecord() {
     medicalRecordManager.updateMedicalRecord();
+  }
+
+  public void setAppointmentManager(AppointmentManager appointmentManager) {
+    this.appointmentManager = appointmentManager;
+  }
+
+  public void setMedicalRecordManager(MedicalRecordManager medicalRecordManager) {
+    this.medicalRecordManager = medicalRecordManager;
+  }
+
+  public void setScheduleManager(ScheduleManager scheduleManager) {
+    this.scheduleManager = scheduleManager;
   }
 }

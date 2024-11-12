@@ -1,5 +1,7 @@
 package com.ntu.hns.manager.medicalrecord;
 
+import static com.ntu.hns.util.UtilProvider.*;
+
 import com.ntu.hns.CsvDB;
 import com.ntu.hns.enums.AppointmentStatus;
 import com.ntu.hns.enums.ScheduleStatus;
@@ -8,23 +10,14 @@ import com.ntu.hns.model.users.Doctor;
 import com.ntu.hns.model.users.Patient;
 import com.ntu.hns.model.users.User;
 import com.ntu.hns.util.ScannerWrapper;
-import com.ntu.hns.util.UtilProvider;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
 public class MedicalRecordManager implements MedicalRecordManagerInterface {
-  private final CsvDB csvDB;
   private final ScannerWrapper scanner;
-  private final UtilProvider utilProvider;
 
-  @Autowired
-  public MedicalRecordManager(CsvDB csvDB, ScannerWrapper scanner, UtilProvider utilProvider) {
-    this.csvDB = csvDB;
+  private MedicalRecordManager(ScannerWrapper scanner) {
     this.scanner = scanner;
-    this.utilProvider = utilProvider;
   }
 
   @Override
@@ -44,8 +37,8 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
     int recordNo = 1;
     boolean hasRecords = false;
 
-    for (Diagnosis diagnosis : csvDB.readDiagnoses()) {
-      for (Treatment treatment : csvDB.readTreatments()) {
+    for (Diagnosis diagnosis : CsvDB.readDiagnoses()) {
+      for (Treatment treatment : CsvDB.readTreatments()) {
         if (diagnosis.getPatientId().equals(patient.getHospitalID())
             && treatment.getPatientID().equals(patient.getHospitalID())
             && diagnosis.getAppointmentId().equals(treatment.getAppointmentID())) {
@@ -58,7 +51,7 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
 
           // Find and display only the prescriptions
           AppointmentOutcomeRecord outcome =
-              utilProvider.getOutcomeByAppointmentID(diagnosis.getAppointmentId());
+              getOutcomeByAppointmentID(diagnosis.getAppointmentId());
           if (outcome != null && !outcome.getPrescriptions().isEmpty()) {
             String prescriptions =
                 outcome
@@ -91,7 +84,7 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
     Patient currentPatient = null;
 
     // Step 1: Filter all confirmed schedules for the logged-in doctor
-    for (Schedule schedule : csvDB.readSchedules()) {
+    for (Schedule schedule : CsvDB.readSchedules()) {
       if (schedule.getDoctorID().equals(doctor.getHospitalID())) {
         for (int i = 0; i < schedule.getSession().length; i++) {
           String sessionInfo = schedule.getSession()[i];
@@ -107,7 +100,7 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
 
     // Step 2: Retrieve all user (patient) objects based on unique patient IDs
     for (String patientId : uniquePatientIds) {
-      for (Patient patient : csvDB.readPatients()) {
+      for (Patient patient : CsvDB.readPatients()) {
         if (patient.getHospitalID().equals(patientId)) {
           patientsUnderCare.add(patient);
           break;
@@ -169,8 +162,8 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
             int recordNo = 1;
             boolean hasRecords = false;
 
-            for (Diagnosis diagnosis : csvDB.readDiagnoses()) {
-              for (Treatment treatment : csvDB.readTreatments()) {
+            for (Diagnosis diagnosis : CsvDB.readDiagnoses()) {
+              for (Treatment treatment : CsvDB.readTreatments()) {
                 if (diagnosis.getPatientId().equals(currentPatient.getHospitalID())
                     && treatment.getPatientID().equals(currentPatient.getHospitalID())
                     && diagnosis.getAppointmentId().equals(treatment.getAppointmentID())) {
@@ -183,7 +176,7 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
 
                   // Find and display only the prescriptions
                   AppointmentOutcomeRecord outcome =
-                      utilProvider.getOutcomeByAppointmentID(diagnosis.getAppointmentId());
+                      getOutcomeByAppointmentID(diagnosis.getAppointmentId());
                   if (outcome != null && !outcome.getPrescriptions().isEmpty()) {
                     String prescriptions =
                         outcome
@@ -220,10 +213,10 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
   @Override
   public void updateMedicalRecord() {
     List<AppointmentOutcomeRecord> appointmentOutcomeRecords =
-        csvDB.readAppointmentOutcomeRecords();
-    List<Diagnosis> diagnoses = csvDB.readDiagnoses();
-    List<Treatment> treatments = csvDB.readTreatments();
-    List<Medication> medications = csvDB.readMedications();
+        CsvDB.readAppointmentOutcomeRecords();
+    List<Diagnosis> diagnoses = CsvDB.readDiagnoses();
+    List<Treatment> treatments = CsvDB.readTreatments();
+    List<Medication> medications = CsvDB.readMedications();
 
     while (true) {
       // Display the appointment outcomes for user selection
@@ -470,6 +463,31 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
       CsvDB.saveAppointmentOutcomeRecords(appointmentOutcomeRecords);
       CsvDB.saveDiagnosis(diagnoses);
       CsvDB.saveTreatment(treatments);
+    }
+  }
+
+  // Static method to access the builder
+  public static MedicalRecordManagerBuilder medicalRecordManagerBuilder() {
+    return new MedicalRecordManagerBuilder();
+  }
+
+  // Static inner Builder class
+  public static class MedicalRecordManagerBuilder {
+    private ScannerWrapper scanner;
+
+    // Setter method for ScannerWrapper
+    public MedicalRecordManagerBuilder setScanner(ScannerWrapper scanner) {
+      this.scanner = scanner;
+      return this; // Return the builder for chaining
+    }
+
+    // Method to build a MedicalRecordManager instance
+    public MedicalRecordManager build() {
+      // Validation to ensure required fields are set
+      if (scanner == null) {
+        throw new IllegalArgumentException("ScannerWrapper must not be null.");
+      }
+      return new MedicalRecordManager(scanner);
     }
   }
 }

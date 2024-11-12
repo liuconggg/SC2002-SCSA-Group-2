@@ -5,14 +5,11 @@ import static com.ntu.hns.MenuDisplayer.displayAdministratorMenu;
 import com.ntu.hns.manager.appointment.AppointmentManager;
 import com.ntu.hns.manager.inventory.InventoryManager;
 import com.ntu.hns.manager.user.UserManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class Administrator extends User {
-  @Autowired private UserManager userManager;
-  @Autowired private InventoryManager inventoryManager;
-  @Autowired private AppointmentManager appointmentManager;
+  private UserManager userManager;
+  private InventoryManager inventoryManager;
+  private AppointmentManager appointmentManager;
 
   /** Default constructor required for OpenCSV to instantiate object. */
   public Administrator() {}
@@ -63,5 +60,17 @@ public class Administrator extends User {
 
   public void handleReplenishmentRequest() {
     inventoryManager.handleReplenishmentRequest();
+  }
+
+  public void setUserManager(UserManager userManager) {
+    this.userManager = userManager;
+  }
+
+  public void setInventoryManager(InventoryManager inventoryManager) {
+    this.inventoryManager = inventoryManager;
+  }
+
+  public void setAppointmentManager(AppointmentManager appointmentManager) {
+    this.appointmentManager = appointmentManager;
   }
 }

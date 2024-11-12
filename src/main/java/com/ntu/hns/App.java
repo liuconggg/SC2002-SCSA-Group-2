@@ -1,9 +1,8 @@
 package com.ntu.hns;
 
+import static com.ntu.hns.factory.SingletonFactory.getApplicationManager;
+
 import com.ntu.hns.manager.application.ApplicationManager;
-import com.ntu.hns.spring.AppConfig;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class App {
   public static final String[] sessionTimings = {
@@ -21,8 +20,7 @@ public class App {
   private static ApplicationManager applicationManager;
 
   public static void main(String[] args) {
-    ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-    applicationManager = context.getBean(ApplicationManager.class);
+    applicationManager = getApplicationManager();
     applicationManager.start();
   }
 

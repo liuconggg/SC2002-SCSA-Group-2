@@ -9,26 +9,18 @@ import com.ntu.hns.AuthenticationService;
 import com.ntu.hns.enums.Environment;
 import com.ntu.hns.model.users.*;
 import com.ntu.hns.util.ScannerWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Service;
 
-@Service
 public class ApplicationManager {
-  private final AnnotationConfigApplicationContext applicationContext;
   private final AuthenticationService authenticationService;
   private final ContextManager contextManager;
   private final Environment environment;
   private final ScannerWrapper scanner;
 
-  @Autowired
-  public ApplicationManager(
-      AnnotationConfigApplicationContext applicationContext,
+  private ApplicationManager(
       AuthenticationService authenticationService,
       ContextManager contextManager,
       Environment environment,
       ScannerWrapper scanner) {
-    this.applicationContext = applicationContext;
     this.authenticationService = authenticationService;
     this.contextManager = contextManager;
     this.environment = environment;
@@ -84,12 +76,47 @@ public class ApplicationManager {
 
   public void exit() {
     if (environment == PROD) {
-      applicationContext.close();
       scanner.close();
       System.exit(0);
     } else if (environment == DEV) {
-      applicationContext.close();
       scanner.close();
+    }
+  }
+
+  public static ApplicationManagerBuilder applicationManagerBuilder() {
+    return new ApplicationManagerBuilder();
+  }
+
+  public static class ApplicationManagerBuilder {
+    private AuthenticationService authenticationService;
+    private ContextManager contextManager;
+    private Environment environment;
+    private ScannerWrapper scanner;
+
+    public ApplicationManagerBuilder setAuthenticationService(
+        AuthenticationService authenticationService) {
+      this.authenticationService = authenticationService;
+      return this;
+    }
+
+    public ApplicationManagerBuilder setContextManager(ContextManager contextManager) {
+      this.contextManager = contextManager;
+      return this;
+    }
+
+    public ApplicationManagerBuilder setEnvironment(Environment environment) {
+      this.environment = environment;
+      return this;
+    }
+
+    public ApplicationManagerBuilder setScanner(ScannerWrapper scanner) {
+      this.scanner = scanner;
+      return this;
+    }
+
+    // Method to build an ApplicationManager instance
+    public ApplicationManager build() {
+      return new ApplicationManager(authenticationService, contextManager, environment, scanner);
     }
   }
 }

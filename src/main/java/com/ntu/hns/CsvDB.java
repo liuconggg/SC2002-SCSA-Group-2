@@ -1,5 +1,7 @@
 package com.ntu.hns;
 
+import static com.ntu.hns.factory.SingletonFactory.*;
+
 import com.ntu.hns.model.*;
 import com.ntu.hns.model.users.Administrator;
 import com.ntu.hns.model.users.Doctor;
@@ -20,12 +22,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Service;
 
-@Service
 public class CsvDB {
   private static final String[] APPOINTMENT_HEADER = {
     "Appointment ID", "Patient ID", "Doctor ID", "Date", "Session", "Status"
@@ -89,13 +86,6 @@ public class CsvDB {
       "csvdb/AppointmentOutcomeRecord.csv";
   private static final String REPLENISHMENT_REQUEST_CSV_PATH = "csvdb/ReplenishmentRequest.csv";
 
-  private final ApplicationContext context;
-
-  @Autowired
-  public CsvDB(ApplicationContext context) {
-    this.context = context;
-  }
-
   private static Path createPath(String pathString) {
     try {
       return Paths.get(ClassLoader.getSystemResource(pathString).toURI());
@@ -104,8 +94,7 @@ public class CsvDB {
     }
   }
 
-  private <T> List<T> readCsv(String csvPath, Class<T> beanClass) {
-    AutowireCapableBeanFactory beanFactory = context.getAutowireCapableBeanFactory();
+  private static <T> List<T> readCsv(String csvPath, Class<T> beanClass) {
     try (InputStream inputStream = CsvDB.class.getClassLoader().getResourceAsStream(csvPath);
         InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(inputStream))) {
       CsvToBean<T> csvToBean =
@@ -115,11 +104,7 @@ public class CsvDB {
               .withIgnoreLeadingWhiteSpace(true)
               .build();
 
-      return csvToBean
-          .parse()
-          .stream()
-          .peek(beanFactory::autowireBean)
-          .collect(Collectors.toList());
+      return csvToBean.parse();
     } catch (IOException e) {
       e.printStackTrace();
 
@@ -127,55 +112,104 @@ public class CsvDB {
     }
   }
 
-  public List<User> readUsers() {
-    List<Patient> patients = readCsv(PATIENT_CSV_PATH, Patient.class);
-    List<Doctor> doctors = readCsv(DOCTOR_CSV_PATH, Doctor.class);
-    List<Pharmacist> pharmacists = readCsv(PHARMACIST_CSV_PATH, Pharmacist.class);
-    List<Administrator> administrators = readCsv(ADMINISTRATOR_CSV_PATH, Administrator.class);
+  public static List<User> readUsers() {
+    List<Patient> patients = readPatients();
+    List<Doctor> doctors = readDoctors();
+    List<Pharmacist> pharmacists = readPharmacists();
+    List<Administrator> administrators = readAdministrators();
 
     return Stream.of(patients, doctors, pharmacists, administrators)
         .flatMap(List::stream)
         .collect(Collectors.toList());
   }
 
-  public List<Patient> readPatients() {
-    return readCsv(PATIENT_CSV_PATH, Patient.class);
+  public static List<Patient> readPatients() {
+    List<Patient> patients = readCsv(PATIENT_CSV_PATH, Patient.class);
+
+    return Objects.requireNonNull(patients)
+        .stream()
+        .peek(
+            patient -> {
+              patient.setScanner(getScannerWrapper());
+              patient.setAppointmentManager(getAppointmentManager());
+              patient.setMedicalRecordManager(getMedicalRecordManager());
+              patient.setScheduleManager(getScheduleManager());
+            })
+        .collect(Collectors.toList());
   }
 
-  public List<Doctor> readDoctors() {
-    return readCsv(DOCTOR_CSV_PATH, Doctor.class);
+  public static List<Doctor> readDoctors() {
+    List<Doctor> doctors = readCsv(DOCTOR_CSV_PATH, Doctor.class);
+
+    return Objects.requireNonNull(doctors)
+        .stream()
+        .peek(
+            doctor -> {
+              doctor.setAppointmentManager(getAppointmentManager());
+              doctor.setMedicalRecordManager(getMedicalRecordManager());
+              doctor.setScheduleManager(getScheduleManager());
+            })
+        .collect(Collectors.toList());
+  }
+
+  public static List<Pharmacist> readPharmacists() {
+    List<Pharmacist> pharmacists = readCsv(PHARMACIST_CSV_PATH, Pharmacist.class);
+
+    return Objects.requireNonNull(pharmacists)
+        .stream()
+        .peek(
+            pharmacist -> {
+              pharmacist.setScanner(getScannerWrapper());
+              pharmacist.setInventoryManager(getInventoryManager());
+              pharmacist.setAppointmentManager(getAppointmentManager());
+            })
+        .collect(Collectors.toList());
+  }
+
+  public static List<Administrator> readAdministrators() {
+    List<Administrator> administrators = readCsv(ADMINISTRATOR_CSV_PATH, Administrator.class);
+
+    return Objects.requireNonNull(administrators)
+        .stream()
+        .peek(
+            administrator -> {
+              administrator.setUserManager(getUserManager());
+              administrator.setInventoryManager(getInventoryManager());
+              administrator.setAppointmentManager(getAppointmentManager());
+            })
+        .collect(Collectors.toList());
   }
 
   // Appointment.csv file
-  public List<Appointment> readAppointments() {
+  public static List<Appointment> readAppointments() {
     return readCsv(APPOINTMENT_CSV_PATH, Appointment.class);
   }
 
-  public List<Treatment> readTreatments() {
+  public static List<Treatment> readTreatments() {
     return readCsv(TREATMENT_CSV_PATH, Treatment.class);
   }
 
   // ReplenishmentRequest.csv file
-  public List<ReplenishmentRequest> readReplenishmentRequests() {
+  public static List<ReplenishmentRequest> readReplenishmentRequests() {
     return readCsv(REPLENISHMENT_REQUEST_CSV_PATH, ReplenishmentRequest.class);
   }
 
-  public List<Diagnosis> readDiagnoses() {
+  public static List<Diagnosis> readDiagnoses() {
     return readCsv(DIAGNOSIS_CSV_PATH, Diagnosis.class);
   }
 
   // Read Schedule.csv file
-  public List<Schedule> readSchedules() {
+  public static List<Schedule> readSchedules() {
     return readCsv(SCHEDULE_CSV_PATH, Schedule.class);
   }
 
   // Read Medication.csv file
-  public List<Medication> readMedications() {
+  public static List<Medication> readMedications() {
     return readCsv(MEDICATION_CSV_PATH, Medication.class);
   }
 
   // Read AppointmentOutcomeRecord.csv file
-  public List<AppointmentOutcomeRecord> readAppointmentOutcomeRecords() {
+  public static List<AppointmentOutcomeRecord> readAppointmentOutcomeRecords() {
     return readCsv(APPOINTMENT_OUTCOME_RECORD_CSV_PATH, AppointmentOutcomeRecord.class);
   }
 
@@ -201,7 +235,7 @@ public class CsvDB {
     }
   }
 
-  public void saveUsers(List<User> users) {
+  public static void saveUsers(List<User> users) {
     List<Patient> patients = new ArrayList<>();
     List<Doctor> doctors = new ArrayList<>();
     List<Pharmacist> pharmacists = new ArrayList<>();

@@ -4,23 +4,17 @@ import com.ntu.hns.CsvDB;
 import com.ntu.hns.model.users.*;
 import com.ntu.hns.util.ScannerWrapper;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
 public class UserManager implements UserManagerInterface {
-  private final CsvDB csvDB;
   private final ScannerWrapper scanner;
 
-  @Autowired
-  public UserManager(CsvDB csvDB, ScannerWrapper scanner) {
-    this.csvDB = csvDB;
+  private UserManager(ScannerWrapper scanner) {
     this.scanner = scanner;
   }
 
   @Override
   public void addUser() {
-    List<User> users = csvDB.readUsers();
+    List<User> users = CsvDB.readUsers();
     System.out.println("What type of user would you like to add?");
     System.out.println("1. Patient");
     System.out.println("2. Doctor");
@@ -125,13 +119,13 @@ public class UserManager implements UserManagerInterface {
     }
 
     // Save the updated user list
-    csvDB.saveUsers(users);
+    CsvDB.saveUsers(users);
     System.out.println("New user added and saved successfully.");
   }
 
   @Override
   public void showUsers() {
-    List<User> users = csvDB.readUsers();
+    List<User> users = CsvDB.readUsers();
 
     // Ask the user which type of staff they want to view
     System.out.println("\nWhich type of staff do you want to view?");
@@ -234,7 +228,7 @@ public class UserManager implements UserManagerInterface {
 
   @Override
   public void updateUser() {
-    List<User> users = csvDB.readUsers();
+    List<User> users = CsvDB.readUsers();
     System.out.print(
         "\nEnter the Hospital ID of the staff to update (or press enter to return to main menu): ");
     String staffIDToUpdate = scanner.nextLine();
@@ -315,14 +309,14 @@ public class UserManager implements UserManagerInterface {
     }
 
     // Save the updated com.ntu.hms.users to CSV
-    csvDB.saveUsers(users);
+    CsvDB.saveUsers(users);
     System.out.println("User data saved successfully.");
   }
 
   // Method to delete a user
   @Override
   public void deleteUser() {
-    List<User> users = csvDB.readUsers();
+    List<User> users = CsvDB.readUsers();
     System.out.print("\nEnter the Hospital ID of the staff to delete: ");
     String staffIDToDelete = scanner.nextLine();
     User userToRemove = null;
@@ -344,10 +338,35 @@ public class UserManager implements UserManagerInterface {
       System.out.println("User with Hospital ID " + staffIDToDelete + " has been removed.");
 
       // Save the updated com.ntu.hms.users to CSV
-      csvDB.saveUsers(users);
+      CsvDB.saveUsers(users);
       System.out.println("User data saved successfully.");
     } else {
       System.out.println("Staff with Hospital ID " + staffIDToDelete + " not found.");
+    }
+  }
+
+  // Static method to access the builder
+  public static UserManagerBuilder userManagerBuilder() {
+    return new UserManagerBuilder();
+  }
+
+  // Static inner Builder class
+  public static class UserManagerBuilder {
+    private ScannerWrapper scanner;
+
+    // Setter method for ScannerWrapper
+    public UserManagerBuilder setScanner(ScannerWrapper scanner) {
+      this.scanner = scanner;
+      return this; // Return the builder for chaining
+    }
+
+    // Method to build a UserManager instance
+    public UserManager build() {
+      // Validation to ensure required fields are set
+      if (scanner == null) {
+        throw new IllegalArgumentException("ScannerWrapper must not be null.");
+      }
+      return new UserManager(scanner);
     }
   }
 }

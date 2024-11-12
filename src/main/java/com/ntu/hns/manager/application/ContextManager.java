@@ -3,16 +3,16 @@ package com.ntu.hns.manager.application;
 import com.ntu.hns.model.users.*;
 import com.ntu.hns.util.ScannerWrapper;
 import java.util.InputMismatchException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
 public class ContextManager implements ContextManagerInterface {
   private final ScannerWrapper scanner;
 
-  @Autowired
-  public ContextManager(ScannerWrapper scanner) {
+  private ContextManager(ScannerWrapper scanner) {
     this.scanner = scanner;
+  }
+
+  public static ContextManagerBuilder contextManagerBuilder() {
+    return new ContextManagerBuilder();
   }
 
   // Patient actions
@@ -287,6 +287,25 @@ public class ContextManager implements ContextManagerInterface {
         System.out.println("Press Enter to continue...");
         scanner.nextLine();
       }
+    }
+  }
+
+  public static class ContextManagerBuilder {
+    private ScannerWrapper scanner;
+
+    // Method to set the ScannerWrapper instance
+    public ContextManagerBuilder setScanner(ScannerWrapper scanner) {
+      this.scanner = scanner;
+      return this; // Return the builder for method chaining
+    }
+
+    // Method to build the ContextManager instance
+    public ContextManager build() {
+      // You can add any validation or default settings here if needed
+      if (scanner == null) {
+        throw new IllegalArgumentException("ScannerWrapper must be provided");
+      }
+      return new ContextManager(scanner);
     }
   }
 }

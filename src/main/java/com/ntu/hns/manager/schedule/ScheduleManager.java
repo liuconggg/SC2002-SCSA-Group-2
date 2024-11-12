@@ -2,6 +2,7 @@ package com.ntu.hns.manager.schedule;
 
 import static com.ntu.hns.App.sessionTimings;
 import static com.ntu.hns.manager.appointment.AppointmentManager.updateAppointment;
+import static com.ntu.hns.util.UtilProvider.*;
 
 import com.ntu.hns.CsvDB;
 import com.ntu.hns.enums.AppointmentStatus;
@@ -11,38 +12,25 @@ import com.ntu.hns.model.Schedule;
 import com.ntu.hns.model.users.Doctor;
 import com.ntu.hns.model.users.Patient;
 import com.ntu.hns.util.ScannerWrapper;
-import com.ntu.hns.util.UtilProvider;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
 public class ScheduleManager implements ScheduleManagerInterface {
-  private final CsvDB csvDB;
   private final DateTimeFormatter dateFormatter;
   private final ScannerWrapper scanner;
-  private final UtilProvider utilProvider;
 
-  @Autowired
-  public ScheduleManager(
-      CsvDB csvDB,
-      DateTimeFormatter dateTimeFormatter,
-      ScannerWrapper scanner,
-      UtilProvider utilProvider) {
-    this.csvDB = csvDB;
+  private ScheduleManager(DateTimeFormatter dateTimeFormatter, ScannerWrapper scanner) {
     this.dateFormatter = dateTimeFormatter;
     this.scanner = scanner;
-    this.utilProvider = utilProvider;
   }
 
   @Override
   public void showWeeklySchedule() {
-    List<Doctor> doctors = csvDB.readDoctors();
-    List<Schedule> schedules = csvDB.readSchedules();
+    List<Doctor> doctors = CsvDB.readDoctors();
+    List<Schedule> schedules = CsvDB.readSchedules();
 
     // Display the available doctors to the user
     System.out.println("\nAvailable Doctors: ");
@@ -169,7 +157,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
     LocalDate today = LocalDate.now();
     LocalDate endDate =
         today.plusWeeks(numberOfWeeks); // Calculate the end date based on the number of weeks
-    List<Schedule> doctorSchedule = utilProvider.getScheduleByDoctorID(doctor.getHospitalID());
+    List<Schedule> doctorSchedule = getScheduleByDoctorID(doctor.getHospitalID());
     List<Schedule> weeklySchedule = new ArrayList<>();
 
     // Iterate from today until the end date, excluding weekends
@@ -222,9 +210,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
           // Need to retrieve the patient name
           String patientId = schedule.getPatientIdFromSession(i);
           Patient scheduledPatient =
-              (patientId != null)
-                  ? utilProvider.getPatientById(patientId, csvDB.readPatients())
-                  : null;
+              (patientId != null) ? getPatientById(patientId, CsvDB.readPatients()) : null;
           if (scheduledPatient != null) {
             String status = schedule.getSessionStatus(i);
             if (status.equals(ScheduleStatus.PENDING.name())) {
@@ -255,7 +241,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
     boolean exit = false;
 
     while (!exit) {
-      List<Schedule> doctorSchedule = utilProvider.getScheduleByDoctorID(doctor.getHospitalID());
+      List<Schedule> doctorSchedule = getScheduleByDoctorID(doctor.getHospitalID());
       List<String> pendingAppointments = new ArrayList<>();
       List<Schedule> pendingSchedules = new ArrayList<>();
       List<Integer> pendingSessionIndexes = new ArrayList<>();
@@ -272,8 +258,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
           if (sessionInfo.contains(ScheduleStatus.PENDING.name())) {
             String patientId = sessionInfo.split("-")[0];
             Patient scheduledPatient =
-                utilProvider.getPatientById(
-                    patientId, csvDB.readPatients()); // Assuming static method
+                getPatientById(patientId, CsvDB.readPatients()); // Assuming static method
 
             if (scheduledPatient != null) {
               // Add pending appointment details to the list
@@ -355,7 +340,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
 
           char decision = decisionInput.toUpperCase().charAt(0);
 
-          List<Appointment> appointments = csvDB.readAppointments();
+          List<Appointment> appointments = CsvDB.readAppointments();
           if (decision == 'A') {
             chosenSchedule.acceptAppointment(sessionIndex);
             updateAppointment(
@@ -368,7 +353,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
             System.out.println("\nInvalid input, please enter 'A' or 'D'.");
           }
 
-          CsvDB.saveSchedules(csvDB.readSchedules());
+          CsvDB.saveSchedules(CsvDB.readSchedules());
 
         } else {
           System.out.println("\nInvalid choice. Please select a valid appointment number.");
@@ -381,8 +366,8 @@ public class ScheduleManager implements ScheduleManagerInterface {
 
   @Override
   public void setAvailability(Doctor doctor) {
-    List<Schedule> schedules = csvDB.readSchedules();
-    List<Appointment> appointments = csvDB.readAppointments();
+    List<Schedule> schedules = CsvDB.readSchedules();
+    List<Appointment> appointments = CsvDB.readAppointments();
 
     boolean exit = false;
 
@@ -402,7 +387,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
         LocalDate selectedDate =
             LocalDate.parse(inputDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         Schedule chosenSchedule = null;
-        List<Schedule> doctorSchedule = utilProvider.getScheduleByDoctorID(doctor.getHospitalID());
+        List<Schedule> doctorSchedule = getScheduleByDoctorID(doctor.getHospitalID());
 
         // Find the schedule for the selected date
         for (Schedule schedule : doctorSchedule) {
@@ -483,6 +468,40 @@ public class ScheduleManager implements ScheduleManagerInterface {
       } catch (Exception e) {
         System.out.println("\nInvalid input format. Please use the correct format (dd/MM/yyyy).");
       }
+    }
+  }
+
+  public static ScheduleManagerBuilder scheduleManagerBuilder() {
+    return new ScheduleManagerBuilder();
+  }
+
+  // Static inner Builder class
+  public static class ScheduleManagerBuilder {
+    private DateTimeFormatter dateTimeFormatter;
+    private ScannerWrapper scanner;
+
+    // Setter method for DateTimeFormatter
+    public ScheduleManagerBuilder setDateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
+      this.dateTimeFormatter = dateTimeFormatter;
+      return this; // Return the builder for chaining
+    }
+
+    // Setter method for ScannerWrapper
+    public ScheduleManagerBuilder setScanner(ScannerWrapper scanner) {
+      this.scanner = scanner;
+      return this; // Return the builder for chaining
+    }
+
+    // Method to build a ScheduleManager instance
+    public ScheduleManager build() {
+      // Add validation to ensure required fields are set
+      if (dateTimeFormatter == null) {
+        throw new IllegalArgumentException("DateTimeFormatter must not be null.");
+      }
+      if (scanner == null) {
+        throw new IllegalArgumentException("ScannerWrapper must not be null.");
+      }
+      return new ScheduleManager(dateTimeFormatter, scanner);
     }
   }
 }

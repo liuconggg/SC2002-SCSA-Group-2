@@ -10,24 +10,18 @@ import com.ntu.hns.model.users.Pharmacist;
 import com.ntu.hns.util.ScannerWrapper;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
 public class InventoryManager implements InventoryManagerInterface {
-  private final CsvDB csvDB;
   private final ScannerWrapper scanner;
 
-  @Autowired
-  public InventoryManager(CsvDB csvDB, ScannerWrapper scanner) {
-    this.csvDB = csvDB;
+  private InventoryManager(ScannerWrapper scanner) {
     this.scanner = scanner;
   }
 
   @Override
   public void showInventory() {
     System.out.println("\n=== Inventory ===");
-    for (Medication medication : csvDB.readMedications()) {
+    for (Medication medication : CsvDB.readMedications()) {
       System.out.printf(
           "Medication ID:%s\tMedication Name:%s\tStock Status:%s\tQuantity:%d\n",
           medication.getMedicationID(),
@@ -46,7 +40,7 @@ public class InventoryManager implements InventoryManagerInterface {
 
   @Override
   public void updateInventory() {
-    List<Medication> inventory = csvDB.readMedications();
+    List<Medication> inventory = CsvDB.readMedications();
     boolean medicationFound = false;
 
     System.out.print(
@@ -105,7 +99,7 @@ public class InventoryManager implements InventoryManagerInterface {
 
   @Override
   public void addInventory() {
-    List<Medication> inventory = csvDB.readMedications();
+    List<Medication> inventory = CsvDB.readMedications();
     System.out.print(
         "Enter the name of the medication to add (or press enter to return to main menu): ");
     String medicationName = scanner.nextLine();
@@ -152,7 +146,7 @@ public class InventoryManager implements InventoryManagerInterface {
 
   @Override
   public void deleteInventory() {
-    List<Medication> inventory = csvDB.readMedications();
+    List<Medication> inventory = CsvDB.readMedications();
     boolean medicationFound = false;
     System.out.print(
         "Enter the name of the medication to delete (or press enter to return main menu): ");
@@ -186,8 +180,8 @@ public class InventoryManager implements InventoryManagerInterface {
 
   @Override
   public void processReplenishmentRequest(Pharmacist pharmacist) {
-    List<Medication> medications = csvDB.readMedications();
-    List<ReplenishmentRequest> replenishmentRequests = csvDB.readReplenishmentRequests();
+    List<Medication> medications = CsvDB.readMedications();
+    List<ReplenishmentRequest> replenishmentRequests = CsvDB.readReplenishmentRequests();
     ArrayList<MedicationItem> medicationBatch = new ArrayList<>();
 
     System.out.println(
@@ -285,8 +279,8 @@ public class InventoryManager implements InventoryManagerInterface {
 
   @Override
   public void handleReplenishmentRequest() {
-    List<ReplenishmentRequest> replenishmentRequests = csvDB.readReplenishmentRequests();
-    List<Medication> inventory = csvDB.readMedications();
+    List<ReplenishmentRequest> replenishmentRequests = CsvDB.readReplenishmentRequests();
+    List<Medication> inventory = CsvDB.readMedications();
     boolean requestFound = false;
 
     System.out.println("\n=== Pending Replenishment Requests ===");
@@ -398,6 +392,30 @@ public class InventoryManager implements InventoryManagerInterface {
     if (decision.equals("A")) {
       CsvDB.saveMedications(inventory);
       System.out.println("Inventory updated successfully.");
+    }
+  }
+
+  public static InventoryManagerBuilder inventoryManagerBuilder() {
+    return new InventoryManagerBuilder();
+  }
+
+  // Static inner Builder class
+  public static class InventoryManagerBuilder {
+    private ScannerWrapper scanner;
+
+    // Setter method for ScannerWrapper
+    public InventoryManagerBuilder setScanner(ScannerWrapper scanner) {
+      this.scanner = scanner;
+      return this; // Return the builder for chaining
+    }
+
+    // Method to build an InventoryManager instance
+    public InventoryManager build() {
+      // Add validation to ensure non-null fields if necessary
+      if (scanner == null) {
+        throw new IllegalArgumentException("ScannerWrapper must not be null.");
+      }
+      return new InventoryManager(scanner);
     }
   }
 }

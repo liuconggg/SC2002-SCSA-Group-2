@@ -7,19 +7,10 @@ import com.ntu.hns.model.users.Doctor;
 import com.ntu.hns.model.users.Patient;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class UtilProvider {
-  private final CsvDB csvDB;
 
-  @Autowired
-  public UtilProvider(CsvDB csvDB) {
-    this.csvDB = csvDB;
-  }
-
-  public Patient getPatientById(String patientID, List<Patient> patients) {
+  public static Patient getPatientById(String patientID, List<Patient> patients) {
     return patients
         .stream()
         .filter(patient -> patient.getHospitalID().equals(patientID))
@@ -27,26 +18,23 @@ public class UtilProvider {
         .orElse(null);
   }
 
-  public Doctor getDoctorById(String doctorID) {
-    return csvDB
-        .readDoctors()
+  public static Doctor getDoctorById(String doctorID) {
+    return CsvDB.readDoctors()
         .stream()
         .filter(doctor -> doctor.getHospitalID().equals(doctorID))
         .findFirst()
         .orElse(null);
   }
 
-  public List<Schedule> getScheduleByDoctorID(String doctorID) {
-    return csvDB
-        .readSchedules()
+  public static List<Schedule> getScheduleByDoctorID(String doctorID) {
+    return CsvDB.readSchedules()
         .stream()
         .filter(schedule -> schedule.getDoctorID().equals(doctorID))
         .collect(Collectors.toList());
   }
 
-  public AppointmentOutcomeRecord getOutcomeByAppointmentID(String appointmentID) {
-    return csvDB
-        .readAppointmentOutcomeRecords()
+  public static AppointmentOutcomeRecord getOutcomeByAppointmentID(String appointmentID) {
+    return CsvDB.readAppointmentOutcomeRecords()
         .stream()
         .filter(
             appointmentOutcomeRecord ->

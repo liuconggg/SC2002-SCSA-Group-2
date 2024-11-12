@@ -10,10 +10,7 @@ import com.ntu.hns.manager.schedule.ScheduleManager;
 import com.ntu.hns.util.ScannerWrapper;
 import com.opencsv.bean.CsvBindByPosition;
 import java.util.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class Patient extends User implements InfoUpdater {
   @CsvBindByPosition(position = 5)
   private String dateOfBirth;
@@ -27,11 +24,10 @@ public class Patient extends User implements InfoUpdater {
   @CsvBindByPosition(position = 8)
   private String bloodType;
 
-  @Autowired private CsvDB csvDB;
-  @Autowired private ScannerWrapper scanner;
-  @Autowired private AppointmentManager appointmentManager;
-  @Autowired private MedicalRecordManager medicalRecordManager;
-  @Autowired private ScheduleManager scheduleManager;
+  private ScannerWrapper scanner;
+  private AppointmentManager appointmentManager;
+  private MedicalRecordManager medicalRecordManager;
+  private ScheduleManager scheduleManager;
 
   /** Default constructor required for OpenCSV to instantiate object. */
   public Patient() {}
@@ -91,7 +87,7 @@ public class Patient extends User implements InfoUpdater {
 
   @Override
   public void updatePersonalInformation() {
-    List<Patient> patients = csvDB.readPatients();
+    List<Patient> patients = CsvDB.readPatients();
     boolean changing = true;
     int action = -1;
 
@@ -169,5 +165,21 @@ public class Patient extends User implements InfoUpdater {
 
   public void viewAppointmentOutcome() {
     appointmentManager.showAppointmentOutcome(this);
+  }
+
+  public void setScanner(ScannerWrapper scanner) {
+    this.scanner = scanner;
+  }
+
+  public void setAppointmentManager(AppointmentManager appointmentManager) {
+    this.appointmentManager = appointmentManager;
+  }
+
+  public void setMedicalRecordManager(MedicalRecordManager medicalRecordManager) {
+    this.medicalRecordManager = medicalRecordManager;
+  }
+
+  public void setScheduleManager(ScheduleManager scheduleManager) {
+    this.scheduleManager = scheduleManager;
   }
 }

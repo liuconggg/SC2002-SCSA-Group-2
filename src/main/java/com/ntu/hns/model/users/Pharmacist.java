@@ -15,15 +15,11 @@ import com.ntu.hns.model.MedicationItem;
 import com.ntu.hns.util.ScannerWrapper;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class Pharmacist extends User implements PharmacistInterface {
-  @Autowired private CsvDB csvDB;
-  @Autowired private ScannerWrapper scanner;
-  @Autowired private InventoryManager inventoryManager;
-  @Autowired private AppointmentManager appointmentManager;
+  private ScannerWrapper scanner;
+  private InventoryManager inventoryManager;
+  private AppointmentManager appointmentManager;
 
   /** Default constructor required for OpenCSV to instantiate object. */
   public Pharmacist() {}
@@ -43,8 +39,8 @@ public class Pharmacist extends User implements PharmacistInterface {
   @Override
   public void prescribeAndUpdate() {
     List<AppointmentOutcomeRecord> appointmentOutcomeRecords =
-        csvDB.readAppointmentOutcomeRecords();
-    List<Medication> medications = csvDB.readMedications();
+        CsvDB.readAppointmentOutcomeRecords();
+    List<Medication> medications = CsvDB.readMedications();
     boolean continueDispensing = true;
 
     while (continueDispensing) {
@@ -162,5 +158,17 @@ public class Pharmacist extends User implements PharmacistInterface {
 
   public void submitReplenishmentRequest() {
     inventoryManager.processReplenishmentRequest(this);
+  }
+
+  public void setScanner(ScannerWrapper scanner) {
+    this.scanner = scanner;
+  }
+
+  public void setInventoryManager(InventoryManager inventoryManager) {
+    this.inventoryManager = inventoryManager;
+  }
+
+  public void setAppointmentManager(AppointmentManager appointmentManager) {
+    this.appointmentManager = appointmentManager;
   }
 }

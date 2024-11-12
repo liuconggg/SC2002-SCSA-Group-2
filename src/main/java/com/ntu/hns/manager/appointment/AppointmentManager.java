@@ -4,6 +4,7 @@ import static com.ntu.hns.App.sessionTimings;
 import static com.ntu.hns.enums.AppointmentStatus.*;
 import static com.ntu.hns.model.Appointment.getAppointmentByScheduleAndSession;
 import static com.ntu.hns.model.Schedule.createDefaultSchedule;
+import static com.ntu.hns.util.UtilProvider.*;
 
 import com.ntu.hns.CsvDB;
 import com.ntu.hns.enums.AppointmentOutcomeStatus;
@@ -13,7 +14,6 @@ import com.ntu.hns.model.*;
 import com.ntu.hns.model.users.Doctor;
 import com.ntu.hns.model.users.Patient;
 import com.ntu.hns.util.ScannerWrapper;
-import com.ntu.hns.util.UtilProvider;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -22,33 +22,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
 public class AppointmentManager implements AppointmentManagerInterface {
-  private final CsvDB csvDB;
   private final DateTimeFormatter dateFormatter;
   private final ScannerWrapper scanner;
-  private final UtilProvider utilProvider;
 
-  @Autowired
-  public AppointmentManager(
-      CsvDB csvDB,
-      DateTimeFormatter dateTimeFormatter,
-      ScannerWrapper scanner,
-      UtilProvider utilProvider) {
-    this.csvDB = csvDB;
+  private AppointmentManager(DateTimeFormatter dateTimeFormatter, ScannerWrapper scanner) {
     this.dateFormatter = dateTimeFormatter;
     this.scanner = scanner;
-    this.utilProvider = utilProvider;
   }
 
   @Override
   public void scheduleAppointment(Patient patient) {
     // Display the available doctors to the user
     System.out.println("\nAvailable Doctors: ");
-    List<Doctor> doctors = csvDB.readDoctors();
+    List<Doctor> doctors = CsvDB.readDoctors();
     IntStream.range(0, doctors.size())
         .forEach(index -> System.out.printf("%d. %s%n", index + 1, doctors.get(index).getName()));
 
@@ -99,7 +87,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
     // Find or create a schedule for the chosen date
     Schedule scheduleForDate = null;
-    List<Schedule> schedules = csvDB.readSchedules();
+    List<Schedule> schedules = CsvDB.readSchedules();
     for (Schedule schedule : schedules) {
       if (schedule.getDoctorID().equals(doctorID) && schedule.getDate().equals(appointmentDate)) {
         scheduleForDate = schedule;
@@ -159,7 +147,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
     // Save updated schedules to the CSV file
     CsvDB.saveSchedules(schedules);
 
-    List<Appointment> appointments = csvDB.readAppointments();
+    List<Appointment> appointments = CsvDB.readAppointments();
     String appointmentID = "A" + String.format("%04d", appointments.size() + 1);
     Appointment newAppointment =
         new Appointment(
@@ -182,9 +170,9 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
   @Override
   public void rescheduleAppointment(Patient patient) {
-    List<Doctor> doctors = csvDB.readDoctors();
-    List<Appointment> appointments = csvDB.readAppointments();
-    List<Schedule> schedules = csvDB.readSchedules();
+    List<Doctor> doctors = CsvDB.readDoctors();
+    List<Appointment> appointments = CsvDB.readAppointments();
+    List<Schedule> schedules = CsvDB.readSchedules();
 
     // Filter to show only pending or confirmed appointments
     List<Appointment> reschedulableAppointments =
@@ -206,7 +194,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
     System.out.println("Which appointment would you like to reschedule?");
     int apptCounter = 0;
     for (Appointment appt : reschedulableAppointments) {
-      Doctor doctor = utilProvider.getDoctorById(appt.getDoctorID());
+      Doctor doctor = getDoctorById(appt.getDoctorID());
       if (doctor != null) {
         System.out.printf(
             "%d. Appointment with Dr. %s on %s at %s - Status: %s\n",
@@ -243,7 +231,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
     // Get the chosen appointment
     Appointment chosenAppointment = reschedulableAppointments.get(appointmentChoice - 1);
-    Doctor selectedDoctor = utilProvider.getDoctorById(chosenAppointment.getDoctorID());
+    Doctor selectedDoctor = getDoctorById(chosenAppointment.getDoctorID());
     if (selectedDoctor == null) {
       System.out.println("Doctor not found.");
       return;
@@ -348,9 +336,9 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
   @Override
   public void cancelAppointment(Patient patient) {
-    List<Appointment> appointments = csvDB.readAppointments();
-    List<Schedule> schedules = csvDB.readSchedules();
-    List<Doctor> doctors = csvDB.readDoctors();
+    List<Appointment> appointments = CsvDB.readAppointments();
+    List<Schedule> schedules = CsvDB.readSchedules();
+    List<Doctor> doctors = CsvDB.readDoctors();
 
     // Filter to show only pending or confirmed appointments
     List<Appointment> cancellableAppointments =
@@ -372,7 +360,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
     System.out.println("Which appointment would you like to cancel?");
     int apptCounter = 0;
     for (Appointment appt : cancellableAppointments) {
-      Doctor doctor = utilProvider.getDoctorById(appt.getDoctorID());
+      Doctor doctor = getDoctorById(appt.getDoctorID());
       if (doctor != null) {
         System.out.printf(
             "%d. Appointment with Dr. %s on %s at %s - Status: %s\n",
@@ -432,8 +420,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
       CsvDB.saveSchedules(schedules);
       System.out.printf(
           "Your appointment with Dr. %s on %s has been cancelled.\n",
-          utilProvider.getDoctorById(doctorID).getName(),
-          chosenAppointment.getDate().format(dateFormatter));
+          getDoctorById(doctorID).getName(), chosenAppointment.getDate().format(dateFormatter));
     } else {
       System.out.println("Invalid choice.");
     }
@@ -443,8 +430,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
   public void showAppointmentOutcome(Patient patient) {
     // Filter to show only the patient's completed appointments
     List<Appointment> completedAppointments =
-        csvDB
-            .readAppointments()
+        CsvDB.readAppointments()
             .stream()
             .filter(appointment -> appointment.getPatientID().equals(patient.getHospitalID()))
             .filter(appointment -> appointment.getStatus().equalsIgnoreCase(COMPLETED.name()))
@@ -503,7 +489,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
     Appointment selectedAppointment = completedAppointments.get(choice - 1);
     boolean foundOutcome = false;
 
-    for (AppointmentOutcomeRecord record : csvDB.readAppointmentOutcomeRecords()) {
+    for (AppointmentOutcomeRecord record : CsvDB.readAppointmentOutcomeRecords()) {
       if (record.getAppointmentID().equals(selectedAppointment.getAppointmentID())) {
         // Display the outcome record details
         System.out.println("\n=== Appointment Outcome Record ===");
@@ -525,7 +511,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
   @Override
   public void showAppointmentOutcome() {
     List<AppointmentOutcomeRecord> appointmentOutcomeRecords =
-        csvDB.readAppointmentOutcomeRecords();
+        CsvDB.readAppointmentOutcomeRecords();
     System.out.println("\n=== Appointment Outcome Records ===");
     for (AppointmentOutcomeRecord record : appointmentOutcomeRecords) {
       System.out.printf(
@@ -574,7 +560,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
     }
 
     // Filter and display appointments based on user's choice
-    List<Appointment> appointments = csvDB.readAppointments();
+    List<Appointment> appointments = CsvDB.readAppointments();
     switch (choice) {
       case 1:
         System.out.println("\n=== Completed Appointments ===");
@@ -605,8 +591,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
   public void showScheduledAppointments(Patient patient) {
     // Filter confirmed appointments for this patient
     List<Appointment> patientAppointments =
-        csvDB
-            .readAppointments()
+        CsvDB.readAppointments()
             .stream()
             .filter(appointment -> appointment.getPatientID().equals(patient.getHospitalID()))
             .filter(appointment -> !appointment.getStatus().equalsIgnoreCase(CANCELLED.name()))
@@ -621,7 +606,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
       int apptCounter = 0;
       // Display each appointment's details
       for (Appointment appt : patientAppointments) {
-        Doctor doctor = utilProvider.getDoctorById(appt.getDoctorID());
+        Doctor doctor = getDoctorById(appt.getDoctorID());
 
         if (doctor != null) {
           System.out.printf(
@@ -638,9 +623,9 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
   @Override
   public void showUpcomingAppointments(Doctor doctor) {
-    List<Patient> patients = csvDB.readPatients();
+    List<Patient> patients = CsvDB.readPatients();
     LocalDate today = LocalDate.now();
-    List<Schedule> doctorSchedule = utilProvider.getScheduleByDoctorID(doctor.getHospitalID());
+    List<Schedule> doctorSchedule = getScheduleByDoctorID(doctor.getHospitalID());
 
     // Create a list to store appointment information grouped by date
     ArrayList<String> appointmentDetails = new ArrayList<>();
@@ -659,7 +644,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
         if (sessionInfo.contains("-" + ScheduleStatus.CONFIRMED.name())) {
           String patientId = schedule.getPatientIdFromSession(i);
           Patient scheduledPatient =
-              (patientId != null) ? utilProvider.getPatientById(patientId, patients) : null;
+              (patientId != null) ? getPatientById(patientId, patients) : null;
           if (scheduledPatient != null) {
             // Display a new date header if the date has changed
             if (lastDisplayedDate == null || !lastDisplayedDate.equals(schedule.getDate())) {
@@ -697,12 +682,12 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
   @Override
   public void updateAppointmentOutcome(Doctor doctor) {
-    List<Appointment> appointments = csvDB.readAppointments();
-    List<Medication> medications = csvDB.readMedications();
+    List<Appointment> appointments = CsvDB.readAppointments();
+    List<Medication> medications = CsvDB.readMedications();
     List<AppointmentOutcomeRecord> appointmentOutcomeRecords =
-        csvDB.readAppointmentOutcomeRecords();
-    List<Diagnosis> diagnoses = csvDB.readDiagnoses();
-    List<Treatment> treatments = csvDB.readTreatments();
+        CsvDB.readAppointmentOutcomeRecords();
+    List<Diagnosis> diagnoses = CsvDB.readDiagnoses();
+    List<Treatment> treatments = CsvDB.readTreatments();
 
     boolean exit = false;
 
@@ -900,8 +885,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
   }
 
   public List<Appointment> getAppointmentsForPatient(String patientID) {
-    return csvDB
-        .readAppointments()
+    return CsvDB.readAppointments()
         .stream()
         .filter(appointment -> appointment.getPatientID().equals(patientID))
         .collect(Collectors.toList());
@@ -929,7 +913,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
     List<AppointmentOutcomeRecord> outcomeRecords = new ArrayList<>();
     if (status.equalsIgnoreCase(AppointmentStatus.COMPLETED.name())) {
       try {
-        outcomeRecords = csvDB.readAppointmentOutcomeRecords();
+        outcomeRecords = CsvDB.readAppointmentOutcomeRecords();
       } catch (Exception e) {
         System.out.println("Error reading appointment outcome records: " + e.getMessage());
         return;
@@ -1005,5 +989,39 @@ public class AppointmentManager implements AppointmentManagerInterface {
       }
     }
     return null;
+  }
+
+  public static AppointmentManagerBuilder appointmentManagerBuilder() {
+    return new AppointmentManagerBuilder();
+  }
+
+  // Static inner Builder class
+  public static class AppointmentManagerBuilder {
+    private DateTimeFormatter dateTimeFormatter;
+    private ScannerWrapper scanner;
+
+    // Setter method for DateTimeFormatter
+    public AppointmentManagerBuilder setDateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
+      this.dateTimeFormatter = dateTimeFormatter;
+      return this; // Return the builder for chaining
+    }
+
+    // Setter method for ScannerWrapper
+    public AppointmentManagerBuilder setScanner(ScannerWrapper scanner) {
+      this.scanner = scanner;
+      return this; // Return the builder for chaining
+    }
+
+    // Method to build an AppointmentManager instance
+    public AppointmentManager build() {
+      // Add validation to ensure non-null fields if necessary
+      if (dateTimeFormatter == null) {
+        throw new IllegalArgumentException("DateTimeFormatter must not be null.");
+      }
+      if (scanner == null) {
+        throw new IllegalArgumentException("ScannerWrapper must not be null.");
+      }
+      return new AppointmentManager(dateTimeFormatter, scanner);
+    }
   }
 }
