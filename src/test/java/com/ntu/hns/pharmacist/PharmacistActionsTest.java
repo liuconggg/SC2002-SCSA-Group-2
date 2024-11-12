@@ -2,16 +2,10 @@ package com.ntu.hns.pharmacist;
 
 import static com.ntu.hns.TestManager.*;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class PharmacistActionsTest {
-
-  @AfterEach()
-  public void tearDown() {
-    stopApplication();
-  }
 
   /**
    * Test Case 16: View Appointment Outcome Record
@@ -25,7 +19,7 @@ public class PharmacistActionsTest {
   @Test
   @DisplayName("Test Case 16: View Appointment Outcome Record")
   public void testViewAppointmentOutcomeRecord() {
-    provideInput("PH0001\n123\n1\n");
+    provideInput("login\nPH0001\n123\n1\n\n5\nexit\n");
     startApplication();
   }
 
@@ -41,7 +35,7 @@ public class PharmacistActionsTest {
   @Test
   @DisplayName("Test Case 17: Update Prescription Status")
   public void testUpdatePrescriptionStatus() {
-    provideInput("PH0001\n123\n2\n1\n\n5\nP0001\n123\n");
+    provideInput("login\nPH0001\n123\n2\n1\n\n5\nlogin\nP0001\n123\n8\n2\n\n9\nexit\n");
     startApplication();
   }
 
@@ -56,7 +50,7 @@ public class PharmacistActionsTest {
   @Test
   @DisplayName("Test Case 18: View Medication Inventory")
   public void testViewMedicationInventory() {
-    provideInput("PH0001\n123\n3\n\n");
+    provideInput("login\nPH0001\n123\n3\n\n5\nexit\n");
     startApplication();
   }
 
@@ -72,7 +66,7 @@ public class PharmacistActionsTest {
   @Test
   @DisplayName("Test Case 19: Submit Replenishment Request")
   public void testSubmitReplenishmentRequest() {
-    provideInput("PH0001\n123\n4\ny\n");
+    provideInput("login\nPH0001\n123\n4\ny\n\n5\nexit\n");
     startApplication();
   }
 }

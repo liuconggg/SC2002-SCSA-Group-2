@@ -1,6 +1,12 @@
 package com.ntu.hns.manager.application;
 
+import static com.ntu.hns.enums.Environment.DEV;
+import static com.ntu.hns.enums.Environment.PROD;
+import static com.ntu.hns.enums.UserAction.EXIT;
+import static com.ntu.hns.enums.UserAction.LOGIN;
+
 import com.ntu.hns.AuthenticationService;
+import com.ntu.hns.enums.Environment;
 import com.ntu.hns.model.users.*;
 import com.ntu.hns.util.ScannerWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +18,7 @@ public class ApplicationManager {
   private final AnnotationConfigApplicationContext applicationContext;
   private final AuthenticationService authenticationService;
   private final ContextManager contextManager;
+  private final Environment environment;
   private final ScannerWrapper scanner;
 
   @Autowired
@@ -19,26 +26,48 @@ public class ApplicationManager {
       AnnotationConfigApplicationContext applicationContext,
       AuthenticationService authenticationService,
       ContextManager contextManager,
+      Environment environment,
       ScannerWrapper scanner) {
     this.applicationContext = applicationContext;
     this.authenticationService = authenticationService;
     this.contextManager = contextManager;
+    this.environment = environment;
     this.scanner = scanner;
   }
 
   public void start() {
-    // Load all CSV data
-    User user = null;
-
     while (true) {
-      if (user == null) {
-        user = authenticationService.authenticate();
-        continue;
+      String userAction = loginOrExit();
+      if (userAction.equalsIgnoreCase(LOGIN.name())) {
+        handleLogin(); // Handle login and user context flow
+      } else if (userAction.equalsIgnoreCase(EXIT.name())) {
+        exit(); // Exit the program
+        break; // This line ensures that if exit() doesn't terminate the program, the loop ends.
       }
-
-      handleUserContext(user);
-      user = null;
     }
+  }
+
+  private void handleLogin() {
+    // Load all CSV data
+    User user = authenticationService.authenticate();
+
+    if (user == null) {
+      // Authentication failed, return from the method
+      System.out.println("Authentication failed. Returning to main menu...");
+      return;
+    }
+
+    // Authentication passed, handle user context
+    handleUserContext(user);
+  }
+
+  private String loginOrExit() {
+    System.out.println("=== Hospital Management System ===");
+    System.out.print("Enter 'login' to login or 'exit' to exit: ");
+    String userAction = scanner.nextLine();
+    System.out.println();
+
+    return userAction;
   }
 
   private void handleUserContext(User user) {
@@ -53,8 +82,14 @@ public class ApplicationManager {
     }
   }
 
-  public void stop() {
-    applicationContext.close();
-    scanner.close();
+  public void exit() {
+    if (environment == PROD) {
+      applicationContext.close();
+      scanner.close();
+      System.exit(0);
+    } else if (environment == DEV) {
+      applicationContext.close();
+      scanner.close();
+    }
   }
 }

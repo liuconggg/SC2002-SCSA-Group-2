@@ -27,6 +27,6 @@ public class App {
   }
 
   public static void stopApplication() {
-    applicationManager.stop();
+    applicationManager.exit();
   }
 }

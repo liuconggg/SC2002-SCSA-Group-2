@@ -76,17 +76,18 @@ public class CsvDB {
     "Prescription Status"
   };
 
-  private static final String PATIENT_CSV_PATH = "Patient.csv";
-  private static final String DOCTOR_CSV_PATH = "Doctor.csv";
-  private static final String PHARMACIST_CSV_PATH = "Pharmacist.csv";
-  private static final String ADMINISTRATOR_CSV_PATH = "Administrator.csv";
-  private static final String APPOINTMENT_CSV_PATH = "Appointment.csv";
-  private static final String DIAGNOSIS_CSV_PATH = "Diagnosis.csv";
-  private static final String SCHEDULE_CSV_PATH = "Schedule.csv";
-  private static final String TREATMENT_CSV_PATH = "Treatment.csv";
-  private static final String MEDICATION_CSV_PATH = "Medication.csv";
-  private static final String APPOINTMENT_OUTCOME_RECORD_CSV_PATH = "AppointmentOutcomeRecord.csv";
-  private static final String REPLENISHMENT_REQUEST_CSV_PATH = "ReplenishmentRequest.csv";
+  private static final String PATIENT_CSV_PATH = "csvdb/Patient.csv";
+  private static final String DOCTOR_CSV_PATH = "csvdb/Doctor.csv";
+  private static final String PHARMACIST_CSV_PATH = "csvdb/Pharmacist.csv";
+  private static final String ADMINISTRATOR_CSV_PATH = "csvdb/Administrator.csv";
+  private static final String APPOINTMENT_CSV_PATH = "csvdb/Appointment.csv";
+  private static final String DIAGNOSIS_CSV_PATH = "csvdb/Diagnosis.csv";
+  private static final String SCHEDULE_CSV_PATH = "csvdb/Schedule.csv";
+  private static final String TREATMENT_CSV_PATH = "csvdb/Treatment.csv";
+  private static final String MEDICATION_CSV_PATH = "csvdb/Medication.csv";
+  private static final String APPOINTMENT_OUTCOME_RECORD_CSV_PATH =
+      "csvdb/AppointmentOutcomeRecord.csv";
+  private static final String REPLENISHMENT_REQUEST_CSV_PATH = "csvdb/ReplenishmentRequest.csv";
 
   private final ApplicationContext context;
 
@@ -178,7 +179,8 @@ public class CsvDB {
     return readCsv(APPOINTMENT_OUTCOME_RECORD_CSV_PATH, AppointmentOutcomeRecord.class);
   }
 
-  private static <T> void writeCsv(Path csvPath, String[] header, List<T> csvBean) {
+  private static <T> void writeCsv(String pathString, String[] header, List<T> csvBean) {
+    Path csvPath = createPath(pathString);
     try (Writer writer = new FileWriter(csvPath.toFile())) {
       CSVWriter csvWriter =
           new CSVWriter(
@@ -222,53 +224,50 @@ public class CsvDB {
   }
 
   public static void saveTreatment(List<Treatment> treatments) {
-    writeCsv(createPath(TREATMENT_CSV_PATH), TREATMENT_HEADER, treatments);
+    writeCsv(TREATMENT_CSV_PATH, TREATMENT_HEADER, treatments);
   }
 
   public static void saveDiagnosis(List<Diagnosis> diagnoses) {
-    writeCsv(createPath(DIAGNOSIS_CSV_PATH), DIAGNOSIS_HEADER, diagnoses);
+    writeCsv(DIAGNOSIS_CSV_PATH, DIAGNOSIS_HEADER, diagnoses);
   }
 
   public static void saveAppointments(List<Appointment> appointments) {
-    writeCsv(createPath(APPOINTMENT_CSV_PATH), APPOINTMENT_HEADER, appointments);
+    writeCsv(APPOINTMENT_CSV_PATH, APPOINTMENT_HEADER, appointments);
   }
 
   public static void saveMedications(List<Medication> medications) {
-    writeCsv(createPath(MEDICATION_CSV_PATH), MEDICATION_HEADER, medications);
+    writeCsv(MEDICATION_CSV_PATH, MEDICATION_HEADER, medications);
   }
 
   public static void savePatients(List<Patient> patients) {
-    writeCsv(createPath(PATIENT_CSV_PATH), PATIENT_HEADER, patients);
+    writeCsv(PATIENT_CSV_PATH, PATIENT_HEADER, patients);
   }
 
   public static void saveDoctors(List<Doctor> doctors) {
-    writeCsv(createPath(DOCTOR_CSV_PATH), DOCTOR_HEADER, doctors);
+    writeCsv(DOCTOR_CSV_PATH, DOCTOR_HEADER, doctors);
   }
 
   public static void savePharmacists(List<Pharmacist> pharmacists) {
-    writeCsv(createPath(PHARMACIST_CSV_PATH), PHARMACIST_HEADER, pharmacists);
+    writeCsv(PHARMACIST_CSV_PATH, PHARMACIST_HEADER, pharmacists);
   }
 
   public static void saveAdministrators(List<Administrator> administrators) {
-    writeCsv(createPath(ADMINISTRATOR_CSV_PATH), ADMINISTRATOR_HEADER, administrators);
+    writeCsv(ADMINISTRATOR_CSV_PATH, ADMINISTRATOR_HEADER, administrators);
   }
 
   public static void saveSchedules(List<Schedule> schedules) {
-    writeCsv(createPath(SCHEDULE_CSV_PATH), SCHEDULE_HEADER, schedules);
+    writeCsv(SCHEDULE_CSV_PATH, SCHEDULE_HEADER, schedules);
   }
 
   public static void saveAppointmentOutcomeRecords(
       List<AppointmentOutcomeRecord> appointmentOutcomeRecords) {
     writeCsv(
-        createPath(APPOINTMENT_OUTCOME_RECORD_CSV_PATH),
+        APPOINTMENT_OUTCOME_RECORD_CSV_PATH,
         APPOINTMENT_OUTCOME_RECORD_HEADER,
         appointmentOutcomeRecords);
   }
 
   public static void saveReplenishmentRequests(List<ReplenishmentRequest> replenishmentRequests) {
-    writeCsv(
-        createPath(REPLENISHMENT_REQUEST_CSV_PATH),
-        REPLENISHMENT_REQUEST_HEADER,
-        replenishmentRequests);
+    writeCsv(REPLENISHMENT_REQUEST_CSV_PATH, REPLENISHMENT_REQUEST_HEADER, replenishmentRequests);
   }
 }
