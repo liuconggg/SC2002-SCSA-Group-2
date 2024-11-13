@@ -30,8 +30,8 @@ public class UserManager implements UserManagerInterface {
 
     switch (choice) {
       case 1: // Add Patient
-        System.out.print("Enter Hospital ID: ");
-        hospitalID = scanner.nextLine();
+        List<Patient> patients = CsvDB.readPatients();
+        hospitalID = "P000" + (patients.size() + 1);
         System.out.print("Enter Password: ");
         password = scanner.nextLine();
         System.out.print("Enter Name: ");
@@ -65,8 +65,8 @@ public class UserManager implements UserManagerInterface {
         break;
 
       case 2: // Add Doctor
-        System.out.print("Enter Hospital ID: ");
-        hospitalID = scanner.nextLine();
+        List<Doctor> doctors = CsvDB.readDoctors();
+        hospitalID = "D000" + (doctors.size() + 1);
         System.out.print("Enter Password: ");
         password = scanner.nextLine();
         System.out.print("Enter Name: ");
@@ -81,8 +81,8 @@ public class UserManager implements UserManagerInterface {
         users.add(newDoctor);
         break;
       case 3: // Add Pharmacist
-        System.out.print("Enter Hospital ID: ");
-        hospitalID = scanner.nextLine();
+        List<Pharmacist> pharmacists = CsvDB.readPharmacists();
+        hospitalID = "PH000" + (pharmacists.size() + 1);
         System.out.print("Enter Password: ");
         password = scanner.nextLine();
         System.out.print("Enter Name: ");
@@ -97,8 +97,8 @@ public class UserManager implements UserManagerInterface {
         users.add(newPharmacist);
         break;
       case 4: // Add Administrator
-        System.out.print("Enter Hospital ID: ");
-        hospitalID = scanner.nextLine();
+        List<Administrator> administrators = CsvDB.readAdministrators();
+        hospitalID = "A000" + (administrators.size() + 1);
         System.out.print("Enter Password: ");
         password = scanner.nextLine();
         System.out.print("Enter Name: ");
@@ -242,7 +242,7 @@ public class UserManager implements UserManagerInterface {
 
     for (User user : users) {
       if (user.getHospitalID().equalsIgnoreCase(staffIDToUpdate)) {
-        System.out.println("Found user: " + user);
+        System.out.println("Found user: " + user.getHospitalID());
 
         // Update common fields: password, name, age, gender
         System.out.print("Enter new password (or press Enter to keep current): ");
