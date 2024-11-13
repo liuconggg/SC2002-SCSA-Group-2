@@ -345,20 +345,6 @@ public class CsvDB {
     }
   }
 
-  // Method to convert List<MedicationItem> into formatted String
-  private static String convertMedicationListToCsvString(List<MedicationItem> medications) {
-    return medications
-        .stream()
-        .map(
-            medication ->
-                medication.getMedicationID()
-                    + ":"
-                    + medication.getMedicationName()
-                    + ":"
-                    + medication.getQuantity())
-        .collect(Collectors.joining(";"));
-  }
-
   public static void saveUsers(List<User> users) {
     List<Patient> patients = new ArrayList<>();
     List<Doctor> doctors = new ArrayList<>();
