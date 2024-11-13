@@ -1,21 +1,10 @@
 package com.ntu.hns.model;
 
-import com.opencsv.bean.CsvBindByPosition;
-
 public class Medication {
-  @CsvBindByPosition(position = 0)
   private String medicationID;
-
-  @CsvBindByPosition(position = 1)
   private String medicationName;
-
-  @CsvBindByPosition(position = 2)
   private String stockStatus;
-
-  @CsvBindByPosition(position = 3)
   private boolean alert;
-
-  @CsvBindByPosition(position = 4)
   private int totalQuantity;
 
   /** Default constructor required for OpenCSV to instantiate object. */

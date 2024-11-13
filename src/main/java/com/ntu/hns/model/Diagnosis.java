@@ -1,16 +1,9 @@
 package com.ntu.hns.model;
 
-import com.opencsv.bean.CsvBindByPosition;
-
 public class Diagnosis {
-  @CsvBindByPosition(position = 0)
-  String patientId;
-
-  @CsvBindByPosition(position = 1)
-  String diagnosis;
-
-  @CsvBindByPosition(position = 2)
-  String appointmentId;
+  private String appointmentId;
+  private String patientId;
+  private String diagnosis;
 
   /** Default constructor required for OpenCSV to instantiate object. */
   public Diagnosis() {}

@@ -8,20 +8,12 @@ import com.ntu.hns.manager.appointment.AppointmentManager;
 import com.ntu.hns.manager.medicalrecord.MedicalRecordManager;
 import com.ntu.hns.manager.schedule.ScheduleManager;
 import com.ntu.hns.util.ScannerWrapper;
-import com.opencsv.bean.CsvBindByPosition;
 import java.util.*;
 
 public class Patient extends User implements InfoUpdater {
-  @CsvBindByPosition(position = 5)
   private String dateOfBirth;
-
-  @CsvBindByPosition(position = 6)
   private String phoneNumber;
-
-  @CsvBindByPosition(position = 7)
   private String email;
-
-  @CsvBindByPosition(position = 8)
   private String bloodType;
 
   private ScannerWrapper scanner;

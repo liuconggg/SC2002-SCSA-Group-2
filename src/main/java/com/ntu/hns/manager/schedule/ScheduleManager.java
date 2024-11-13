@@ -440,7 +440,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
                         chosenSchedule, sessionChoice - 1, appointments);
                 selectedAcAppointment.setStatus(AppointmentStatus.CANCELLED.name());
                 System.out.printf(
-                    "\ncom.ntu.hms.users.Patient (?) pending booking has been declined. Session %d has been updated to Unavailable as it was pending.\n",
+                    "\nPatient (?) pending booking has been declined. Session %d has been updated to Unavailable as it was pending.\n",
                     sessionChoice);
               } else if (currentStatus.equals("Available")) {
                 chosenSchedule.getSession()[sessionChoice - 1] = "Unavailable";

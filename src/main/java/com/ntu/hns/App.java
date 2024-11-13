@@ -4,13 +4,9 @@ import static com.ntu.hns.factory.SingletonFactory.getApplicationManager;
 
 import com.ntu.hns.manager.application.ApplicationManager;
 
-/**
- * The type App.
- */
+/** The type App. */
 public class App {
-  /**
-   * The constant sessionTimings.
-   */
+  /** The constant sessionTimings. */
   public static final String[] sessionTimings = {
     "09:00 - 10:00",
     "10:00 - 11:00",
@@ -35,9 +31,7 @@ public class App {
     applicationManager.start();
   }
 
-  /**
-   * Stop application.
-   */
+  /** Stop application. */
   public static void stopApplication() {
     applicationManager.exit();
   }

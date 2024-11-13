@@ -5,9 +5,7 @@ import com.ntu.hns.model.users.*;
 import com.ntu.hns.util.ScannerWrapper;
 import java.util.List;
 
-/**
- * The type User manager.
- */
+/** The type User manager. */
 public class UserManager implements UserManagerInterface {
   private final ScannerWrapper scanner;
 
@@ -353,15 +351,13 @@ public class UserManager implements UserManagerInterface {
    *
    * @return the user manager builder
    */
-// Static method to access the builder
+  // Static method to access the builder
   public static UserManagerBuilder userManagerBuilder() {
     return new UserManagerBuilder();
   }
 
-  /**
-   * The type User manager builder.
-   */
-// Static inner Builder class
+  /** The type User manager builder. */
+  // Static inner Builder class
   public static class UserManagerBuilder {
     private ScannerWrapper scanner;
 
@@ -371,7 +367,7 @@ public class UserManager implements UserManagerInterface {
      * @param scanner the scanner
      * @return the scanner
      */
-// Setter method for ScannerWrapper
+    // Setter method for ScannerWrapper
     public UserManagerBuilder setScanner(ScannerWrapper scanner) {
       this.scanner = scanner;
       return this; // Return the builder for chaining
@@ -382,7 +378,7 @@ public class UserManager implements UserManagerInterface {
      *
      * @return the user manager
      */
-// Method to build a UserManager instance
+    // Method to build a UserManager instance
     public UserManager build() {
       // Validation to ensure required fields are set
       if (scanner == null) {

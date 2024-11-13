@@ -23,9 +23,7 @@ import com.ntu.hns.util.ScannerWrapper;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-/**
- * The type Singleton factory.
- */
+/** The type Singleton factory. */
 public class SingletonFactory {
   private static Environment environment;
   private static DateTimeFormatter dateTimeFormatter;

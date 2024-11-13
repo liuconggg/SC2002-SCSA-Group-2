@@ -1,21 +1,10 @@
 package com.ntu.hns.model.users;
 
-import com.opencsv.bean.CsvBindByPosition;
-
 public abstract class User {
-  @CsvBindByPosition(position = 0)
   private String hospitalID;
-
-  @CsvBindByPosition(position = 1)
   private String password;
-
-  @CsvBindByPosition(position = 2)
   private String name;
-
-  @CsvBindByPosition(position = 3)
   private int age;
-
-  @CsvBindByPosition(position = 4)
   private String gender;
 
   /** Default constructor required for OpenCSV to instantiate object. */

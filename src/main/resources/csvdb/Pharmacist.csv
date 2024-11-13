@@ -1,6 +1,6 @@
 Pharmacist ID,Password,Name,Age,Gender
-PH0001,123,users.com.Pharmacist 1,25,Male
-PH0002,123,users.com.Pharmacist 2,35,Female
-PH0003,password,users.com.Pharmacist 3,60,Male
-PH0004,password,users.com.Pharmacist 4,59,Female
-PH0005,password,users.com.Pharmacist 5,40,Male
+PH0001,123,Pharmacist 1,25,Male
+PH0002,123,Pharmacist 2,35,Female
+PH0003,password,Pharmacist 3,60,Male
+PH0004,password,Pharmacist 4,59,Female
+PH0005,password,Pharmacist 5,40,Male

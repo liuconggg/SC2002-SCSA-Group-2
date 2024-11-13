@@ -6,9 +6,7 @@ import com.ntu.hns.util.ScannerWrapper;
 import java.io.Console;
 import java.util.List;
 
-/**
- * The type Authentication service.
- */
+/** The type Authentication service. */
 public class AuthenticationService {
   private static final String DEFAULT_PASSWORD = "password";
 
@@ -101,9 +99,7 @@ public class AuthenticationService {
     return new AuthenticationServiceBuilder();
   }
 
-  /**
-   * The type Authentication service builder.
-   */
+  /** The type Authentication service builder. */
   public static class AuthenticationServiceBuilder {
     private Console console;
     private Environment environment;
@@ -115,7 +111,7 @@ public class AuthenticationService {
      * @param console the console
      * @return the console
      */
-// Setter method for Console
+    // Setter method for Console
     public AuthenticationServiceBuilder setConsole(Console console) {
       this.console = console;
       return this; // Return the builder for chaining
@@ -127,7 +123,7 @@ public class AuthenticationService {
      * @param environment the environment
      * @return the environment
      */
-// Setter method for Environment
+    // Setter method for Environment
     public AuthenticationServiceBuilder setEnvironment(Environment environment) {
       this.environment = environment;
       return this; // Return the builder for chaining
@@ -139,7 +135,7 @@ public class AuthenticationService {
      * @param scanner the scanner
      * @return the scanner
      */
-// Setter method for Scanner
+    // Setter method for Scanner
     public AuthenticationServiceBuilder setScanner(ScannerWrapper scanner) {
       this.scanner = scanner;
       return this; // Return the builder for chaining
@@ -150,7 +146,7 @@ public class AuthenticationService {
      *
      * @return the authentication service
      */
-// Method to build an AuthenticationService instance
+    // Method to build an AuthenticationService instance
     public AuthenticationService build() {
       // Validation can be added here to ensure non-null fields if necessary
       if (environment == null || scanner == null) {

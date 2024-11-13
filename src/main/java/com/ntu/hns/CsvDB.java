@@ -2,76 +2,49 @@ package com.ntu.hns;
 
 import static com.ntu.hns.factory.SingletonFactory.*;
 
+import com.ntu.hns.manager.appointment.AppointmentManager;
+import com.ntu.hns.manager.inventory.InventoryManager;
+import com.ntu.hns.manager.medicalrecord.MedicalRecordManager;
+import com.ntu.hns.manager.schedule.ScheduleManager;
+import com.ntu.hns.manager.user.UserManager;
 import com.ntu.hns.model.*;
 import com.ntu.hns.model.users.Administrator;
 import com.ntu.hns.model.users.Doctor;
 import com.ntu.hns.model.users.Patient;
 import com.ntu.hns.model.users.Pharmacist;
 import com.ntu.hns.model.users.User;
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import com.ntu.hns.util.ScannerWrapper;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class CsvDB {
-  private static final String[] APPOINTMENT_HEADER = {
-    "Appointment ID", "Patient ID", "Doctor ID", "Date", "Session", "Status"
-  };
-  private static final String[] PATIENT_HEADER = {
-    "Patient ID",
-    "Password",
-    "Name",
-    "Age",
-    "Gender",
-    "Date of Birth",
-    "Phone Number",
-    "Email",
-    "Blood Type"
-  };
-  private static final String[] DOCTOR_HEADER = {"Doctor ID", "Password", "Name", "Age", "Gender"};
-  private static final String[] PHARMACIST_HEADER = {
-    "Pharmacist ID", "Password", "Name", "Age", "Gender"
-  };
-  private static final String[] ADMINISTRATOR_HEADER = {
-    "Administrator ID", "Password", "Name", "Age", "Gender"
-  };
-  private static final String[] SCHEDULE_HEADER = {
-    "Doctor ID",
-    "Date",
-    "Session 1",
-    "Session 2",
-    "Session 3",
-    "Session 4",
-    "Session 5",
-    "Session 6",
-    "Session 7",
-    "Session 8"
-  };
-  private static final String[] MEDICATION_HEADER = {
-    "Medication ID", "Medication Name", "Stock Status", "Alert", "Quantity"
-  };
-  private static final String[] DIAGNOSIS_HEADER = {"Appointment ID", "Patient ID", "Diagnosis"};
-  private static final String[] TREATMENT_HEADER = {"Appointment ID", "Patient ID", "Treatment"};
-  private static final String[] APPOINTMENT_OUTCOME_RECORD_HEADER = {
-    "Request ID", "Medication Batch", "Status", "Pharmacist ID"
-  };
-  private static final String[] REPLENISHMENT_REQUEST_HEADER = {
-    "Appointment ID",
-    "Type of Service",
-    "Consultation Notes",
-    "Prescriptions",
-    "Prescription Status"
-  };
+  private static final String CSV_DELIMITER = ",";
+
+  private static final String APPOINTMENT_HEADER =
+      "Appointment ID,Patient ID,Doctor ID,Date,Session,Status";
+  private static final String PATIENT_HEADER =
+      "Patient ID,Password,Name,Age,Gender,Date of Birth,Phone Number,Email,Blood Type";
+  private static final String DOCTOR_HEADER = "Doctor ID,Password,Name,Age,Gender";
+  private static final String PHARMACIST_HEADER = "Pharmacist ID,Password,Name,Age,Gender";
+  private static final String ADMINISTRATOR_HEADER = "Administrator ID,Password,Name,Age,Gender";
+  private static final String SCHEDULE_HEADER =
+      "Doctor ID,Date,Session 1,Session 2,Session 3,Session 4,Session 5,Session 6,Session 7,Session 8";
+  private static final String MEDICATION_HEADER =
+      "Medication ID,Medication Name,Stock Status,Alert,Quantity";
+  private static final String DIAGNOSIS_HEADER = "Appointment ID,Patient ID,Diagnosis";
+  private static final String TREATMENT_HEADER = "Appointment ID,Patient ID,Treatment";
+  private static final String APPOINTMENT_OUTCOME_RECORD_HEADER =
+      "Request ID,Medication Batch,Status,Pharmacist ID";
+  private static final String REPLENISHMENT_REQUEST_HEADER =
+      "Appointment ID,Type of Service,Consultation Notes,Prescriptions,Prescription Status";
 
   private static final String PATIENT_CSV_PATH = "csvdb/Patient.csv";
   private static final String DOCTOR_CSV_PATH = "csvdb/Doctor.csv";
@@ -94,22 +67,153 @@ public class CsvDB {
     }
   }
 
-  private static <T> List<T> readCsv(String csvPath, Class<T> beanClass) {
-    try (InputStream inputStream = CsvDB.class.getClassLoader().getResourceAsStream(csvPath);
-        InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(inputStream))) {
-      CsvToBean<T> csvToBean =
-          new CsvToBeanBuilder<T>(reader)
-              .withType(beanClass)
-              .withSkipLines(1)
-              .withIgnoreLeadingWhiteSpace(true)
-              .build();
+  private static <T> List<T> readCsv(String csvPath, Class<T> clazz) {
+    ClassLoader classLoader = CsvDB.class.getClassLoader();
+    InputStream inputStream = classLoader.getResourceAsStream(csvPath);
+    try (BufferedReader bufferedReader =
+        new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
 
-      return csvToBean.parse();
+      // Use streams to read the CSV data
+      return bufferedReader
+          .lines()
+          .skip(1) // Skip the header line
+          .map(line -> mapToInstance(line, clazz)) // Map each line to an instance of T
+          .collect(Collectors.toList());
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
+  }
 
+  private static <T> T mapToInstance(String line, Class<T> clazz) {
+    try {
+      // Create an instance of T using reflection
+      T instance = clazz.getDeclaredConstructor().newInstance();
+
+      String[] data = line.split(CSV_DELIMITER);
+      Field[] csvFields = getCsvFields(clazz);
+      IntStream.range(0, csvFields.length)
+          .forEach(
+              index -> {
+                try {
+                  Field field = csvFields[index];
+                  field.setAccessible(true);
+
+                  if (field.getType().equals(int.class)) {
+                    field.set(instance, Integer.parseInt(data[index].trim()));
+                  } else if (field.getType().equals(boolean.class)) {
+                    field.set(instance, Boolean.parseBoolean(data[index].trim()));
+                  } else if (field.getType().equals(String.class)) {
+                    field.set(instance, data[index].trim());
+                  } else if (field.getType().equals(LocalDate.class)) {
+                    field.set(instance, LocalDate.parse(data[index], getDateTimeFormatter()));
+                  } else if (field.getType().equals(List.class)
+                      && field
+                          .getGenericType()
+                          .getTypeName()
+                          .contains(MedicationItem.class.getSimpleName())) {
+                    List<MedicationItem> medicationItems = parseMedicationItems(data[index]);
+                    field.set(instance, medicationItems);
+                  } else if (field.getName().equals("session")) {
+                    String[] sessionsData = Arrays.copyOfRange(data, 2, data.length);
+                    field.set(instance, sessionsData);
+                  }
+                } catch (Exception e) {
+                  throw new RuntimeException(e);
+                }
+              });
+
+      Field[] nonCsvFields = getNonCsvFields(clazz);
+      IntStream.range(0, nonCsvFields.length)
+          .forEach(
+              index -> {
+                try {
+                  Field field = nonCsvFields[index];
+                  field.setAccessible(true);
+
+                  if (field.getType().equals(AppointmentManager.class)) {
+                    field.set(instance, getAppointmentManager());
+                  } else if (field.getType().equals(InventoryManager.class)) {
+                    field.set(instance, getInventoryManager());
+                  } else if (field.getType().equals(MedicalRecordManager.class)) {
+                    field.set(instance, getMedicalRecordManager());
+                  } else if (field.getType().equals(ScheduleManager.class)) {
+                    field.set(instance, getScheduleManager());
+                  } else if (field.getType().equals(UserManager.class)) {
+                    field.set(instance, getUserManager());
+                  } else if (field.getType().equals(ScannerWrapper.class)) {
+                    field.set(instance, getScannerWrapper());
+                  }
+                } catch (Exception e) {
+                  throw new RuntimeException(e);
+                }
+              });
+
+      return instance;
+    } catch (ReflectiveOperationException e) {
+      e.printStackTrace();
       return null;
     }
+  }
+
+  private static Field[] getCsvFields(Class<?> clazz) {
+    List<Field> fields = new ArrayList<>();
+    while (clazz != null) {
+      List<Field> currentFields =
+          Arrays.stream(clazz.getDeclaredFields())
+              .filter(CsvDB::isCsvField)
+              .collect(Collectors.toList());
+      fields.addAll(0, currentFields);
+      clazz = clazz.getSuperclass();
+    }
+
+    return fields.toArray(new Field[0]);
+  }
+
+  private static Field[] getNonCsvFields(Class<?> clazz) {
+    List<Field> fields = new ArrayList<>();
+    while (clazz != null) {
+      List<Field> currentFields =
+          Arrays.stream(clazz.getDeclaredFields())
+              .filter(field -> !isCsvField(field))
+              .collect(Collectors.toList());
+      fields.addAll(0, currentFields);
+      clazz = clazz.getSuperclass();
+    }
+
+    return fields.toArray(new Field[0]);
+  }
+
+  private static boolean isCsvField(Field field) {
+    return !field.getType().equals(AppointmentManager.class)
+        && !field.getType().equals(InventoryManager.class)
+        && !field.getType().equals(MedicalRecordManager.class)
+        && !field.getType().equals(ScheduleManager.class)
+        && !field.getType().equals(UserManager.class)
+        && !field.getType().equals(ScannerWrapper.class);
+  }
+
+  // Helper method to parse a CSV value into a list of Medication objects
+  private static List<MedicationItem> parseMedicationItems(String medicationData) {
+    List<MedicationItem> medicationItems = new ArrayList<>();
+
+    // Split each medication entry by semicolon (;)
+    String[] medicationEntries = medicationData.split(";");
+    for (String entry : medicationEntries) {
+      String[] fields = entry.split(":");
+
+      // Assuming the fields are: medicationID, medicationName, quantity
+      if (fields.length == 3) {
+        String medicationID = fields[0].trim();
+        String medicationName = fields[1].trim();
+        int quantity = Integer.parseInt(fields[2].trim());
+
+        // Create a Medication object
+        MedicationItem medicationItem = new MedicationItem(medicationID, medicationName, quantity);
+        medicationItems.add(medicationItem);
+      }
+    }
+
+    return medicationItems;
   }
 
   public static List<User> readUsers() {
@@ -124,60 +228,19 @@ public class CsvDB {
   }
 
   public static List<Patient> readPatients() {
-    List<Patient> patients = readCsv(PATIENT_CSV_PATH, Patient.class);
-
-    return Objects.requireNonNull(patients)
-        .stream()
-        .peek(
-            patient -> {
-              patient.setScanner(getScannerWrapper());
-              patient.setAppointmentManager(getAppointmentManager());
-              patient.setMedicalRecordManager(getMedicalRecordManager());
-              patient.setScheduleManager(getScheduleManager());
-            })
-        .collect(Collectors.toList());
+    return readCsv(PATIENT_CSV_PATH, Patient.class);
   }
 
   public static List<Doctor> readDoctors() {
-    List<Doctor> doctors = readCsv(DOCTOR_CSV_PATH, Doctor.class);
-
-    return Objects.requireNonNull(doctors)
-        .stream()
-        .peek(
-            doctor -> {
-              doctor.setAppointmentManager(getAppointmentManager());
-              doctor.setMedicalRecordManager(getMedicalRecordManager());
-              doctor.setScheduleManager(getScheduleManager());
-            })
-        .collect(Collectors.toList());
+    return readCsv(DOCTOR_CSV_PATH, Doctor.class);
   }
 
   public static List<Pharmacist> readPharmacists() {
-    List<Pharmacist> pharmacists = readCsv(PHARMACIST_CSV_PATH, Pharmacist.class);
-
-    return Objects.requireNonNull(pharmacists)
-        .stream()
-        .peek(
-            pharmacist -> {
-              pharmacist.setScanner(getScannerWrapper());
-              pharmacist.setInventoryManager(getInventoryManager());
-              pharmacist.setAppointmentManager(getAppointmentManager());
-            })
-        .collect(Collectors.toList());
+    return readCsv(PHARMACIST_CSV_PATH, Pharmacist.class);
   }
 
   public static List<Administrator> readAdministrators() {
-    List<Administrator> administrators = readCsv(ADMINISTRATOR_CSV_PATH, Administrator.class);
-
-    return Objects.requireNonNull(administrators)
-        .stream()
-        .peek(
-            administrator -> {
-              administrator.setUserManager(getUserManager());
-              administrator.setInventoryManager(getInventoryManager());
-              administrator.setAppointmentManager(getAppointmentManager());
-            })
-        .collect(Collectors.toList());
+    return readCsv(ADMINISTRATOR_CSV_PATH, Administrator.class);
   }
 
   // Appointment.csv file
@@ -213,26 +276,87 @@ public class CsvDB {
     return readCsv(APPOINTMENT_OUTCOME_RECORD_CSV_PATH, AppointmentOutcomeRecord.class);
   }
 
-  private static <T> void writeCsv(String pathString, String[] header, List<T> csvBean) {
-    Path csvPath = createPath(pathString);
-    try (Writer writer = new FileWriter(csvPath.toFile())) {
-      CSVWriter csvWriter =
-          new CSVWriter(
-              writer,
-              CSVWriter.DEFAULT_SEPARATOR,
-              CSVWriter.NO_QUOTE_CHARACTER,
-              CSVWriter.DEFAULT_ESCAPE_CHARACTER,
-              CSVWriter.DEFAULT_LINE_END);
-      csvWriter.writeNext(header);
+  private static <T> void writeCsv(String csvPathString, String header, List<T> modelList) {
+    Path csvPath = Paths.get("target", "classes", csvPathString);
 
-      StatefulBeanToCsv<T> sbc =
-          new StatefulBeanToCsvBuilder<T>(writer)
-              .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
-              .build();
-      sbc.write(csvBean);
-    } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
-      throw new RuntimeException(e);
+    try (Writer writer = new FileWriter(csvPath.toFile())) {
+      Class<?> clazz = modelList.get(0).getClass();
+
+      // Write the CSV header
+      writer.write(header);
+      writer.write("\n");
+
+      // Get fields that should be used for CSV output
+      Field[] csvFields = getCsvFields(clazz);
+
+      // Write each object's data as a CSV row using Streams
+      String csvData =
+          modelList
+              .stream()
+              .map(
+                  item ->
+                      Stream.of(csvFields)
+                          .map(
+                              field -> {
+                                try {
+                                  field.setAccessible(true);
+                                  Object value = field.get(item);
+
+                                  String csvValue = null;
+                                  if (value instanceof String) {
+                                    csvValue = (String) value;
+                                  } else if (value instanceof Integer) {
+                                    csvValue = Integer.toString((int) value);
+                                  } else if (value instanceof LocalDate) {
+                                    csvValue = ((LocalDate) value).format(getDateTimeFormatter());
+                                  } else if (value instanceof List) {
+                                    List<?> list = (List<?>) value;
+                                    if (!list.isEmpty() && list.get(0) instanceof MedicationItem) {
+                                      csvValue =
+                                          list.stream()
+                                              .map(
+                                                  medicationItem -> {
+                                                    MedicationItem medItem =
+                                                        (MedicationItem) medicationItem;
+                                                    return medItem.getMedicationID()
+                                                        + ":"
+                                                        + medItem.getMedicationName()
+                                                        + ":"
+                                                        + medItem.getQuantity();
+                                                  })
+                                              .collect(Collectors.joining(";"));
+                                    }
+                                  } else if (field.getName().equals("session")) {
+                                    csvValue = String.join(CSV_DELIMITER, (String[]) value);
+                                  }
+                                  return csvValue;
+                                } catch (IllegalAccessException e) {
+                                  throw new RuntimeException("Failed to access field value", e);
+                                }
+                              })
+                          .collect(Collectors.joining(CSV_DELIMITER)))
+              .collect(Collectors.joining("\n"));
+
+      writer.write(csvData);
+      writer.write("\n");
+
+    } catch (IOException e) {
+      throw new RuntimeException("Error writing CSV file", e);
     }
+  }
+
+  // Method to convert List<MedicationItem> into formatted String
+  private static String convertMedicationListToCsvString(List<MedicationItem> medications) {
+    return medications
+        .stream()
+        .map(
+            medication ->
+                medication.getMedicationID()
+                    + ":"
+                    + medication.getMedicationName()
+                    + ":"
+                    + medication.getQuantity())
+        .collect(Collectors.joining(";"));
   }
 
   public static void saveUsers(List<User> users) {

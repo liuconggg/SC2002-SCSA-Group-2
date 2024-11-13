@@ -66,7 +66,7 @@ public class DoctorActionsTest {
   @Test
   @DisplayName("Test Case 12: Set Availability for Appointments")
   public void testSetAvailability() {
-    provideInput("login\nD0001\n123\n4\n07/11/2024\n1\n\n");
+    provideInput("login\nD0001\n123\n4\n07/11/2024\n1\n\n\n8\nexit\n");
     startApplication();
   }
 

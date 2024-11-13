@@ -2,31 +2,17 @@ package com.ntu.hns.model;
 
 import com.ntu.hns.enums.AppointmentStatus;
 import com.ntu.hns.enums.ScheduleStatus;
-import com.opencsv.bean.CsvBindByPosition;
-import com.opencsv.bean.CsvDate;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Appointment {
-  @CsvBindByPosition(position = 0)
   private String appointmentID;
-
-  @CsvBindByPosition(position = 1)
   private String patientID;
-
-  @CsvBindByPosition(position = 2)
   private String doctorID;
-
-  @CsvDate("dd/MM/yyyy")
-  @CsvBindByPosition(position = 3)
   private LocalDate date;
-
-  @CsvBindByPosition(position = 4)
   private int session;
-
-  @CsvBindByPosition(position = 5)
   private String status;
 
   /** Default constructor required for OpenCSV to instantiate object. */

@@ -1,25 +1,13 @@
 package com.ntu.hns.model;
 
-import com.ntu.hns.util.MedicationItemListConverter;
-import com.opencsv.bean.CsvBindByPosition;
-import com.opencsv.bean.CsvCustomBindByPosition;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AppointmentOutcomeRecord {
-  @CsvBindByPosition(position = 0)
   private String appointmentID;
-
-  @CsvBindByPosition(position = 1)
   private String typeOfService;
-
-  @CsvBindByPosition(position = 2)
   private String consultationNotes;
-
-  @CsvCustomBindByPosition(position = 3, converter = MedicationItemListConverter.class)
   private List<MedicationItem> prescriptions;
-
-  @CsvBindByPosition(position = 4)
   private String prescriptionStatus;
 
   /** Default constructor required for OpenCSV to instantiate object. */
