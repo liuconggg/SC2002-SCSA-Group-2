@@ -23,6 +23,9 @@ import com.ntu.hns.util.ScannerWrapper;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
+/**
+ * The type Singleton factory.
+ */
 public class SingletonFactory {
   private static Environment environment;
   private static DateTimeFormatter dateTimeFormatter;
@@ -36,6 +39,11 @@ public class SingletonFactory {
   private static ScheduleManager scheduleManager;
   private static UserManager userManager;
 
+  /**
+   * Gets scanner wrapper.
+   *
+   * @return the scanner wrapper
+   */
   public static ScannerWrapper getScannerWrapper() {
     if (scannerWrapper == null) {
       scannerWrapper = new ScannerWrapper(new Scanner(System.in));
@@ -43,6 +51,11 @@ public class SingletonFactory {
     return scannerWrapper;
   }
 
+  /**
+   * Gets environment.
+   *
+   * @return the environment
+   */
   public static Environment getEnvironment() {
     if (environment == null) {
       environment = DEV;
@@ -50,6 +63,11 @@ public class SingletonFactory {
     return environment;
   }
 
+  /**
+   * Gets date time formatter.
+   *
+   * @return a singleton date time formatter
+   */
   public static DateTimeFormatter getDateTimeFormatter() {
     if (dateTimeFormatter == null) {
       dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -57,6 +75,11 @@ public class SingletonFactory {
     return dateTimeFormatter;
   }
 
+  /**
+   * Gets authentication service.
+   *
+   * @return a singleton authentication service
+   */
   public static AuthenticationService getAuthenticationService() {
     if (authenticationService == null) {
       authenticationService =
@@ -69,6 +92,11 @@ public class SingletonFactory {
     return authenticationService;
   }
 
+  /**
+   * Gets application manager.
+   *
+   * @return a singleton application manager
+   */
   public static ApplicationManager getApplicationManager() {
     if (applicationManager == null) {
       applicationManager =
@@ -82,6 +110,11 @@ public class SingletonFactory {
     return applicationManager;
   }
 
+  /**
+   * Gets appointment manager.
+   *
+   * @return a singleton appointment manager
+   */
   public static AppointmentManager getAppointmentManager() {
     if (appointmentManager == null) {
       appointmentManager =
@@ -93,6 +126,11 @@ public class SingletonFactory {
     return appointmentManager;
   }
 
+  /**
+   * Gets context manager.
+   *
+   * @return a singleton context manager
+   */
   public static ContextManager getContextManager() {
     if (contextManager == null) {
       contextManager = contextManagerBuilder().setScanner(getScannerWrapper()).build();
@@ -100,6 +138,11 @@ public class SingletonFactory {
     return contextManager;
   }
 
+  /**
+   * Gets inventory manager.
+   *
+   * @return a singleton inventory manager
+   */
   public static InventoryManager getInventoryManager() {
     if (inventoryManager == null) {
       inventoryManager = inventoryManagerBuilder().setScanner(getScannerWrapper()).build();
@@ -107,6 +150,11 @@ public class SingletonFactory {
     return inventoryManager;
   }
 
+  /**
+   * Gets medical record manager.
+   *
+   * @return a singleton medical record manager
+   */
   public static MedicalRecordManager getMedicalRecordManager() {
     if (medicalRecordManager == null) {
       medicalRecordManager = medicalRecordManagerBuilder().setScanner(getScannerWrapper()).build();
@@ -114,6 +162,11 @@ public class SingletonFactory {
     return medicalRecordManager;
   }
 
+  /**
+   * Gets schedule manager.
+   *
+   * @return a singleton schedule manager
+   */
   public static ScheduleManager getScheduleManager() {
     if (scheduleManager == null) {
       scheduleManager =
@@ -125,6 +178,11 @@ public class SingletonFactory {
     return scheduleManager;
   }
 
+  /**
+   * Gets user manager.
+   *
+   * @return a singleton user manager
+   */
   public static UserManager getUserManager() {
     if (userManager == null) {
       userManager = userManagerBuilder().setScanner(getScannerWrapper()).build();

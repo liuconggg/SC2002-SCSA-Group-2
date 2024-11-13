@@ -6,6 +6,9 @@ import com.ntu.hns.util.ScannerWrapper;
 import java.io.Console;
 import java.util.List;
 
+/**
+ * The type Authentication service.
+ */
 public class AuthenticationService {
   private static final String DEFAULT_PASSWORD = "password";
 
@@ -19,6 +22,11 @@ public class AuthenticationService {
     this.scanner = scanner;
   }
 
+  /**
+   * Authenticate user.
+   *
+   * @return the user
+   */
   public User authenticate() {
     if (environment == Environment.PROD) {
       if (console == null) {
@@ -84,34 +92,65 @@ public class AuthenticationService {
     }
   }
 
+  /**
+   * Authentication service builder authentication service builder.
+   *
+   * @return the authentication service builder
+   */
   public static AuthenticationServiceBuilder authenticationServiceBuilder() {
     return new AuthenticationServiceBuilder();
   }
 
+  /**
+   * The type Authentication service builder.
+   */
   public static class AuthenticationServiceBuilder {
     private Console console;
     private Environment environment;
     private ScannerWrapper scanner;
 
-    // Setter method for Console
+    /**
+     * Sets console.
+     *
+     * @param console the console
+     * @return the console
+     */
+// Setter method for Console
     public AuthenticationServiceBuilder setConsole(Console console) {
       this.console = console;
       return this; // Return the builder for chaining
     }
 
-    // Setter method for Environment
+    /**
+     * Sets environment.
+     *
+     * @param environment the environment
+     * @return the environment
+     */
+// Setter method for Environment
     public AuthenticationServiceBuilder setEnvironment(Environment environment) {
       this.environment = environment;
       return this; // Return the builder for chaining
     }
 
-    // Setter method for Scanner
+    /**
+     * Sets scanner.
+     *
+     * @param scanner the scanner
+     * @return the scanner
+     */
+// Setter method for Scanner
     public AuthenticationServiceBuilder setScanner(ScannerWrapper scanner) {
       this.scanner = scanner;
       return this; // Return the builder for chaining
     }
 
-    // Method to build an AuthenticationService instance
+    /**
+     * Build authentication service.
+     *
+     * @return the authentication service
+     */
+// Method to build an AuthenticationService instance
     public AuthenticationService build() {
       // Validation can be added here to ensure non-null fields if necessary
       if (environment == null || scanner == null) {

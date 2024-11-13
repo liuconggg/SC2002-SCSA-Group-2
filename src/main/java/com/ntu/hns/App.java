@@ -4,7 +4,13 @@ import static com.ntu.hns.factory.SingletonFactory.getApplicationManager;
 
 import com.ntu.hns.manager.application.ApplicationManager;
 
+/**
+ * The type App.
+ */
 public class App {
+  /**
+   * The constant sessionTimings.
+   */
   public static final String[] sessionTimings = {
     "09:00 - 10:00",
     "10:00 - 11:00",
@@ -19,11 +25,19 @@ public class App {
 
   private static ApplicationManager applicationManager;
 
+  /**
+   * The entry point of application.
+   *
+   * @param args the input arguments
+   */
   public static void main(String[] args) {
     applicationManager = getApplicationManager();
     applicationManager.start();
   }
 
+  /**
+   * Stop application.
+   */
   public static void stopApplication() {
     applicationManager.exit();
   }
