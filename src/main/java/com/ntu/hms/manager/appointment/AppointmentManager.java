@@ -314,15 +314,14 @@ public class AppointmentManager implements AppointmentManagerInterface {
     }
 
     // Update appointment details and mark the new session as "Pending" in
-    // com.ntu.hms.Schedule.csv
+    // Schedule.csv
     chosenAppointment.setDate(newAppointmentDate);
     chosenAppointment.setSession(newSessionNumber);
     if (chosenAppointment.getStatus().equalsIgnoreCase(CONFIRMED.name())) {
       chosenAppointment.setStatus(PENDING.name()); // Change confirmed to pending if rescheduled
     }
 
-    newSession[newSessionNumber - 1] =
-        patient.getHospitalID() + "-" + ScheduleStatus.PENDING.name();
+    newSession[newSessionNumber - 1] = patient.getHospitalID() + "-" + ScheduleStatus.PENDING.name();
     newScheduleForDate.setSession(newSession);
 
     // Save updated appointments and schedules to CSV files
