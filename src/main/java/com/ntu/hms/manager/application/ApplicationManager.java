@@ -4,6 +4,7 @@ import static com.ntu.hms.enums.Environment.DEV;
 import static com.ntu.hms.enums.Environment.PROD;
 import static com.ntu.hms.enums.UserAction.EXIT;
 import static com.ntu.hms.enums.UserAction.LOGIN;
+import static com.ntu.hms.factory.SingletonFactory.destroySingletons;
 
 import com.ntu.hms.AuthenticationService;
 import com.ntu.hms.enums.Environment;
@@ -79,7 +80,7 @@ public class ApplicationManager {
       scanner.close();
       System.exit(0);
     } else if (environment == DEV) {
-      scanner.close();
+      destroySingletons();
     }
   }
 

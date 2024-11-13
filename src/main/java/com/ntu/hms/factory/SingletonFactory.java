@@ -187,4 +187,18 @@ public class SingletonFactory {
     }
     return userManager;
   }
+
+  public static void destroySingletons() {
+    environment = null;
+    dateTimeFormatter = null;
+    scannerWrapper = null;
+    authenticationService = null;
+    applicationManager = null;
+    appointmentManager = null;
+    contextManager = null;
+    inventoryManager = null;
+    medicalRecordManager = null;
+    scheduleManager = null;
+    userManager = null;
+  }
 }

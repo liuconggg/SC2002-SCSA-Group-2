@@ -1,12 +1,23 @@
 package com.ntu.hms.patient;
 
-import static com.ntu.hms.TestManager.provideInput;
-import static com.ntu.hms.TestManager.startApplication;
+import static com.ntu.hms.TestManager.*;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class PatientActionsTest {
+
+  @BeforeEach
+  public void setUp() {
+    refreshCsvFiles();
+  }
+
+  @AfterEach
+  public void tearDown() {
+    stopApplication();
+  }
 
   /**
    * Test Case 1: View Medical Record
