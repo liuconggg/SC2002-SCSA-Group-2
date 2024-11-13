@@ -245,7 +245,6 @@ public class ContextManager implements ContextManagerInterface {
             System.out.print("Enter your choice: ");
 
             int subChoice = scanner.nextInt();
-            scanner.nextLine();
 
             switch (subChoice) {
               case 1:

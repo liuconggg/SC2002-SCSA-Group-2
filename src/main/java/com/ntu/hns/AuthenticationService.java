@@ -73,19 +73,37 @@ public class AuthenticationService {
 
   private void changePassword(User user, List<User> users) {
     System.out.println("=== Please change your password first! ===");
-    while (true) {
-      char[] newPasswordArray = console.readPassword("New Password: ");
-      String newPassword = new String(newPasswordArray);
-      char[] confirmPasswordArray = console.readPassword("Confirm New Password: ");
-      String confirmPassword = new String(confirmPasswordArray);
+    if (environment == Environment.PROD) {
+      while (true) {
+        char[] newPasswordArray = console.readPassword("New Password: ");
+        String newPassword = new String(newPasswordArray);
+        char[] confirmPasswordArray = console.readPassword("Confirm New Password: ");
+        String confirmPassword = new String(confirmPasswordArray);
 
-      if (newPassword.equals(confirmPassword)) {
-        user.setPassword(newPassword);
-        CsvDB.saveUsers(users);
-        System.out.println("Password changed successfully!");
-        break;
-      } else {
-        System.out.println("Passwords do not match. Please try again.\n");
+        if (newPassword.equals(confirmPassword)) {
+          user.setPassword(newPassword);
+          CsvDB.saveUsers(users);
+          System.out.println("Password changed successfully!");
+          break;
+        } else {
+          System.out.println("Passwords do not match. Please try again.\n");
+        }
+      }
+    } else if (environment == Environment.DEV) {
+      while (true) {
+        System.out.println("New Password: ");
+        String newPassword = scanner.nextLine();
+        System.out.println("Confirm New Password: ");
+        String confirmPassword = scanner.nextLine();
+
+        if (newPassword.equals(confirmPassword)) {
+          user.setPassword(newPassword);
+          CsvDB.saveUsers(users);
+          System.out.println("Password changed successfully!");
+          break;
+        } else {
+          System.out.println("Passwords do not match. Please try again.\n");
+        }
       }
     }
   }

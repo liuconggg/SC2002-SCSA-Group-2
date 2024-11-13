@@ -86,7 +86,7 @@ public class PatientActionsTest {
   @Test
   @DisplayName("Test Case 5: Reschedule an Appointment")
   public void testRescheduleAppointment() {
-    provideInput("login\nP0001\n123\n5\n1\n11/11/2024\n1\n");
+    provideInput("login\nP0001\n123\n5\n1\n11/11/2024\n1\n\n9\nexit\n");
     startApplication();
   }
 
@@ -102,7 +102,7 @@ public class PatientActionsTest {
   @Test
   @DisplayName("Test Case 6: Cancel an Appointment")
   public void testCancelAppointment() {
-    provideInput("login\nP0001\n123\n6\n1\n");
+    provideInput("login\nP0001\n123\n6\n1\n\n9\nexit\n");
     startApplication();
   }
 
