@@ -264,7 +264,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
               // Add pending appointment details to the list
               String appointmentDetail =
                   String.format(
-                      "Date: %s, Time: %s, com.ntu.hms.users.Patient: %s",
+                      "Date: %s, Time: %s, Patient: %s",
                       schedule.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                       sessionTimings[i],
                       scheduledPatient.getName());
@@ -353,7 +353,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
             System.out.println("\nInvalid input, please enter 'A' or 'D'.");
           }
 
-          CsvDB.saveSchedules(CsvDB.readSchedules());
+          CsvDB.saveSchedules(doctorSchedule);
 
         } else {
           System.out.println("\nInvalid choice. Please select a valid appointment number.");
@@ -455,7 +455,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
               }
 
               // Update CSV with the new status
-              CsvDB.saveSchedules(schedules);
+              CsvDB.saveSchedules(doctorSchedule);
               CsvDB.saveAppointments(appointments);
             } else {
               System.out.println(

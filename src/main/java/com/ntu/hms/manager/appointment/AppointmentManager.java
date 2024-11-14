@@ -325,7 +325,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
     newScheduleForDate.setSession(newSession);
 
     // Save updated appointments and schedules to CSV files
-    CsvDB.saveAppointments(appointments);
+    CsvDB.saveAppointments(reschedulableAppointments);
     CsvDB.saveSchedules(schedules);
 
     System.out.printf(
@@ -415,7 +415,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
       }
 
       // Save the changes
-      CsvDB.saveAppointments(appointments);
+      CsvDB.saveAppointments(cancellableAppointments);
       CsvDB.saveSchedules(schedules);
       System.out.printf(
           "Your appointment with Dr. %s on %s has been cancelled.\n",
