@@ -9,9 +9,9 @@ public interface ContextManagerInterface {
 
   void beginPatient(Patient patient);
 
-  void beginDoctor(Doctor patient);
+  void beginDoctor(Doctor doctor);
 
-  void beginPharmacist(Pharmacist patient);
+  void beginPharmacist(Pharmacist pharmacist);
 
-  void beginAdministrator(Administrator patient);
+  void beginAdministrator(Administrator administrator);
 }
