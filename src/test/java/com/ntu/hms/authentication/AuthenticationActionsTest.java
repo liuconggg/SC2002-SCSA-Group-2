@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class AuthenticationActionsTest {
 
   /**
-   * Test first time login and password change.
+   * Test first-time login and password change.
    * This test case simulates a user's first-time login and subsequent password change.
    */
   @Test
