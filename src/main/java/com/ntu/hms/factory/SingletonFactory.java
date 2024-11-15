@@ -23,7 +23,11 @@ import com.ntu.hms.util.ScannerWrapper;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-/** The type Singleton factory. */
+/**
+ * The SingletonFactory class is responsible for providing singleton instances
+ * of various managers and services used throughout the application. This class
+ * ensures that only one instance of each component is created and shared.
+ */
 public class SingletonFactory {
   private static Environment environment;
   private static DateTimeFormatter dateTimeFormatter;
@@ -38,9 +42,10 @@ public class SingletonFactory {
   private static UserManager userManager;
 
   /**
-   * Gets scanner wrapper.
+   * Returns a singleton instance of ScannerWrapper. If the instance does not already exist,
+   * it initializes a new ScannerWrapper with a Scanner that reads from the standard input.
    *
-   * @return the scanner wrapper
+   * @return a singleton ScannerWrapper instance
    */
   public static ScannerWrapper getScannerWrapper() {
     if (scannerWrapper == null) {
@@ -50,9 +55,10 @@ public class SingletonFactory {
   }
 
   /**
-   * Gets environment.
+   * Returns the current environment setting. If the environment has not been explicitly set,
+   * it defaults to the DEV environment.
    *
-   * @return the environment
+   * @return the current environment setting
    */
   public static Environment getEnvironment() {
     if (environment == null) {
@@ -62,9 +68,10 @@ public class SingletonFactory {
   }
 
   /**
-   * Gets date time formatter.
+   * Returns a singleton instance of DateTimeFormatter. If the instance does not already exist,
+   * it initializes a new DateTimeFormatter with the pattern "dd/MM/yyyy".
    *
-   * @return a singleton date time formatter
+   * @return a singleton DateTimeFormatter instance
    */
   public static DateTimeFormatter getDateTimeFormatter() {
     if (dateTimeFormatter == null) {
@@ -74,9 +81,11 @@ public class SingletonFactory {
   }
 
   /**
-   * Gets authentication service.
+   * Returns a singleton instance of AuthenticationService. If the instance
+   * does not already exist, it initializes a new AuthenticationService with a
+   * console, environment, and scanner.
    *
-   * @return a singleton authentication service
+   * @return a singleton AuthenticationService instance
    */
   public static AuthenticationService getAuthenticationService() {
     if (authenticationService == null) {
@@ -91,9 +100,10 @@ public class SingletonFactory {
   }
 
   /**
-   * Gets application manager.
+   * Returns a singleton instance of ApplicationManager. If the instance does not already exist,
+   * it initializes a new ApplicationManager by setting the necessary services and context.
    *
-   * @return a singleton application manager
+   * @return a singleton ApplicationManager instance
    */
   public static ApplicationManager getApplicationManager() {
     if (applicationManager == null) {
@@ -109,9 +119,10 @@ public class SingletonFactory {
   }
 
   /**
-   * Gets appointment manager.
+   * Returns a singleton instance of AppointmentManager. If the instance does not already exist,
+   * it initializes a new AppointmentManager using the builder pattern, setting up necessary components.
    *
-   * @return a singleton appointment manager
+   * @return a singleton AppointmentManager instance
    */
   public static AppointmentManager getAppointmentManager() {
     if (appointmentManager == null) {
@@ -125,9 +136,10 @@ public class SingletonFactory {
   }
 
   /**
-   * Gets context manager.
+   * Returns a singleton instance of ContextManager. If the instance does not already exist,
+   * it initializes a new ContextManager using the context manager builder pattern.
    *
-   * @return a singleton context manager
+   * @return a singleton ContextManager instance
    */
   public static ContextManager getContextManager() {
     if (contextManager == null) {
@@ -137,9 +149,11 @@ public class SingletonFactory {
   }
 
   /**
-   * Gets inventory manager.
+   * Returns a singleton instance of InventoryManager. If the instance does not already
+   * exist, it initializes a new InventoryManager using the InventoryManagerBuilder,
+   * setting the scanner obtained from getScannerWrapper.
    *
-   * @return a singleton inventory manager
+   * @return a singleton InventoryManager instance
    */
   public static InventoryManager getInventoryManager() {
     if (inventoryManager == null) {
@@ -149,9 +163,11 @@ public class SingletonFactory {
   }
 
   /**
-   * Gets medical record manager.
+   * Returns a singleton instance of MedicalRecordManager. If the instance does not
+   * already exist, it initializes a new MedicalRecordManager using the
+   * MedicalRecordManagerBuilder, setting the scanner obtained from getScannerWrapper().
    *
-   * @return a singleton medical record manager
+   * @return a singleton MedicalRecordManager instance
    */
   public static MedicalRecordManager getMedicalRecordManager() {
     if (medicalRecordManager == null) {
@@ -161,9 +177,11 @@ public class SingletonFactory {
   }
 
   /**
-   * Gets schedule manager.
+   * Returns a singleton instance of ScheduleManager. If the instance does not already exist,
+   * it initializes a new ScheduleManager using the builder pattern, setting the necessary
+   * DateTimeFormatter and ScannerWrapper.
    *
-   * @return a singleton schedule manager
+   * @return a singleton ScheduleManager instance
    */
   public static ScheduleManager getScheduleManager() {
     if (scheduleManager == null) {
@@ -177,9 +195,11 @@ public class SingletonFactory {
   }
 
   /**
-   * Gets user manager.
+   * Returns a singleton instance of UserManager. If the instance does not already
+   * exist, it initializes a new UserManager using the UserManagerBuilder and sets
+   * the Scanner obtained from getScannerWrapper.
    *
-   * @return a singleton user manager
+   * @return a singleton UserManager instance
    */
   public static UserManager getUserManager() {
     if (userManager == null) {
@@ -188,6 +208,14 @@ public class SingletonFactory {
     return userManager;
   }
 
+  /**
+   * Resets all singleton instances managed by the SingletonFactory to null.
+   * This method sets each singleton instance field in the SingletonFactory to null,
+   * effectively destroying the current instances and forcing reinitialization when they are next requested.
+   *
+   * This can be useful in scenarios where it is necessary to reset the state of the application,
+   * particularly in development or testing environments where objects need to be reinitialized.
+   */
   public static void destroySingletons() {
     environment = null;
     dateTimeFormatter = null;
