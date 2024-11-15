@@ -4,9 +4,14 @@ import static com.ntu.hms.factory.SingletonFactory.getApplicationManager;
 
 import com.ntu.hms.manager.application.ApplicationManager;
 
-/** The type App. */
+/**
+ * The App class serves as the main entry point for the hospital management system application.
+ */
 public class App {
-  /** The constant sessionTimings. */
+  /**
+   * Defines the time slots for sessions during the hospital's operational hours.
+   * Each element in the array represents a one-hour session, starting from 09:00 and ending at 17:00.
+   */
   public static final String[] sessionTimings = {
     "09:00 - 10:00",
     "10:00 - 11:00",
@@ -18,19 +23,29 @@ public class App {
     "16:00 - 17:00"
   };
 
+  /**
+   * Singleton instance of ApplicationManager responsible for managing the overall application lifecycle.
+   */
   private static ApplicationManager applicationManager;
 
   /**
-   * The entry point of application.
+   * The main method serves as the entry point for starting the hospital management system application.
    *
-   * @param args the input arguments
+   * @param args command-line arguments passed to the application
    */
   public static void main(String[] args) {
     applicationManager = getApplicationManager();
     applicationManager.start();
   }
 
-  /** Stop application. */
+  /**
+   * Terminates the application by invoking the exit method of the ApplicationManager.
+   * <p>
+   * This method ensures that all application resources are properly disposed of and
+   * the runtime environment is appropriately shut down. Depending on the environment
+   * (PROD or DEV), the application will either close all open scanners and exit,
+   * or simply destroy singleton instances.
+   */
   public static void stopApplication() {
     applicationManager.exit();
   }

@@ -25,6 +25,12 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+/**
+ * The CsvDB class provides methods for reading and writing data to and from various CSV files.
+ * The class includes methods for handling different entities such as Users, Patients, Doctors,
+ * Pharmacists, Administrators, Appointments, Treatments, Diagnoses, Schedules, Medications,
+ * AppointmentOutcomeRecords, and ReplenishmentRequests.
+ */
 public class CsvDB {
   private static final String CSV_DELIMITER = ",";
 
@@ -58,6 +64,13 @@ public class CsvDB {
       "csvdb/AppointmentOutcomeRecord.csv";
   private static final String REPLENISHMENT_REQUEST_CSV_PATH = "csvdb/ReplenishmentRequest.csv";
 
+  /**
+   * Creates a Path instance from the specified path string.
+   *
+   * @param pathString the path string, typically a relative path to a resource.
+   * @return a Path instance corresponding to the provided path string.
+   * @throws RuntimeException if the URI syntax is incorrect.
+   */
   private static Path createPath(String pathString) {
     try {
       return Paths.get(ClassLoader.getSystemResource(pathString).toURI());
@@ -66,6 +79,15 @@ public class CsvDB {
     }
   }
 
+  /**
+   * Reads a CSV file from the given path and maps each line to an instance of the specified class.
+   *
+   * @param <T> the type of the class to which each line of the CSV should be mapped
+   * @param csvPath the path to the CSV file
+   * @param clazz the class type to which each line of the CSV should be mapped
+   * @return a list of instances of the specified class, where each instance represents a line in the CSV, excluding the header
+   * @throws RuntimeException if the specified CSV file cannot be read
+   */
   private static <T> List<T> readCsv(String csvPath, Class<T> clazz) {
     ClassLoader classLoader = CsvDB.class.getClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream(csvPath);
@@ -83,6 +105,16 @@ public class CsvDB {
     }
   }
 
+  /**
+   * Maps a CSV line to an instance of the specified class type by parsing the values and assigning
+   * them to the fields of the newly created instance.
+   *
+   * @param <T> the type of the class to be instantiated
+   * @param line the CSV line containing the data
+   * @param clazz the class type to which the CSV line should be mapped
+   * @return an instance of the specified class type, populated with data from the CSV line,
+   *         or null if an error occurs during instantiation or data mapping
+   */
   private static <T> T mapToInstance(String line, Class<T> clazz) {
     try {
       // Create an instance of T using reflection
@@ -154,6 +186,12 @@ public class CsvDB {
     }
   }
 
+  /**
+   * Retrieves all fields marked as CSV fields from the specified class and its superclasses.
+   *
+   * @param clazz the class from which to retrieve CSV fields
+   * @return an array of Fields that are designated as CSV fields
+   */
   private static Field[] getCsvFields(Class<?> clazz) {
     List<Field> fields = new ArrayList<>();
     while (clazz != null) {
@@ -168,6 +206,12 @@ public class CsvDB {
     return fields.toArray(new Field[0]);
   }
 
+  /**
+   * Retrieves all fields that are not marked as CSV fields from the specified class and its superclasses.
+   *
+   * @param clazz the class from which to retrieve non-CSV fields
+   * @return an array of Fields that are not designated as CSV fields
+   */
   private static Field[] getNonCsvFields(Class<?> clazz) {
     List<Field> fields = new ArrayList<>();
     while (clazz != null) {
@@ -182,6 +226,12 @@ public class CsvDB {
     return fields.toArray(new Field[0]);
   }
 
+  /**
+   * Determines if a given field is a CSV-compatible field.
+   *
+   * @param field the field to be checked
+   * @return true if the field is compatible with CSV processing, false otherwise
+   */
   private static boolean isCsvField(Field field) {
     return !field.getType().equals(AppointmentManager.class)
         && !field.getType().equals(InventoryManager.class)
@@ -191,6 +241,13 @@ public class CsvDB {
         && !field.getType().equals(ScannerWrapper.class);
   }
 
+  /**
+   * Parses a CSV formatted string containing medication data into a list of MedicationItem objects.
+   *
+   * @param medicationData the CSV string containing medication data, where each medication entry is separated by a semicolon (;) and fields within each entry are separated by a colon
+   *  (:)
+   * @return a list of MedicationItem objects parsed from the CSV string
+   */
   // Helper method to parse a CSV value into a list of Medication objects
   private static List<MedicationItem> parseMedicationItems(String medicationData) {
     List<MedicationItem> medicationItems = new ArrayList<>();
@@ -215,6 +272,11 @@ public class CsvDB {
     return medicationItems;
   }
 
+  /**
+   * Reads and aggregates users from various sources (patients, doctors, pharmacists, and administrators).
+   *
+   * @return a list of all users, including patients, doctors, pharmacists, and administrators.
+   */
   public static List<User> readUsers() {
     List<Patient> patients = readPatients();
     List<Doctor> doctors = readDoctors();
@@ -226,55 +288,118 @@ public class CsvDB {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Reads and parses the patient data from the specified CSV file.
+   *
+   * @return a list of Patient instances populated with the data from the CSV file.
+   */
   public static List<Patient> readPatients() {
     return readCsv(PATIENT_CSV_PATH, Patient.class);
   }
 
+  /**
+   * Reads and parses the doctor data from the specified CSV file.
+   *
+   * @return a list of Doctor instances populated with the data from the CSV file.
+   */
   public static List<Doctor> readDoctors() {
     return readCsv(DOCTOR_CSV_PATH, Doctor.class);
   }
 
+  /**
+   * Reads and parses the pharmacist data from the specified CSV file.
+   *
+   * @return a list of Pharmacist instances populated with the data from the CSV file.
+   */
   public static List<Pharmacist> readPharmacists() {
     return readCsv(PHARMACIST_CSV_PATH, Pharmacist.class);
   }
 
+  /**
+   * Reads and parses the administrator data from the specified CSV file.
+   *
+   * @return a list of Administrator instances populated with the data from the CSV file.
+   */
   public static List<Administrator> readAdministrators() {
     return readCsv(ADMINISTRATOR_CSV_PATH, Administrator.class);
   }
 
+  /**
+   * Reads and parses the appointment data from the specified CSV file.
+   *
+   * @return a list of Appointment instances populated with the data from the CSV file.
+   */
   // Appointment.csv file
   public static List<Appointment> readAppointments() {
     return readCsv(APPOINTMENT_CSV_PATH, Appointment.class);
   }
 
+  /**
+   * Reads and parses the treatment data from the specified CSV file.
+   *
+   * @return a list of Treatment instances populated with the data from the CSV file.
+   */
   public static List<Treatment> readTreatments() {
     return readCsv(TREATMENT_CSV_PATH, Treatment.class);
   }
 
+  /**
+   * Reads and parses the replenishment request data from the specified CSV file.
+   *
+   * @return a list of ReplenishmentRequest instances populated with the data from the CSV file.
+   */
   // ReplenishmentRequest.csv file
   public static List<ReplenishmentRequest> readReplenishmentRequests() {
     return readCsv(REPLENISHMENT_REQUEST_CSV_PATH, ReplenishmentRequest.class);
   }
 
+  /**
+   * Reads and parses the diagnosis data from the specified CSV file.
+   *
+   * @return a list of Diagnosis instances populated with the data from the CSV file.
+   */
   public static List<Diagnosis> readDiagnoses() {
     return readCsv(DIAGNOSIS_CSV_PATH, Diagnosis.class);
   }
 
+  /**
+   * Reads and parses the schedule data from the specified CSV file.
+   *
+   * @return a list of Schedule instances populated with the data from the CSV file.
+   */
   // Read Schedule.csv file
   public static List<Schedule> readSchedules() {
     return readCsv(SCHEDULE_CSV_PATH, Schedule.class);
   }
 
+  /**
+   * Reads and parses medication data from the specified CSV file.
+   *
+   * @return a list of Medication instances populated with the data from the CSV file.
+   */
   // Read Medication.csv file
   public static List<Medication> readMedications() {
     return readCsv(MEDICATION_CSV_PATH, Medication.class);
   }
 
+  /**
+   * Reads and parses the appointment outcome data from the specified CSV file.
+   *
+   * @return a list of AppointmentOutcomeRecord instances populated with the data from the CSV file.
+   */
   // Read AppointmentOutcomeRecord.csv file
   public static List<AppointmentOutcomeRecord> readAppointmentOutcomeRecords() {
     return readCsv(APPOINTMENT_OUTCOME_RECORD_CSV_PATH, AppointmentOutcomeRecord.class);
   }
 
+  /**
+   * Writes a list of objects to a CSV file.
+   *
+   * @param <T>        the type of objects in the modelList
+   * @param csvPathString the path to the CSV file as a string
+   * @param header     the header row for the CSV file
+   * @param modelList  the list of objects to write to the CSV file
+   */
   private static <T> void writeCsv(String csvPathString, String header, List<T> modelList) {
     Path csvPath = Paths.get("target", "classes", csvPathString);
 
@@ -346,6 +471,14 @@ public class CsvDB {
     }
   }
 
+  /**
+   * Saves a list of users by categorizing them into their respective roles
+   * (Patient, Doctor, Pharmacist, Administrator) and then saving each
+   * category separately.
+   *
+   * @param users the list of users to be saved, where users can be of types
+   *              Patient, Doctor, Pharmacist, or Administrator.
+   */
   public static void saveUsers(List<User> users) {
     List<Patient> patients = new ArrayList<>();
     List<Doctor> doctors = new ArrayList<>();
@@ -368,42 +501,93 @@ public class CsvDB {
     saveAdministrators(administrators);
   }
 
+  /**
+   * Saves a list of treatments to a CSV file by writing them to the specified
+   * path with the appropriate CSV header.
+   *
+   * @param treatments the list of Treatment objects to be saved
+   */
   public static void saveTreatment(List<Treatment> treatments) {
     writeCsv(TREATMENT_CSV_PATH, TREATMENT_HEADER, treatments);
   }
 
+  /**
+   * Saves a list of Diagnosis objects to a CSV file by writing them to the specified path with the appropriate CSV header.
+   *
+   * @param diagnoses the list of Diagnosis objects to be saved
+   */
   public static void saveDiagnosis(List<Diagnosis> diagnoses) {
     writeCsv(DIAGNOSIS_CSV_PATH, DIAGNOSIS_HEADER, diagnoses);
   }
 
+  /**
+   * Saves a list of Appointment objects to a CSV file.
+   *
+   * @param appointments the list of Appointment objects to be saved
+   */
   public static void saveAppointments(List<Appointment> appointments) {
     writeCsv(APPOINTMENT_CSV_PATH, APPOINTMENT_HEADER, appointments);
   }
 
+  /**
+   * Saves a list of Medication objects to a CSV file.
+   *
+   * @param medications the list of Medication objects to be saved
+   */
   public static void saveMedications(List<Medication> medications) {
     writeCsv(MEDICATION_CSV_PATH, MEDICATION_HEADER, medications);
   }
 
+  /**
+   * Saves a list of Patient objects to a CSV file using the specified path and header.
+   *
+   * @param patients the list of Patient objects to be saved
+   */
   public static void savePatients(List<Patient> patients) {
     writeCsv(PATIENT_CSV_PATH, PATIENT_HEADER, patients);
   }
 
+  /**
+   * Saves a list of Doctor objects to a CSV file using the specified path and header.
+   *
+   * @param doctors the list of Doctor objects to be saved
+   */
   public static void saveDoctors(List<Doctor> doctors) {
     writeCsv(DOCTOR_CSV_PATH, DOCTOR_HEADER, doctors);
   }
 
+  /**
+   * Saves a list of pharmacists to a CSV file.
+   *
+   * @param pharmacists a list of Pharmacist objects to be saved.
+   */
   public static void savePharmacists(List<Pharmacist> pharmacists) {
     writeCsv(PHARMACIST_CSV_PATH, PHARMACIST_HEADER, pharmacists);
   }
 
+  /**
+   * Saves a list of Administrator objects to a CSV file.
+   *
+   * @param administrators the list of Administrator objects to be saved to the CSV file
+   */
   public static void saveAdministrators(List<Administrator> administrators) {
     writeCsv(ADMINISTRATOR_CSV_PATH, ADMINISTRATOR_HEADER, administrators);
   }
 
+  /**
+   * Saves a list of schedules to a CSV file.
+   *
+   * @param schedules the list of schedules to be saved
+   */
   public static void saveSchedules(List<Schedule> schedules) {
     writeCsv(SCHEDULE_CSV_PATH, SCHEDULE_HEADER, schedules);
   }
 
+  /**
+   * Saves the given list of appointment outcome records to a CSV file.
+   *
+   * @param appointmentOutcomeRecords the list of appointment outcome records to be saved.
+   */
   public static void saveAppointmentOutcomeRecords(
       List<AppointmentOutcomeRecord> appointmentOutcomeRecords) {
     writeCsv(
@@ -412,6 +596,11 @@ public class CsvDB {
         appointmentOutcomeRecords);
   }
 
+  /**
+   * Saves a list of replenishment requests to a CSV file.
+   *
+   * @param replenishmentRequests the list of ReplenishmentRequest objects to be saved
+   */
   public static void saveReplenishmentRequests(List<ReplenishmentRequest> replenishmentRequests) {
     writeCsv(REPLENISHMENT_REQUEST_CSV_PATH, REPLENISHMENT_REQUEST_HEADER, replenishmentRequests);
   }

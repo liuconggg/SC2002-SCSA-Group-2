@@ -6,7 +6,12 @@ import com.ntu.hms.util.ScannerWrapper;
 import java.io.Console;
 import java.util.List;
 
-/** The type Authentication service. */
+/**
+ * The AuthenticationService class provides user authentication functionalities.
+ * This service supports both production and development environments.
+ * Users in production environment are authenticated via the console,
+ * while in development environment, a scanner is used.
+ */
 public class AuthenticationService {
   private static final String DEFAULT_PASSWORD = "password";
 
@@ -14,6 +19,14 @@ public class AuthenticationService {
   private final Environment environment;
   private final ScannerWrapper scanner;
 
+  /**
+   * Constructs a new AuthenticationService instance with the given console, environment,
+   * and scanner.
+   *
+   * @param console the console to be used for input and output
+   * @param environment the environment context (PROD or DEV) in which the service operates
+   * @param scanner the scanner wrapper for input operations
+   */
   private AuthenticationService(Console console, Environment environment, ScannerWrapper scanner) {
     this.console = console;
     this.environment = environment;
@@ -21,9 +34,11 @@ public class AuthenticationService {
   }
 
   /**
-   * Authenticate user.
+   * Authenticates a user by prompting for their Hospital ID and password.
+   * The method behavior changes based on the environment context: PROD or DEV.
+   * If the user's password matches the default password, they will be prompted to change it.
    *
-   * @return the user
+   * @return the authenticated User object if authentication succeeds; otherwise null
    */
   public User authenticate() {
     if (environment == Environment.PROD) {
@@ -71,6 +86,13 @@ public class AuthenticationService {
     return null;
   }
 
+  /**
+   * Prompts the user to change their password and updates it if the new password and confirmation match.
+   * The method behavior changes based on the environment context: PROD or DEV.
+   *
+   * @param user The User object whose password needs to be changed.
+   * @param users A list of User objects, which will be saved to the database after the password change.
+   */
   private void changePassword(User user, List<User> users) {
     System.out.println("=== Please change your password first! ===");
     if (environment == Environment.PROD) {
@@ -109,25 +131,27 @@ public class AuthenticationService {
   }
 
   /**
-   * Authentication service builder authentication service builder.
+   * Provides a builder for constructing instances of AuthenticationService.
    *
-   * @return the authentication service builder
+   * @return a new instance of the AuthenticationServiceBuilder
    */
   public static AuthenticationServiceBuilder authenticationServiceBuilder() {
     return new AuthenticationServiceBuilder();
   }
 
-  /** The type Authentication service builder. */
+  /**
+   * Builder for constructing instances of AuthenticationService.
+   */
   public static class AuthenticationServiceBuilder {
     private Console console;
     private Environment environment;
     private ScannerWrapper scanner;
 
     /**
-     * Sets console.
+     * Sets the Console instance to be used by the AuthenticationServiceBuilder.
      *
-     * @param console the console
-     * @return the console
+     * @param console the Console instance to be set
+     * @return the current instance of AuthenticationServiceBuilder for method chaining
      */
     // Setter method for Console
     public AuthenticationServiceBuilder setConsole(Console console) {
@@ -136,10 +160,10 @@ public class AuthenticationService {
     }
 
     /**
-     * Sets environment.
+     * Sets the Environment instance to be used by the AuthenticationServiceBuilder.
      *
-     * @param environment the environment
-     * @return the environment
+     * @param environment the Environment instance to be set
+     * @return the current instance of AuthenticationServiceBuilder for method chaining
      */
     // Setter method for Environment
     public AuthenticationServiceBuilder setEnvironment(Environment environment) {
@@ -148,10 +172,10 @@ public class AuthenticationService {
     }
 
     /**
-     * Sets scanner.
+     * Sets the ScannerWrapper instance to be used by the AuthenticationServiceBuilder.
      *
-     * @param scanner the scanner
-     * @return the scanner
+     * @param scanner the ScannerWrapper instance to be set
+     * @return the current instance of AuthenticationServiceBuilder for method chaining
      */
     // Setter method for Scanner
     public AuthenticationServiceBuilder setScanner(ScannerWrapper scanner) {
@@ -160,9 +184,11 @@ public class AuthenticationService {
     }
 
     /**
-     * Build authentication service.
+     * Builds and returns an instance of AuthenticationService.
+     * Ensures that the required fields (Environment and Scanner) are not null.
      *
-     * @return the authentication service
+     * @return an instance of AuthenticationService
+     * @throws IllegalArgumentException if Environment or Scanner are null
      */
     // Method to build an AuthenticationService instance
     public AuthenticationService build() {
