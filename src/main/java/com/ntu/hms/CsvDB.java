@@ -309,6 +309,8 @@ public class CsvDB {
                                     csvValue = Integer.toString((int) value);
                                   } else if (value instanceof LocalDate) {
                                     csvValue = ((LocalDate) value).format(getDateTimeFormatter());
+                                  } else if (value instanceof Boolean) {
+                                    csvValue = Boolean.toString((boolean) value);
                                   } else if (value instanceof List) {
                                     List<?> list = (List<?>) value;
                                     if (!list.isEmpty() && list.get(0) instanceof MedicationItem) {
