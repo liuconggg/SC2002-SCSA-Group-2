@@ -1,6 +1,6 @@
 Pharmacist ID,Password,Name,Age,Gender
-PH0001,123,Pharmacist 1,25,Male
-PH0002,123,Pharmacist 2,35,Female
-PH0003,password,Pharmacist 3,60,Male
-PH0004,password,Pharmacist 4,59,Female
-PH0005,password,Pharmacist 5,40,Male
+PH0001,123,Zerith,25,Male
+PH0002,123,Calindra,35,Female
+PH0003,password,Rhydian,60,Male
+PH0004,password,Serelith,59,Female
+PH0005,password,Vaelric,40,Male

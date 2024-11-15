@@ -15,8 +15,7 @@ public class App {
     "13:00 - 14:00",
     "14:00 - 15:00",
     "15:00 - 16:00",
-    "16:00 - 17:00",
-    "17:00 - 18:00"
+    "16:00 - 17:00"
   };
 
   private static ApplicationManager applicationManager;

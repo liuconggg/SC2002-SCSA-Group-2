@@ -176,13 +176,13 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
     // Filter to show only pending or confirmed appointments
     List<Appointment> reschedulableAppointments =
-        getAppointmentsForPatient(patient.getHospitalID())
-            .stream()
-            .filter(
-                appointment ->
-                    appointment.getStatus().equalsIgnoreCase(PENDING.name())
-                        || appointment.getStatus().equalsIgnoreCase(CONFIRMED.name()))
-            .collect(Collectors.toList());
+            getAppointmentsForPatient(patient.getHospitalID())
+                    .stream()
+                    .filter(
+                            appointment ->
+                                    appointment.getStatus().equalsIgnoreCase(PENDING.name())
+                                            || appointment.getStatus().equalsIgnoreCase(CONFIRMED.name()))
+                    .collect(Collectors.toList());
 
     // Check if there are any appointments to reschedule
     if (reschedulableAppointments.isEmpty()) {
@@ -197,12 +197,12 @@ public class AppointmentManager implements AppointmentManagerInterface {
       Doctor doctor = getDoctorById(appt.getDoctorID());
       if (doctor != null) {
         System.out.printf(
-            "%d. Appointment with Dr. %s on %s at %s - Status: %s\n",
-            ++apptCounter,
-            doctor.getName(),
-            appt.getDate().format(dateFormatter),
-            sessionTimings[appt.getSession() - 1],
-            appt.getStatus());
+                "%d. Appointment with Dr. %s on %s at %s - Status: %s\n",
+                ++apptCounter,
+                doctor.getName(),
+                appt.getDate().format(dateFormatter),
+                sessionTimings[appt.getSession() - 1],
+                appt.getStatus());
       }
     }
 
@@ -250,30 +250,27 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
     // Find or create schedule for the new date
     Optional<Schedule> optionalSchedule =
-        schedules
-            .stream()
-            .filter(schedule -> schedule.getDoctorID().equals(selectedDoctor.getHospitalID()))
-            .filter(schedule -> schedule.getDate().equals(newAppointmentDate))
-            .findFirst();
+            schedules
+                    .stream()
+                    .filter(schedule -> schedule.getDoctorID().equals(selectedDoctor.getHospitalID()))
+                    .filter(schedule -> schedule.getDate().equals(newAppointmentDate))
+                    .findFirst();
     Schedule newScheduleForDate =
-        optionalSchedule.orElseGet(
-            () ->
-                optionalSchedule.orElseGet(
+            optionalSchedule.orElseGet(
                     () -> {
                       Schedule schedule =
-                          createDefaultSchedule(selectedDoctor.getHospitalID(), newAppointmentDate);
+                              createDefaultSchedule(selectedDoctor.getHospitalID(), newAppointmentDate);
                       schedules.add(schedule);
-
                       return schedule;
-                    }));
+                    });
 
     // Display available sessions for new date
     System.out.println(
-        "\nAvailable sessions for Dr. "
-            + selectedDoctor.getName()
-            + " on "
-            + newAppointmentDate.format(dateFormatter)
-            + ":");
+            "\nAvailable sessions for Dr. "
+                    + selectedDoctor.getName()
+                    + " on "
+                    + newAppointmentDate.format(dateFormatter)
+                    + ":");
     String[] newSession = newScheduleForDate.getSession();
     boolean hasAvailableSession = false;
     for (int i = 0; i < newSession.length; i++) {
@@ -291,10 +288,11 @@ public class AppointmentManager implements AppointmentManagerInterface {
     // Select a new session
     System.out.print("Select a session number for the new date: ");
     int newSessionNumber = scanner.nextInt();
+    scanner.nextLine(); // consume newline character
 
     if (newSessionNumber < 1
-        || newSessionNumber > newSession.length
-        || !newSession[newSessionNumber - 1].equals("Available")) {
+            || newSessionNumber > newSession.length
+            || !newSession[newSessionNumber - 1].equals("Available")) {
       System.out.println("Invalid session selection or session not available.");
       return;
     }
@@ -305,7 +303,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
     int oldSessionNumber = chosenAppointment.getSession();
     for (Schedule schedule : schedules) {
       if (schedule.getDoctorID().equals(doctorID)
-          && schedule.getDate().equals(oldAppointmentDate)) {
+              && schedule.getDate().equals(oldAppointmentDate)) {
         String[] oldSessionSlots = schedule.getSession();
         oldSessionSlots[oldSessionNumber - 1] = "Available";
         schedule.setSession(oldSessionSlots);
@@ -313,8 +311,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
       }
     }
 
-    // Update appointment details and mark the new session as "Pending" in
-    // Schedule.csv
+    // Update appointment details and mark the new session as "Pending"
     chosenAppointment.setDate(newAppointmentDate);
     chosenAppointment.setSession(newSessionNumber);
     if (chosenAppointment.getStatus().equalsIgnoreCase(CONFIRMED.name())) {
@@ -324,14 +321,23 @@ public class AppointmentManager implements AppointmentManagerInterface {
     newSession[newSessionNumber - 1] = patient.getHospitalID() + "-" + ScheduleStatus.PENDING.name();
     newScheduleForDate.setSession(newSession);
 
+    // Update the original appointments list with the chosen appointment's new details
+    for (int i = 0; i < appointments.size(); i++) {
+      if (appointments.get(i).getAppointmentID().equals(chosenAppointment.getAppointmentID())) {
+        appointments.set(i, chosenAppointment);
+        break;
+      }
+    }
+
     // Save updated appointments and schedules to CSV files
-    CsvDB.saveAppointments(reschedulableAppointments);
+    CsvDB.saveAppointments(appointments); // Save the full list of appointments
     CsvDB.saveSchedules(schedules);
 
     System.out.printf(
-        "Your appointment with Dr. %s has been rescheduled to %s, Session %d.\n",
-        selectedDoctor.getName(), newAppointmentDate.format(dateFormatter), newSessionNumber);
+            "Your appointment with Dr. %s has been rescheduled to %s, Session %d.\n",
+            selectedDoctor.getName(), newAppointmentDate.format(dateFormatter), newSessionNumber);
   }
+
 
   @Override
   public void cancelAppointment(Patient patient) {
@@ -414,8 +420,18 @@ public class AppointmentManager implements AppointmentManagerInterface {
         }
       }
 
+      chosenAppointment.setStatus(CANCELLED.name());
+
+// Update the original appointments list with the chosen appointment's new status
+      for (int i = 0; i < appointments.size(); i++) {
+        if (appointments.get(i).getAppointmentID().equals(chosenAppointment.getAppointmentID())) {
+          appointments.set(i, chosenAppointment);
+          break;
+        }
+      }
+
       // Save the changes
-      CsvDB.saveAppointments(cancellableAppointments);
+      CsvDB.saveAppointments(appointments);
       CsvDB.saveSchedules(schedules);
       System.out.printf(
           "Your appointment with Dr. %s on %s has been cancelled.\n",
@@ -860,12 +876,12 @@ public class AppointmentManager implements AppointmentManagerInterface {
             // saveAppointmentOutcomeRecords(apptOutcomeRecords);
             selectedAppointment.setStatus(AppointmentStatus.COMPLETED.name());
             System.out.println(
-                "\ncom.ntu.hms.Appointment outcome recorded successfully as 'Completed'.");
+                "\nAppointment outcome recorded successfully as 'Completed'.");
 
           } else if (outcome.equals("N")) {
             selectedAppointment.setStatus(AppointmentStatus.NO_SHOW.name());
             System.out.println(
-                "\ncom.ntu.hms.Appointment outcome recorded successfully as 'No-Show'.");
+                "\nAppointment outcome recorded successfully as 'No-Show'.");
           } else {
             System.out.println(
                 "\nInvalid input. Please enter either 'Y' for Completed or 'N' for No-Show.");

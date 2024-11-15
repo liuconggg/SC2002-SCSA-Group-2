@@ -345,10 +345,12 @@ public class ScheduleManager implements ScheduleManagerInterface {
             chosenSchedule.acceptAppointment(sessionIndex);
             updateAppointment(
                 appointments, chosenSchedule, sessionIndex, AppointmentStatus.CONFIRMED.name());
+            System.out.println("\nBooking has been accepted");
           } else if (decision == 'D') {
             chosenSchedule.declineAppointment(sessionIndex);
             updateAppointment(
                 appointments, chosenSchedule, sessionIndex, AppointmentStatus.CANCELLED.name());
+            System.out.println("\nBooking has been declined");
           } else {
             System.out.println("\nInvalid input, please enter 'A' or 'D'.");
           }
@@ -440,7 +442,7 @@ public class ScheduleManager implements ScheduleManagerInterface {
                         chosenSchedule, sessionChoice - 1, appointments);
                 selectedAcAppointment.setStatus(AppointmentStatus.CANCELLED.name());
                 System.out.printf(
-                    "\nPatient (?) pending booking has been declined. Session %d has been updated to Unavailable as it was pending.\n",
+                    "\nBooking has been declined. Session %d has been updated to Unavailable as it was pending.\n",
                     sessionChoice);
               } else if (currentStatus.equals("Available")) {
                 chosenSchedule.getSession()[sessionChoice - 1] = "Unavailable";
@@ -455,7 +457,15 @@ public class ScheduleManager implements ScheduleManagerInterface {
               }
 
               // Update CSV with the new status
-              CsvDB.saveSchedules(doctorSchedule);
+              for (int i = 0; i < schedules.size(); i++) {
+                Schedule currentSchedule = schedules.get(i);
+                if (currentSchedule.getDoctorID().equals(chosenSchedule.getDoctorID()) &&
+                        currentSchedule.getDate().equals(chosenSchedule.getDate())) {
+                  schedules.set(i, chosenSchedule);
+                  break;
+                }
+              }
+              CsvDB.saveSchedules(schedules);
               CsvDB.saveAppointments(appointments);
             } else {
               System.out.println(

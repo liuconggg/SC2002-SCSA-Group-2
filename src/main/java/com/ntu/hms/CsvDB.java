@@ -41,10 +41,9 @@ public class CsvDB {
       "Medication ID,Medication Name,Stock Status,Alert,Quantity";
   private static final String DIAGNOSIS_HEADER = "Appointment ID,Patient ID,Diagnosis";
   private static final String TREATMENT_HEADER = "Appointment ID,Patient ID,Treatment";
-  private static final String APPOINTMENT_OUTCOME_RECORD_HEADER =
-      "Request ID,Medication Batch,Status,Pharmacist ID";
-  private static final String REPLENISHMENT_REQUEST_HEADER =
-      "Appointment ID,Type of Service,Consultation Notes,Prescriptions,Prescription Status";
+  private static final String APPOINTMENT_OUTCOME_RECORD_HEADER = "Appointment ID,Type of Service,Consultation Notes,Prescriptions,Prescription Status";
+  private static final String REPLENISHMENT_REQUEST_HEADER = "Request ID,Medication Batch,Status,Pharmacist ID";
+
 
   private static final String PATIENT_CSV_PATH = "csvdb/Patient.csv";
   private static final String DOCTOR_CSV_PATH = "csvdb/Doctor.csv";

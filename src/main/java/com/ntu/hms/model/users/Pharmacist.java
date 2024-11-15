@@ -49,7 +49,7 @@ public class Pharmacist extends User implements PharmacistInterface {
       ArrayList<AppointmentOutcomeRecord> pendingRecords = new ArrayList<>();
       int index = 1;
       for (AppointmentOutcomeRecord record : appointmentOutcomeRecords) {
-        if (record.getPrescriptionStatus().equalsIgnoreCase(PENDING.name())) {
+        if (record.getPrescriptionStatus().equalsIgnoreCase(PENDING.name()) && record.getPrescriptions() != null && !record.getPrescriptions().isEmpty()){
           System.out.printf(
               "%d. Appointment ID: %s, Prescription: %s\n",
               index, record.getAppointmentID(), record.getPrescriptions());
