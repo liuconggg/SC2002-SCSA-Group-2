@@ -13,13 +13,28 @@ import com.ntu.hms.util.ScannerWrapper;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manages the medical records in the hospital management system.
+ * This class provides methods to display and update medical records
+ * of patients and doctors. Utilizes a ScannerWrapper instance for input handling.
+ */
 public class MedicalRecordManager implements MedicalRecordManagerInterface {
   private final ScannerWrapper scanner;
 
+  /**
+   * Constructs a new MedicalRecordManager with the specified ScannerWrapper.
+   *
+   * @param scanner the ScannerWrapper instance to be used for this manager
+   */
   private MedicalRecordManager(ScannerWrapper scanner) {
     this.scanner = scanner;
   }
 
+  /**
+   * Displays the medical record of a patient including personal details, diagnoses, treatments, and prescriptions.
+   *
+   * @param patient the patient whose medical record will be shown
+   */
   @Override
   public void showMedicalRecord(Patient patient) {
     System.out.println("\n==================== Medical Record ====================");
@@ -77,6 +92,11 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
     System.out.println("=======================================================");
   }
 
+  /**
+   * Displays the medical records of all patients under the care of a given doctor.
+   *
+   * @param doctor The doctor whose patients' medical records are to be displayed.
+   */
   @Override
   public void showMedicalRecord(Doctor doctor) {
     ArrayList<String> uniquePatientIds = new ArrayList<>();
@@ -210,6 +230,21 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
     }
   }
 
+  /**
+   * Updates a medical record based on user input through a series of interactive prompts.
+   *
+   * This method allows users to interactively select an appointment outcome and update
+   * its associated diagnosis, treatment, and prescriptions if applicable. The updates are
+   * noted by appending " - Updated:" to the current entries.
+   *
+   * - Users can select an appointment outcome from a list of records.
+   * - Users can update the diagnosis details for the selected appointment.
+   * - Users can update the treatment details for the selected appointment.
+   * - If the prescription status of the appointment is "PENDING," users are prompted to update its prescription details.
+   *
+   * The method reads data from various CSV sources, such as appointment outcomes, diagnoses, treatments, and medications.
+   * It then interacts with the user to make the necessary updates.
+   */
   @Override
   public void updateMedicalRecord() {
     List<AppointmentOutcomeRecord> appointmentOutcomeRecords =
@@ -466,21 +501,41 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
     }
   }
 
+  /**
+   * Provides a static method to access the builder for creating instances of MedicalRecordManager.
+   *
+   * @return a new instance of MedicalRecordManagerBuilder
+   */
   // Static method to access the builder
   public static MedicalRecordManagerBuilder medicalRecordManagerBuilder() {
     return new MedicalRecordManagerBuilder();
   }
 
+  /**
+   * Builder class for creating instances of MedicalRecordManager.
+   */
   // Static inner Builder class
   public static class MedicalRecordManagerBuilder {
     private ScannerWrapper scanner;
 
+    /**
+     * Sets the ScannerWrapper instance for the MedicalRecordManagerBuilder.
+     *
+     * @param scanner the ScannerWrapper instance to be set
+     * @return the MedicalRecordManagerBuilder instance for method chaining
+     */
     // Setter method for ScannerWrapper
     public MedicalRecordManagerBuilder setScanner(ScannerWrapper scanner) {
       this.scanner = scanner;
       return this; // Return the builder for chaining
     }
 
+    /**
+     * Builds and returns an instance of MedicalRecordManager.
+     *
+     * @return a new instance of MedicalRecordManager
+     * @throws IllegalArgumentException if the ScannerWrapper is null
+     */
     // Method to build a MedicalRecordManager instance
     public MedicalRecordManager build() {
       // Validation to ensure required fields are set

@@ -23,15 +23,32 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * The AppointmentManager class is responsible for managing patient appointments.
+ * It includes methods for scheduling, rescheduling, and canceling appointments,
+ * as well as displaying appointment outcomes.
+ */
 public class AppointmentManager implements AppointmentManagerInterface {
   private final DateTimeFormatter dateFormatter;
   private final ScannerWrapper scanner;
 
+  /**
+   * Constructs an AppointmentManager with the specified DateTimeFormatter and ScannerWrapper.
+   *
+   * @param dateTimeFormatter the DateTimeFormatter to be used for formatting dates.
+   * @param scanner the ScannerWrapper to be used for reading user input.
+   */
   private AppointmentManager(DateTimeFormatter dateTimeFormatter, ScannerWrapper scanner) {
     this.dateFormatter = dateTimeFormatter;
     this.scanner = scanner;
   }
 
+  /**
+   * Schedules an appointment for a patient by allowing the patient to select a doctor,
+   * choose an available date, and book a session.
+   *
+   * @param patient The patient for whom the appointment is being scheduled.
+   */
   @Override
   public void scheduleAppointment(Patient patient) {
     // Display the available doctors to the user
@@ -168,6 +185,12 @@ public class AppointmentManager implements AppointmentManagerInterface {
         sessionNumber);
   }
 
+  /**
+   * Reschedules an existing appointment for a patient. The patient can choose from a list of
+   * their pending or confirmed appointments and select a new date and session for the appointment.
+   *
+   * @param patient The patient for whom the appointment is being rescheduled.
+   */
   @Override
   public void rescheduleAppointment(Patient patient) {
     List<Doctor> doctors = CsvDB.readDoctors();
@@ -339,6 +362,11 @@ public class AppointmentManager implements AppointmentManagerInterface {
   }
 
 
+  /**
+   * Cancels a patient's appointment by allowing the patient to select from their pending or confirmed appointments.
+   *
+   * @param patient The patient for whom the appointment is being cancelled.
+   */
   @Override
   public void cancelAppointment(Patient patient) {
     List<Appointment> appointments = CsvDB.readAppointments();
@@ -441,6 +469,11 @@ public class AppointmentManager implements AppointmentManagerInterface {
     }
   }
 
+  /**
+   * Displays the outcomes of the completed appointments for the given patient.
+   *
+   * @param patient The patient whose appointment outcomes are to be shown.
+   */
   @Override
   public void showAppointmentOutcome(Patient patient) {
     // Filter to show only the patient's completed appointments
@@ -523,6 +556,15 @@ public class AppointmentManager implements AppointmentManagerInterface {
     }
   }
 
+  /**
+   * Displays the outcomes of all completed appointments.
+   *
+   * This method reads appointment outcome records from a CSV database,
+   * and prints to the console each appointment's ID and prescription status.
+   * For each appointment, it lists the prescribed medications if available,
+   * including the medication ID, name, and quantity. If no prescriptions are
+   * available, it indicates that there are none.
+   */
   @Override
   public void showAppointmentOutcome() {
     List<AppointmentOutcomeRecord> appointmentOutcomeRecords =
@@ -548,6 +590,14 @@ public class AppointmentManager implements AppointmentManagerInterface {
     }
   }
 
+  /**
+   * Displays the user's chosen type of appointments.
+   *
+   * This method prompts the user for the type of appointments they wish to view
+   * from a set of predefined categories: Completed, Cancelled, Pending, No Show,
+   * and View All. Based on the user's input, it filters appointments from the database and
+   * displays them accordingly. If the input is invalid or empty, it returns to the main menu.
+   */
   public void showAppointment() {
     // Prompt the user for the type of appointment they want to view
     System.out.println("\nWhat type of appointments would you like to view?");
@@ -602,6 +652,15 @@ public class AppointmentManager implements AppointmentManagerInterface {
     }
   }
 
+  /**
+   * Displays the scheduled appointments for a specific patient.
+   *
+   * This method filters the confirmed and pending appointments for the specified patient
+   * and prints the details of each appointment. If no appointments are found, a message
+   * is displayed indicating that no scheduled appointments exist.
+   *
+   * @param patient The patient whose scheduled appointments are to be shown.
+   */
   @Override
   public void showScheduledAppointments(Patient patient) {
     // Filter confirmed appointments for this patient
@@ -636,6 +695,16 @@ public class AppointmentManager implements AppointmentManagerInterface {
     }
   }
 
+  /**
+   * Displays the upcoming confirmed appointments for a given doctor.
+   *
+   * This method retrieves the doctor's schedule, filters out past dates,
+   * and prints the upcoming confirmed appointments, organized by dates.
+   * If no upcoming confirmed appointments are found, it displays a message
+   * indicating the absence of such appointments.
+   *
+   * @param doctor The doctor for whom the upcoming appointments are to be shown.
+   */
   @Override
   public void showUpcomingAppointments(Doctor doctor) {
     List<Patient> patients = CsvDB.readPatients();
@@ -695,6 +764,14 @@ public class AppointmentManager implements AppointmentManagerInterface {
     scanner.nextLine(); // Wait for the user to press Enter
   }
 
+  /**
+   * Updates the outcome for a doctor's appointment, allowing the doctor to record whether
+   * the appointment was completed or a no-show, add consultation notes, prescribe medications,
+   * and save these records to the database.
+   *
+   * @param doctor The doctor who is updating the appointment outcome.
+   * Contains the hospital ID needed to filter the appointments.
+   */
   @Override
   public void updateAppointmentOutcome(Doctor doctor) {
     List<Appointment> appointments = CsvDB.readAppointments();
@@ -899,6 +976,12 @@ public class AppointmentManager implements AppointmentManagerInterface {
     }
   }
 
+  /**
+   * Retrieves the list of appointments for a specified patient.
+   *
+   * @param patientID The ID of the patient whose appointments are to be fetched.
+   * @return A list of appointments that belong to the specified patient.
+   */
   public List<Appointment> getAppointmentsForPatient(String patientID) {
     return CsvDB.readAppointments()
         .stream()
@@ -906,6 +989,14 @@ public class AppointmentManager implements AppointmentManagerInterface {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Updates the status of an appointment for a given schedule and session index.
+   *
+   * @param appts The list of appointments to be updated.
+   * @param chosenSchedule The schedule for which the appointment is to be updated.
+   * @param sessionIndex The session index within the chosen schedule.
+   * @param status The new status to be set for the appointment.
+   */
   public static void updateAppointment(
       List<Appointment> appts, Schedule chosenSchedule, int sessionIndex, String status) {
     Appointment selectedAcAppointment =
@@ -920,6 +1011,17 @@ public class AppointmentManager implements AppointmentManagerInterface {
     CsvDB.saveAppointments(appts);
   }
 
+  /**
+   * Filters and displays appointments based on their status.
+   *
+   * This method filters appointments by the given status and prints the
+   * appointment details. If the status is "Completed", it also retrieves and
+   * displays the relevant appointment outcome records. If no appointments
+   * are found with the specified status, a corresponding message is displayed.
+   *
+   * @param appointments the list of all appointments to be filtered and displayed
+   * @param status the status by which to filter the appointments (e.g., "Completed", "Pending")
+   */
   // Modified Method to filter and display appointments based on their status
   private void filterAndDisplayAppointments(List<Appointment> appointments, String status) {
     boolean found = false;
@@ -977,6 +1079,14 @@ public class AppointmentManager implements AppointmentManagerInterface {
     }
   }
 
+  /**
+   * Displays all appointments from the provided list.
+   * If the list is empty, a message indicating no appointments will be shown.
+   * Otherwise, it prints the details of each appointment including appointment ID,
+   * patient ID, doctor ID, date, session, and status.
+   *
+   * @param appointments the list of appointments to be displayed
+   */
   // Method to display all appointments
   private void displayAllAppointments(List<Appointment> appointments) {
     if (appointments.isEmpty()) {
@@ -1006,27 +1116,54 @@ public class AppointmentManager implements AppointmentManagerInterface {
     return null;
   }
 
+  /**
+   * Creates a new instance of AppointmentManagerBuilder, which is used to construct
+   * AppointmentManager instances with specified configurations.
+   *
+   * @return a new AppointmentManagerBuilder instance for building AppointmentManager objects.
+   */
   public static AppointmentManagerBuilder appointmentManagerBuilder() {
     return new AppointmentManagerBuilder();
   }
 
+  /**
+   * Builder class to construct instances of `AppointmentManager`.
+   */
   // Static inner Builder class
   public static class AppointmentManagerBuilder {
     private DateTimeFormatter dateTimeFormatter;
     private ScannerWrapper scanner;
 
+    /**
+     * Sets the DateTimeFormatter to be used by the AppointmentManager.
+     *
+     * @param dateTimeFormatter the DateTimeFormatter to be set
+     * @return the current instance of AppointmentManagerBuilder for method chaining
+     */
     // Setter method for DateTimeFormatter
     public AppointmentManagerBuilder setDateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
       this.dateTimeFormatter = dateTimeFormatter;
       return this; // Return the builder for chaining
     }
 
+    /**
+     * Sets the ScannerWrapper instance to be used by the AppointmentManagerBuilder.
+     *
+     * @param scanner the ScannerWrapper instance used for reading input
+     * @return the current AppointmentManagerBuilder instance for chaining
+     */
     // Setter method for ScannerWrapper
     public AppointmentManagerBuilder setScanner(ScannerWrapper scanner) {
       this.scanner = scanner;
       return this; // Return the builder for chaining
     }
 
+    /**
+     * Constructs and returns a new instance of AppointmentManager.
+     *
+     * @return a new instance of AppointmentManager configured with the current state of the builder
+     * @throws IllegalArgumentException if dateTimeFormatter or scanner is null
+     */
     // Method to build an AppointmentManager instance
     public AppointmentManager build() {
       // Add validation to ensure non-null fields if necessary

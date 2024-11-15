@@ -18,15 +18,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/**
+ * ScheduleManager class for managing and displaying schedules in a healthcare system.
+ * This class manages the scheduling, availability, and updates for doctors.
+ * It provides functionalities to show weekly schedules, update schedules, and set doctor availability.
+ * The class uses a DateTimeFormatter for date formatting and a ScannerWrapper for reading inputs.
+ */
 public class ScheduleManager implements ScheduleManagerInterface {
   private final DateTimeFormatter dateFormatter;
   private final ScannerWrapper scanner;
 
+  /**
+   * Constructs a ScheduleManager with the specified DateTimeFormatter and ScannerWrapper.
+   *
+   * @param dateTimeFormatter the DateTimeFormatter to be used for formatting dates
+   * @param scanner the ScannerWrapper for reading input
+   */
   private ScheduleManager(DateTimeFormatter dateTimeFormatter, ScannerWrapper scanner) {
     this.dateFormatter = dateTimeFormatter;
     this.scanner = scanner;
   }
 
+  /**
+   * Displays the weekly schedule for a selected doctor.
+   *
+   * This method outputs the list of doctors fetched from the database and prompts the user to select a doctor
+   * and specify the number of weeks in advance they wish to view the schedule for. Based on the selection,
+   * it displays the available sessions for the specified number of weeks, skipping weekends.
+   *
+   * Steps:
+   * 1. Reads the list of doctors and schedules from the database.
+   * 2. Displays the list of available doctors to the user.
+   * 3. Prompts the user to select a doctor and the number of weeks in advance they want to view.
+   * 4. Displays the available sessions for the selected doctor within the specified date range.
+   *
+   * Edge Cases:
+   * - If the input selection is empty, returns to the main menu.
+   * - If the input selection is invalid, outputs an appropriate message.
+   * - If the weekday does not have a specific schedule, all sessions are considered available.
+   *
+   * Note: This method assumes all sessions are available if a specific date is not found in the doctor's schedule.
+   */
   @Override
   public void showWeeklySchedule() {
     List<Doctor> doctors = CsvDB.readDoctors();
@@ -135,6 +167,15 @@ public class ScheduleManager implements ScheduleManagerInterface {
     }
   }
 
+  /**
+   * Displays the weekly schedule for a specified doctor.
+   *
+   * This method prompts the user to input the number of weeks they want to view in advance,
+   * and shows the doctor's schedule for the specified period, excluding weekends.
+   * It displays available, pending, and booked sessions for the doctor.
+   *
+   * @param doctor The doctor whose schedule is to be displayed.
+   */
   @Override
   public void showWeeklySchedule(Doctor doctor) {
     System.out.print(
@@ -236,6 +277,15 @@ public class ScheduleManager implements ScheduleManagerInterface {
     scanner.nextLine(); // Wait for the user to press Enter
   }
 
+  /**
+   * Updates the schedule of a specified doctor by processing pending appointments.
+   *
+   * This method retrieves the current pending appointments for the given doctor and
+   * allows to accept or decline them. It ensures that appointments from past dates
+   * are skipped and only valid upcoming appointments are presented for action.
+   *
+   * @param doctor The doctor whose schedule is to be updated.
+   */
   @Override
   public void updateSchedule(Doctor doctor) {
     boolean exit = false;
@@ -366,6 +416,16 @@ public class ScheduleManager implements ScheduleManagerInterface {
     }
   }
 
+  /**
+   * Sets the availability of the doctor's schedule by allowing modifications to their session statuses.
+   *
+   * This method prompts the user to input a date for which they want to modify the availability,
+   * displays the current status of each session for that date, and allows the user to
+   * update the session statuses to either "Available" or "Unavailable". It ensures the schedule
+   * and appointments are subsequently saved to the database.
+   *
+   * @param doctor The doctor whose schedule availability is being set.
+   */
   @Override
   public void setAvailability(Doctor doctor) {
     List<Schedule> schedules = CsvDB.readSchedules();
@@ -481,27 +541,61 @@ public class ScheduleManager implements ScheduleManagerInterface {
     }
   }
 
+  /**
+   * Initializes and returns a builder for creating instances of ScheduleManager.
+   *
+   * The ScheduleManagerBuilder allows for the setting of required components such as
+   * DateTimeFormatter and ScannerWrapper, ensuring these are properly configured before
+   * building a ScheduleManager instance.
+   *
+   * @return a new instance of ScheduleManagerBuilder for building ScheduleManager objects
+   */
   public static ScheduleManagerBuilder scheduleManagerBuilder() {
     return new ScheduleManagerBuilder();
   }
 
+  /**
+   * Builder class for creating instances of ScheduleManager.
+   *
+   * Supports method chaining to set various properties needed for ScheduleManager construction.
+   */
   // Static inner Builder class
   public static class ScheduleManagerBuilder {
     private DateTimeFormatter dateTimeFormatter;
     private ScannerWrapper scanner;
 
+    /**
+     * Setter method for DateTimeFormatter.
+     *
+     * @param dateTimeFormatter the DateTimeFormatter to be used
+     * @return the ScheduleManagerBuilder instance for chaining
+     */
     // Setter method for DateTimeFormatter
     public ScheduleManagerBuilder setDateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
       this.dateTimeFormatter = dateTimeFormatter;
       return this; // Return the builder for chaining
     }
 
+    /**
+     * Setter method for ScannerWrapper.
+     *
+     * @param scanner the ScannerWrapper to be used
+     * @return the ScheduleManagerBuilder instance for chaining
+     */
     // Setter method for ScannerWrapper
     public ScheduleManagerBuilder setScanner(ScannerWrapper scanner) {
       this.scanner = scanner;
       return this; // Return the builder for chaining
     }
 
+    /**
+     * Builds and returns an instance of ScheduleManager.
+     *
+     * Validates that all required fields are set before creating the ScheduleManager instance.
+     *
+     * @return a new instance of ScheduleManager configured with the provided DateTimeFormatter and ScannerWrapper.
+     * @throws IllegalArgumentException if any required fields are not set.
+     */
     // Method to build a ScheduleManager instance
     public ScheduleManager build() {
       // Add validation to ensure required fields are set
