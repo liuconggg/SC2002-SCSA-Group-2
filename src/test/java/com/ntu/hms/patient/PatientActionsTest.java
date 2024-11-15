@@ -7,27 +7,42 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+/**
+ * This class contains integration tests for the patient functionalities of the healthcare application.
+ * It uses JUnit to test various actions that a patient can perform in the system.
+ */
 public class PatientActionsTest {
 
+  /**
+   * Sets up the test environment before each test execution.
+   * Invokes the refreshCsvFiles method to prepare CSV files for testing.
+   */
   @BeforeEach
   public void setUp() {
     refreshCsvFiles();
   }
 
+  /**
+   * Cleans up the environment after each test execution.
+   * Invokes the stopApplication method to stop the application.
+   */
   @AfterEach
   public void tearDown() {
     stopApplication();
   }
 
   /**
-   * Test Case 1: View Medical Record
+   * Tests the functionality for a patient to view their medical record.
    *
+   * Scenario:
    * <ul>
-   *   <li>Patients view their own medical record.
-   *   <li>Verify that the system displays the patient's medical record, including Patient ID, Name,
-   *       Date of Birth, Gender, Contact Information, Blood Type, and Past Diagnoses and
-   *       Treatments.
+   *   <li>The patient logs in to the system.
+   *   <li>The patient navigates to their medical record section.
+   *   <li>The patient exits the system.
    * </ul>
+   *
+   * The test provides the sequence of inputs to simulate the user's actions
+   * and starts the application to validate the expected behavior.
    */
   @Test
   @DisplayName("Test Case 1: View Medical Record")

@@ -1,5 +1,9 @@
 package com.ntu.hms;
 
+/**
+ * The PrescribedMedication class represents medication that has been prescribed
+ * to a patient during an appointment.
+ */
 public class PrescribedMedication {
   private String appointmentID;
   private String medicationName;
