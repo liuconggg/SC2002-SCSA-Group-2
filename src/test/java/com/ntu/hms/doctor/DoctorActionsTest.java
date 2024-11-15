@@ -5,16 +5,20 @@ import static com.ntu.hms.TestManager.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+/**
+ * The type Doctor actions test.
+ * This class contains test cases for various actions that can be performed by a doctor,
+ * including viewing and updating patient medical records, managing appointments,
+ * and viewing personal schedules.
+ */
 public class DoctorActionsTest {
 
   /**
-   * Test Case 9: View Patient Medical Records
+   * Test Case 9: View Patient Medical Records.
    *
-   * <ul>
-   *   <li>Doctor views medical records of patients under their care.
-   *   <li>Verify that the patient's medical record is displayed, including all relevant medical
+   *   Doctor views medical records of patients under their care.
+   *   Verify that the patient's medical record is displayed, including all relevant medical
    *       history.
-   * </ul>
    */
   @Test
   @DisplayName("Test Case 9: View Patient Medical Record")
@@ -24,12 +28,10 @@ public class DoctorActionsTest {
   }
 
   /**
-   * Test Case 10: Update Patient Medical Records
+   * Test Case 10: Update Patient Medical Records.
    *
-   * <ul>
-   *   <li>Doctor adds a new diagnosis and treatment plan to a patient's medical record.
-   *   <li>Verify that the medical record is updated successfully, reflecting the new information.
-   * </ul>
+   *   Doctor adds a new diagnosis and treatment plan to a patient's medical record.
+   *   Verify that the medical record is updated successfully, reflecting the new information.
    */
   @Test
   @DisplayName("Test Case 10: Update Patient Medical Records")
@@ -39,13 +41,11 @@ public class DoctorActionsTest {
   }
 
   /**
-   * Test Case 11: View Personal Schedule
+   * Test Case 11: View Personal Schedule.
    *
-   * <ul>
-   *   <li>Doctor views their personal appointment schedule.
-   *   <li>Verify that the system displays the doctor's upcoming appointments and availability
+   *   Doctor views their personal appointment schedule.
+   *   Verify that the system displays the doctor's upcoming appointments and availability
    *       slots.
-   * </ul>
    */
   @Test
   @DisplayName("Test Case 11: View Personal Schedule")
@@ -55,64 +55,12 @@ public class DoctorActionsTest {
   }
 
   /**
-   * Test Case 12: Set Availability for Appointments
+   * Test Case 12: Set Availability for Appointments.
    *
-   * <ul>
-   *   <li>Doctor sets or updates their availability for patient appointments.
-   *   <li>Verify that the doctor's availability is updated, and patients can see the new slots when
+   *   Doctor sets or updates their availability for patient appointments.
+   *   Verify that the doctor's availability is updated, and patients can see the new slots when
    *       scheduling appointments.
-   * </ul>
    */
   @Test
   @DisplayName("Test Case 12: Set Availability for Appointments")
-  public void testSetAvailability() {
-    provideInput("login\nD0001\n123\n4\n07/11/2024\n1\n\n\n8\nexit\n");
-    startApplication();
-  }
-
-  /**
-   * Test Case 13: Accept or Decline Appointment Requests
-   *
-   * <ul>
-   *   <li>Doctor accepts or declines an appointment request from a patient.
-   *   <li>Verify that the appointment status changes to "confirmed" when accepted or “cancelled”
-   *       when declined , and the patient is able to see the updated status of the appointment.
-   * </ul>
-   */
-  @Test
-  @DisplayName("Test Case 13: Accept or Decline Appointment Requests")
-  public void testAcceptOrDeclineAppointmentRequests() {
-    provideInput("login\nD0001\n123\n5\n8\nexit\n");
-    startApplication();
-  }
-
-  /**
-   * Test Case 14: View Upcoming Appointments
-   *
-   * <ul>
-   *   <li>Doctor views all upcoming confirmed appointments.
-   *   <li>Verify that the system displays a list of all upcoming appointments with patient details
-   *       and appointment times.
-   */
-  @Test
-  @DisplayName("Test Case 14: View Upcoming Appointments")
-  public void testViewUpcomingAppointments() {
-    provideInput("login\nD0001\n123\n6\n\n8\nexit\n");
-    startApplication();
-  }
-
-  /**
-   * Test Case 15: Record Appointment Outcome
-   *
-   * <ul>
-   *   <li>Doctor records the outcome of a completed appointment.
-   *   <li>Verify that the appointment outcome is recorded, and relevant updates are visible to the
-   *       patient under “View Past Appointment Outcome Records”.
-   */
-  @Test
-  @DisplayName("Test Case 15: Record Appointment Outcome")
-  public void testRecordAppointmentOutcome() {
-    provideInput("login\nD0001\n123\n7\n8\nexit\n");
-    startApplication();
-  }
-}
+  public void testSetAvailability()

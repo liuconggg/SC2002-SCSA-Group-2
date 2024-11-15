@@ -5,16 +5,18 @@ import static com.ntu.hms.TestManager.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+/**
+ * The type Pharmacist actions test.
+ * This class contains test cases for various actions that can be performed by a pharmacist,
+ * including viewing appointment outcome records, updating prescription statuses,
+ * managing medication inventory, and submitting replenishment requests.
+ */
 public class PharmacistActionsTest {
 
   /**
-   * Test Case 16: View Appointment Outcome Record
-   *
-   * <ul>
-   *   <li>Pharmacist views appointment outcome records to process prescriptions.
-   *   <li>Verify that the system displays the appointment outcome details, including prescribed
-   *       medications.
-   * </ul>
+   * Test Case 16: View Appointment Outcome Record.
+   * Pharmacist views appointment outcome records to process prescriptions.
+   * Verify that the system displays the appointment outcome details, including prescribed medications.
    */
   @Test
   @DisplayName("Test Case 16: View Appointment Outcome Record")
@@ -24,13 +26,9 @@ public class PharmacistActionsTest {
   }
 
   /**
-   * Test Case 17: Update Prescription Status
-   *
-   * <ul>
-   *   <li>Pharmacist updates the status of a prescription to "dispensed."
-   *   <li>Verify that the prescription status is updated, and the change is reflected in the
-   *       patient's records.
-   * </ul>
+   * Test Case 17: Update Prescription Status.
+   * Pharmacist updates the status of a prescription to "dispensed."
+   * Verify that the prescription status is updated, and the change is reflected in the patient's records.
    */
   @Test
   @DisplayName("Test Case 17: Update Prescription Status")
@@ -40,12 +38,9 @@ public class PharmacistActionsTest {
   }
 
   /**
-   * Test Case 18: View Medication Inventory
-   *
-   * <ul>
-   *   <li>Pharmacist views the current medication inventory.
-   *   <li>Verify that the system displays a list of medications, including stock levels.
-   * </ul>
+   * Test Case 18: View Medication Inventory.
+   * Pharmacist views the current medication inventory.
+   * Verify that the system displays a list of medications, including stock levels.
    */
   @Test
   @DisplayName("Test Case 18: View Medication Inventory")
@@ -55,13 +50,9 @@ public class PharmacistActionsTest {
   }
 
   /**
-   * Test Case 19: Submit Replenishment Request
-   *
-   * <ul>
-   *   <li>Pharmacist submits a replenishment request for low-stock medications.
-   *   <li>Verify that the replenishment request is submitted successfully, pending approval from
-   *       the administrator.
-   * </ul>
+   * Test Case 19: Submit Replenishment Request.
+   * Pharmacist submits a replenishment request for low-stock medications.
+   * Verify that the replenishment request is submitted successfully, pending approval from the administrator.
    */
   @Test
   @DisplayName("Test Case 19: Submit Replenishment Request")

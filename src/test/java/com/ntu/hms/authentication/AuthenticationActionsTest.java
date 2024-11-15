@@ -6,8 +6,17 @@ import static com.ntu.hms.TestManager.startApplication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+/**
+ * The type Authentication actions test.
+ * This class contains test cases for authentication actions,
+ * such as first-time login and password changes, and login with incorrect credentials.
+ */
 public class AuthenticationActionsTest {
 
+  /**
+   * Test first time login and password change.
+   * This test case simulates a user's first-time login and subsequent password change.
+   */
   @Test
   @DisplayName("Test Case 25: First-Time Login and Password Change")
   public void testFirstTimeLoginAndPasswordChange() {
@@ -15,6 +24,10 @@ public class AuthenticationActionsTest {
     startApplication();
   }
 
+  /**
+   * Test login with incorrect credentials.
+   * This test case simulates a login attempt with incorrect credentials.
+   */
   @Test
   @DisplayName("Test Case 26: Login with Incorrect Credentials")
   public void testLoginWithIncorrectCredentials() {
