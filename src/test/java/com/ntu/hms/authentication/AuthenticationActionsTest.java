@@ -25,7 +25,7 @@ public class AuthenticationActionsTest {
 
   /**
    * Test login with incorrect credentials. This test case simulates a login attempt with incorrect
-   * credentials. testing
+   * credentials.
    */
   @Test
   @DisplayName("Test Case 26: Login with Incorrect Credentials")
