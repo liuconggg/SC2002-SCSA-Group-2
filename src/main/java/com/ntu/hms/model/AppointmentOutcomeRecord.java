@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents the outcome record of an appointment, including details such as the appointment ID, type of service, consultation notes, prescriptions, and prescription status.
+ * Represents the outcome record of an appointment, including details such as the appointment ID,
+ * type of service, consultation notes, prescriptions, and prescription status.
  */
 public class AppointmentOutcomeRecord {
   private String appointmentID;
@@ -13,9 +14,7 @@ public class AppointmentOutcomeRecord {
   private List<MedicationItem> prescriptions;
   private String prescriptionStatus;
 
-  /**
-   * Default constructor for creating an instance of AppointmentOutcomeRecord.
-   */
+  /** Default constructor for creating an instance of AppointmentOutcomeRecord. */
   public AppointmentOutcomeRecord() {}
 
   /**
@@ -104,9 +103,11 @@ public class AppointmentOutcomeRecord {
   }
 
   /**
-   * Converts the list of prescriptions into a single string representation, with each prescription on a new line.
+   * Converts the list of prescriptions into a single string representation, with each prescription
+   * on a new line.
    *
-   * @return a string representation of the prescriptions; returns "No prescriptions." if the prescriptions list is null or empty
+   * @return a string representation of the prescriptions; returns "No prescriptions." if the
+   *     prescriptions list is null or empty
    */
   public String getPrescriptionsAsString() {
     if (prescriptions == null || prescriptions.isEmpty()) {

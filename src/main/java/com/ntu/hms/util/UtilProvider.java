@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Utility class providing various methods to retrieve information about Patients, Doctors, and Appointments.
+ * Utility class providing various methods to retrieve information about Patients, Doctors, and
+ * Appointments.
  */
 public class UtilProvider {
 
@@ -59,7 +60,8 @@ public class UtilProvider {
    * Retrieves an AppointmentOutcomeRecord based on the provided appointment ID.
    *
    * @param appointmentID The ID of the appointment whose outcome record to retrieve.
-   * @return The AppointmentOutcomeRecord with the matching appointment ID, or null if no match is found.
+   * @return The AppointmentOutcomeRecord with the matching appointment ID, or null if no match is
+   *     found.
    */
   public static AppointmentOutcomeRecord getOutcomeByAppointmentID(String appointmentID) {
     return CsvDB.readAppointmentOutcomeRecords()

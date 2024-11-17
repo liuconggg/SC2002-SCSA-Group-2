@@ -8,14 +8,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * This class contains integration tests for the patient functionalities of the healthcare application.
- * It uses JUnit to test various actions that a patient can perform in the system.
+ * This class contains integration tests for the patient functionalities of the healthcare
+ * application. It uses JUnit to test various actions that a patient can perform in the system.
  */
 public class PatientActionsTest {
 
   /**
-   * Sets up the test environment before each test execution.
-   * Invokes the refreshCsvFiles method to prepare CSV files for testing.
+   * Sets up the test environment before each test execution. Invokes the refreshCsvFiles method to
+   * prepare CSV files for testing.
    */
   @BeforeEach
   public void setUp() {
@@ -23,8 +23,8 @@ public class PatientActionsTest {
   }
 
   /**
-   * Cleans up the environment after each test execution.
-   * Invokes the stopApplication method to stop the application.
+   * Cleans up the environment after each test execution. Invokes the stopApplication method to stop
+   * the application.
    */
   @AfterEach
   public void tearDown() {
@@ -34,15 +34,16 @@ public class PatientActionsTest {
   /**
    * Tests the functionality for a patient to view their medical record.
    *
-   * Scenario:
+   * <p>Scenario:
+   *
    * <ul>
    *   <li>The patient logs in to the system.
    *   <li>The patient navigates to their medical record section.
    *   <li>The patient exits the system.
    * </ul>
    *
-   * The test provides the sequence of inputs to simulate the user's actions
-   * and starts the application to validate the expected behavior.
+   * The test provides the sequence of inputs to simulate the user's actions and starts the
+   * application to validate the expected behavior.
    */
   @Test
   @DisplayName("Test Case 1: View Medical Record")

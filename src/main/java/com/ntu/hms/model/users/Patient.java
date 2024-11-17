@@ -11,9 +11,9 @@ import com.ntu.hms.util.ScannerWrapper;
 import java.util.*;
 
 /**
- * Represents a patient in the hospital management system. Inherits basic user attributes
- * such as hospital ID, password, name, age, and gender from the User class. This class
- * also implements the InfoUpdater interface to allow updating personal information.
+ * Represents a patient in the hospital management system. Inherits basic user attributes such as
+ * hospital ID, password, name, age, and gender from the User class. This class also implements the
+ * InfoUpdater interface to allow updating personal information.
  */
 public class Patient extends User implements InfoUpdater {
   private String dateOfBirth;
@@ -27,8 +27,8 @@ public class Patient extends User implements InfoUpdater {
   private ScheduleManager scheduleManager;
 
   /**
-   * Default constructor for the Patient class.
-   * This constructor initializes a new instance of the Patient class with default values.
+   * Default constructor for the Patient class. This constructor initializes a new instance of the
+   * Patient class with default values.
    */
   public Patient() {}
 
@@ -63,9 +63,8 @@ public class Patient extends User implements InfoUpdater {
   }
 
   /**
-   * Displays the menu options available to the patient.
-   * This method delegates the task of displaying the patient menu
-   * to the displayPatientMenu method, which includes options such as
+   * Displays the menu options available to the patient. This method delegates the task of
+   * displaying the patient menu to the displayPatientMenu method, which includes options such as
    * viewing medical records, updating personal information, and managing appointments.
    */
   public void displayMenu() {
@@ -147,14 +146,14 @@ public class Patient extends User implements InfoUpdater {
   /**
    * Updates the personal information of the patient.
    *
-   * This method prompts the user to choose between updating their phone number or email address,
+   * <p>This method prompts the user to choose between updating their phone number or email address,
    * and makes the corresponding changes after the user inputs the new information. It reads the
    * list of patients from a CSV database, updates the selected details, and saves the changes back
    * to the CSV file.
    *
-   * It loops through the options until the user decides to exit the update process.
+   * <p>It loops through the options until the user decides to exit the update process.
    *
-   * If the user inputs an invalid choice or non-numeric input, appropriate error messages will
+   * <p>If the user inputs an invalid choice or non-numeric input, appropriate error messages will
    * be displayed and the user will be prompted again.
    */
   @Override
@@ -214,8 +213,9 @@ public class Patient extends User implements InfoUpdater {
   /**
    * Displays the weekly schedule for the patient.
    *
-   * This method delegates the action of showing the weekly schedule to the scheduleManager,
-   * which handles the process of displaying the schedule based on the availability and appointments.
+   * <p>This method delegates the action of showing the weekly schedule to the scheduleManager,
+   * which handles the process of displaying the schedule based on the availability and
+   * appointments.
    */
   public void viewWeeklySchedule() {
     scheduleManager.showWeeklySchedule();
@@ -224,9 +224,8 @@ public class Patient extends User implements InfoUpdater {
   /**
    * Allows a patient to view their own medical record.
    *
-   * This method delegates the task of displaying the medical record to the
-   * medicalRecordManager, which handles the details of fetching and presenting
-   * the patient's medical information.
+   * <p>This method delegates the task of displaying the medical record to the medicalRecordManager,
+   * which handles the details of fetching and presenting the patient's medical information.
    */
   public void viewMedicalRecord() {
     medicalRecordManager.showMedicalRecord(this);
@@ -235,8 +234,8 @@ public class Patient extends User implements InfoUpdater {
   /**
    * Schedules an appointment for the patient.
    *
-   * This method delegates the task of scheduling an appointment to the appointmentManager.
-   * It utilizes the appointmentManager's capabilities to handle the details of booking an appointment,
+   * <p>This method delegates the task of scheduling an appointment to the appointmentManager. It
+   * utilizes the appointmentManager's capabilities to handle the details of booking an appointment,
    * such as checking availability and setting the appointment date.
    */
   public void scheduleAppointment() {
@@ -246,8 +245,8 @@ public class Patient extends User implements InfoUpdater {
   /**
    * Cancels an appointment for the patient.
    *
-   * This method delegates the task of cancelling an appointment to the appointmentManager.
-   * It calls the appointmentManager's cancelAppointment method, passing the current patient instance
+   * <p>This method delegates the task of cancelling an appointment to the appointmentManager. It
+   * calls the appointmentManager's cancelAppointment method, passing the current patient instance
    * as an argument. This includes checking which appointments are eligible for cancellation,
    * allowing the user to select an appointment to cancel, and updating the status of the chosen
    * appointment to "Cancelled".
@@ -259,9 +258,9 @@ public class Patient extends User implements InfoUpdater {
   /**
    * Reschedules an existing appointment for the patient.
    *
-   * This method delegates the task of rescheduling the appointment
-   * to the appointmentManager, which handles the details of finding
-   * a new available time slot and updating the appointment record.
+   * <p>This method delegates the task of rescheduling the appointment to the appointmentManager,
+   * which handles the details of finding a new available time slot and updating the appointment
+   * record.
    */
   public void rescheduleAppointment() {
     appointmentManager.rescheduleAppointment(this);
@@ -270,9 +269,9 @@ public class Patient extends User implements InfoUpdater {
   /**
    * Displays the scheduled appointments for the patient.
    *
-   * This method delegates the task of showing the list of scheduled appointments
-   * to the appointmentManager, which handles the retrieval and display of the
-   * appointments that are confirmed and not yet completed or canceled for the patient.
+   * <p>This method delegates the task of showing the list of scheduled appointments to the
+   * appointmentManager, which handles the retrieval and display of the appointments that are
+   * confirmed and not yet completed or canceled for the patient.
    */
   public void viewScheduledAppointments() {
     appointmentManager.showScheduledAppointments(this);
@@ -281,10 +280,10 @@ public class Patient extends User implements InfoUpdater {
   /**
    * Allows the patient to view the outcome of their completed appointments.
    *
-   * This method delegates the task of displaying the outcome of completed appointments
-   * to the appointmentManager. It involves fetching completed appointments for the patient
-   * and displaying the details of the selected appointment's outcome, including service type,
-   * consultation notes, and prescriptions.
+   * <p>This method delegates the task of displaying the outcome of completed appointments to the
+   * appointmentManager. It involves fetching completed appointments for the patient and displaying
+   * the details of the selected appointment's outcome, including service type, consultation notes,
+   * and prescriptions.
    */
   public void viewAppointmentOutcome() {
     appointmentManager.showAppointmentOutcome(this);

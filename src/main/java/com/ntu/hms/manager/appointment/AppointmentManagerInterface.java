@@ -4,9 +4,9 @@ import com.ntu.hms.model.users.Doctor;
 import com.ntu.hms.model.users.Patient;
 
 /**
- * Interface for managing patient appointments, including scheduling, rescheduling,
- * and cancellation. It also provides methods to display scheduled and upcoming appointments,
- * and to update and show appointment outcomes.
+ * Interface for managing patient appointments, including scheduling, rescheduling, and
+ * cancellation. It also provides methods to display scheduled and upcoming appointments, and to
+ * update and show appointment outcomes.
  */
 public interface AppointmentManagerInterface {
 

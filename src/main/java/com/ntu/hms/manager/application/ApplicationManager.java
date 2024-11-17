@@ -13,8 +13,8 @@ import com.ntu.hms.util.ScannerWrapper;
 
 /**
  * The ApplicationManager class is the core component that manages the application lifecycle
- * including user authentication, user context handling, menu interactions, and application exit.
- * It interacts with various services like AuthenticationService and ContextManager to ensure that
+ * including user authentication, user context handling, menu interactions, and application exit. It
+ * interacts with various services like AuthenticationService and ContextManager to ensure that
  * users can authenticate and perform their respective operations based on their roles.
  */
 public class ApplicationManager {
@@ -45,9 +45,9 @@ public class ApplicationManager {
   /**
    * Starts the main loop of the application, prompting the user to either log in or exit.
    *
-   * The method continuously asks the user for input to either log in or exit the application.
-   * If the user chooses to log in, the handleLogin method is invoked to manage the login process.
-   * If the user chooses to exit, the exit method is called, and the loop is terminated.
+   * <p>The method continuously asks the user for input to either log in or exit the application. If
+   * the user chooses to log in, the handleLogin method is invoked to manage the login process. If
+   * the user chooses to exit, the exit method is called, and the loop is terminated.
    */
   public void start() {
     while (true) {
@@ -64,10 +64,10 @@ public class ApplicationManager {
   /**
    * Manages the login process for the application.
    *
-   * This method is invoked as part of the main loop to handle user authentication.
-   * It uses the `authenticationService` to authenticate the user. If authentication
-   * succeeds, the user's context is managed via the `handleUserContext` method. If
-   * authentication fails, a message is printed, and the method returns.
+   * <p>This method is invoked as part of the main loop to handle user authentication. It uses the
+   * `authenticationService` to authenticate the user. If authentication succeeds, the user's
+   * context is managed via the `handleUserContext` method. If authentication fails, a message is
+   * printed, and the method returns.
    */
   private void handleLogin() {
     // Load all CSV data
@@ -84,10 +84,11 @@ public class ApplicationManager {
   }
 
   /**
-   * Prompts the user to enter either 'login' to proceed with login or 'exit' to terminate the application.
+   * Prompts the user to enter either 'login' to proceed with login or 'exit' to terminate the
+   * application.
    *
-   * This method displays the main menu message and reads an input line from the user through the scanner.
-   * The user's input is then returned for further processing.
+   * <p>This method displays the main menu message and reads an input line from the user through the
+   * scanner. The user's input is then returned for further processing.
    *
    * @return the user's input, either 'login' or 'exit'
    */
@@ -103,7 +104,8 @@ public class ApplicationManager {
   /**
    * Handles the context for different types of users (Patient, Doctor, Pharmacist, Administrator).
    *
-   * @param user the user whose context needs to be managed; the user can be an instance of Patient, Doctor, Pharmacist, or Administrator
+   * @param user the user whose context needs to be managed; the user can be an instance of Patient,
+   *     Doctor, Pharmacist, or Administrator
    */
   private void handleUserContext(User user) {
     if (user instanceof Patient) {
@@ -120,8 +122,8 @@ public class ApplicationManager {
   /**
    * Terminates the application based on the current environment.
    *
-   * In the production environment (PROD), it closes the scanner and exits the program.
-   * In the development environment (DEV), it destroys singleton instances.
+   * <p>In the production environment (PROD), it closes the scanner and exits the program. In the
+   * development environment (DEV), it destroys singleton instances.
    */
   public void exit() {
     if (environment == PROD) {

@@ -7,10 +7,9 @@ import java.io.Console;
 import java.util.List;
 
 /**
- * The AuthenticationService class provides user authentication functionalities.
- * This service supports both production and development environments.
- * Users in production environment are authenticated via the console,
- * while in development environment, a scanner is used.
+ * The AuthenticationService class provides user authentication functionalities. This service
+ * supports both production and development environments. Users in production environment are
+ * authenticated via the console, while in development environment, a scanner is used.
  */
 public class AuthenticationService {
   private static final String DEFAULT_PASSWORD = "password";
@@ -20,8 +19,8 @@ public class AuthenticationService {
   private final ScannerWrapper scanner;
 
   /**
-   * Constructs a new AuthenticationService instance with the given console, environment,
-   * and scanner.
+   * Constructs a new AuthenticationService instance with the given console, environment, and
+   * scanner.
    *
    * @param console the console to be used for input and output
    * @param environment the environment context (PROD or DEV) in which the service operates
@@ -34,9 +33,9 @@ public class AuthenticationService {
   }
 
   /**
-   * Authenticates a user by prompting for their Hospital ID and password.
-   * The method behavior changes based on the environment context: PROD or DEV.
-   * If the user's password matches the default password, they will be prompted to change it.
+   * Authenticates a user by prompting for their Hospital ID and password. The method behavior
+   * changes based on the environment context: PROD or DEV. If the user's password matches the
+   * default password, they will be prompted to change it.
    *
    * @return the authenticated User object if authentication succeeds; otherwise null
    */
@@ -87,11 +86,12 @@ public class AuthenticationService {
   }
 
   /**
-   * Prompts the user to change their password and updates it if the new password and confirmation match.
-   * The method behavior changes based on the environment context: PROD or DEV.
+   * Prompts the user to change their password and updates it if the new password and confirmation
+   * match. The method behavior changes based on the environment context: PROD or DEV.
    *
    * @param user The User object whose password needs to be changed.
-   * @param users A list of User objects, which will be saved to the database after the password change.
+   * @param users A list of User objects, which will be saved to the database after the password
+   *     change.
    */
   private void changePassword(User user, List<User> users) {
     System.out.println("=== Please change your password first! ===");
@@ -139,9 +139,7 @@ public class AuthenticationService {
     return new AuthenticationServiceBuilder();
   }
 
-  /**
-   * Builder for constructing instances of AuthenticationService.
-   */
+  /** Builder for constructing instances of AuthenticationService. */
   public static class AuthenticationServiceBuilder {
     private Console console;
     private Environment environment;
@@ -184,8 +182,8 @@ public class AuthenticationService {
     }
 
     /**
-     * Builds and returns an instance of AuthenticationService.
-     * Ensures that the required fields (Environment and Scanner) are not null.
+     * Builds and returns an instance of AuthenticationService. Ensures that the required fields
+     * (Environment and Scanner) are not null.
      *
      * @return an instance of AuthenticationService
      * @throws IllegalArgumentException if Environment or Scanner are null

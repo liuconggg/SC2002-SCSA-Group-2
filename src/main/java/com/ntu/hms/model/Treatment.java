@@ -1,21 +1,20 @@
 package com.ntu.hms.model;
 
-/**
- * Represents a treatment for a patient within a medical appointment system.
- */
+/** Represents a treatment for a patient within a medical appointment system. */
 public class Treatment {
   String appointmentID;
   String patientID;
   String treatment;
 
   /**
-   * Default constructor for the Treatment class.
-   * Initializes a new instance of the Treatment class without setting any fields.
+   * Default constructor for the Treatment class. Initializes a new instance of the Treatment class
+   * without setting any fields.
    */
   public Treatment() {}
 
   /**
-   * Constructs a new Treatment instance with the specified appointment ID, patient ID, and treatment.
+   * Constructs a new Treatment instance with the specified appointment ID, patient ID, and
+   * treatment.
    *
    * @param appointmentID the ID of the appointment.
    * @param patientID the ID of the patient receiving the treatment.
@@ -82,8 +81,8 @@ public class Treatment {
   }
 
   /**
-   * Returns a string representation of the Treatment object.
-   * The string is formatted as "appointmentID,patientID,treatment".
+   * Returns a string representation of the Treatment object. The string is formatted as
+   * "appointmentID,patientID,treatment".
    *
    * @return a string containing the appointment ID, patient ID, and treatment details.
    */

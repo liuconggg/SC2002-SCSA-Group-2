@@ -2,9 +2,7 @@ package com.ntu.hms.util;
 
 import java.util.Scanner;
 
-/**
- * Wrapper class for the java.util.Scanner providing an interface for reading input.
- */
+/** Wrapper class for the java.util.Scanner providing an interface for reading input. */
 public class ScannerWrapper {
   private final Scanner scanner;
 
@@ -57,8 +55,8 @@ public class ScannerWrapper {
   }
 
   /**
-   * Closes the wrapped Scanner instance.
-   * This method should be called to release the resources associated with the Scanner.
+   * Closes the wrapped Scanner instance. This method should be called to release the resources
+   * associated with the Scanner.
    */
   public void close() {
     scanner.close();

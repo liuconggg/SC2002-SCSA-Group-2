@@ -1,21 +1,20 @@
 package com.ntu.hms.model;
 
-/**
- * Represents a medical diagnosis with associated appointment and patient information.
- */
+/** Represents a medical diagnosis with associated appointment and patient information. */
 public class Diagnosis {
   private String appointmentId;
   private String patientId;
   private String diagnosis;
 
   /**
-   * Default constructor for the Diagnosis class.
-   * Initializes a new instance of the Diagnosis class with default values.
+   * Default constructor for the Diagnosis class. Initializes a new instance of the Diagnosis class
+   * with default values.
    */
   public Diagnosis() {}
 
   /**
-   * Initializes a new instance of the Diagnosis class with specified appointment ID, patient ID, and diagnosis details.
+   * Initializes a new instance of the Diagnosis class with specified appointment ID, patient ID,
+   * and diagnosis details.
    *
    * @param appointmentID The unique identifier for the appointment associated with this diagnosis.
    * @param patientID The unique identifier for the patient associated with this diagnosis.
@@ -82,10 +81,11 @@ public class Diagnosis {
   }
 
   /**
-   * Returns a string representation of the Diagnosis object.
-   * The format is "appointmentId,patientId,diagnosis".
+   * Returns a string representation of the Diagnosis object. The format is
+   * "appointmentId,patientId,diagnosis".
    *
-   * @return A string consisting of the appointment ID, patient ID, and diagnosis details, separated by commas.
+   * @return A string consisting of the appointment ID, patient ID, and diagnosis details, separated
+   *     by commas.
    */
   @Override
   public String toString() {

@@ -8,9 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represents an appointment in a medical scheduling system.
- * It contains information about the appointment ID, patient ID, doctor ID,
- * date, session, and status.
+ * This class represents an appointment in a medical scheduling system. It contains information
+ * about the appointment ID, patient ID, doctor ID, date, session, and status.
  */
 public class Appointment {
   private String appointmentID;
@@ -21,8 +20,8 @@ public class Appointment {
   private String status;
 
   /**
-   * Default constructor for creating an instance of the Appointment class.
-   * Initializes the object with default values.
+   * Default constructor for creating an instance of the Appointment class. Initializes the object
+   * with default values.
    */
   public Appointment() {}
 
@@ -30,11 +29,11 @@ public class Appointment {
    * Constructs an Appointment instance with provided details.
    *
    * @param appointmentID the unique ID of the appointment
-   * @param patientID     the ID of the patient making the appointment
-   * @param doctorID      the ID of the doctor with whom the appointment is made
-   * @param date          the date on which the appointment is scheduled
-   * @param session       the session number for the appointment
-   * @param status        the current status of the appointment
+   * @param patientID the ID of the patient making the appointment
+   * @param doctorID the ID of the doctor with whom the appointment is made
+   * @param date the date on which the appointment is scheduled
+   * @param session the session number for the appointment
+   * @param status the current status of the appointment
    */
   public Appointment(
       String appointmentID,
@@ -186,7 +185,8 @@ public class Appointment {
   }
 
   /**
-   * Retrieves a list of appointments for a given patient ID, excluding completed and cancelled appointments.
+   * Retrieves a list of appointments for a given patient ID, excluding completed and cancelled
+   * appointments.
    *
    * @param patientID the ID of the patient whose appointments are to be retrieved
    * @param appointments the list of all available appointments to be filtered
@@ -270,8 +270,8 @@ public class Appointment {
   /**
    * Generates a string representation of the Appointment object.
    *
-   * @return a comma-separated string containing: appointment ID, patient ID,
-   * doctor ID, formatted date (dd/MM/yyyy), session number, and status.
+   * @return a comma-separated string containing: appointment ID, patient ID, doctor ID, formatted
+   *     date (dd/MM/yyyy), session number, and status.
    */
   @Override
   public String toString() {

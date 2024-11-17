@@ -6,16 +6,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * The type Admin actions test.
- * This class contains test cases for various actions that can be performed by an admin,
- * including viewing and managing hospital staff, viewing appointment details,
- * managing inventory, and approving replenishment requests.
+ * The type Admin actions test. This class contains test cases for various actions that can be
+ * performed by an admin, including viewing and managing hospital staff, viewing appointment
+ * details, managing inventory, and approving replenishment requests.
  */
 public class AdminActionsTest {
 
   /**
-   * Test view and manage hospital staff.
-   * This test case simulates the admin viewing and managing hospital staff details.
+   * Test view and manage hospital staff. This test case simulates the admin viewing and managing
+   * hospital staff details.
    */
   @Test
   @DisplayName("Test Case 20: View and Manage Hospital Staff")
@@ -25,8 +24,8 @@ public class AdminActionsTest {
   }
 
   /**
-   * Test view appointment details.
-   * This test case simulates the admin viewing the details of appointments.
+   * Test view appointment details. This test case simulates the admin viewing the details of
+   * appointments.
    */
   @Test
   @DisplayName("Test Case 21: View Appointment Details")
@@ -36,20 +35,20 @@ public class AdminActionsTest {
   }
 
   /**
-   * Test view and manage inventory.
-   * This test case simulates the admin viewing and managing the medication inventory.
+   * Test view and manage inventory. This test case simulates the admin viewing and managing the
+   * medication inventory.
    */
   @Test
   @DisplayName("Test Case 22: View and Manage Medication Inventory")
   public void testViewAndManageInventory() {
     provideInput(
-            "login\nA0001\n123\n3\n2\n\n3\n1\nCodeine\n50\n\n3\n3\nCodeine\n10\n\n3\n4\nCodeine\n\n5\nexit\n");
+        "login\nA0001\n123\n3\n2\n\n3\n1\nCodeine\n50\n\n3\n3\nCodeine\n10\n\n3\n4\nCodeine\n\n5\nexit\n");
     startApplication();
   }
 
   /**
-   * Test approve replenishment requests.
-   * This test case simulates the admin approving replenishment requests.
+   * Test approve replenishment requests. This test case simulates the admin approving replenishment
+   * requests.
    */
   @Test
   @DisplayName("Test Case 23: Approve Replenishment Requests")

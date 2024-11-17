@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Manages the medical records in the hospital management system.
- * This class provides methods to display and update medical records
- * of patients and doctors. Utilizes a ScannerWrapper instance for input handling.
+ * Manages the medical records in the hospital management system. This class provides methods to
+ * display and update medical records of patients and doctors. Utilizes a ScannerWrapper instance
+ * for input handling.
  */
 public class MedicalRecordManager implements MedicalRecordManagerInterface {
   private final ScannerWrapper scanner;
@@ -31,7 +31,8 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
   }
 
   /**
-   * Displays the medical record of a patient including personal details, diagnoses, treatments, and prescriptions.
+   * Displays the medical record of a patient including personal details, diagnoses, treatments, and
+   * prescriptions.
    *
    * @param patient the patient whose medical record will be shown
    */
@@ -233,17 +234,17 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
   /**
    * Updates a medical record based on user input through a series of interactive prompts.
    *
-   * This method allows users to interactively select an appointment outcome and update
-   * its associated diagnosis, treatment, and prescriptions if applicable. The updates are
-   * noted by appending " - Updated:" to the current entries.
+   * <p>This method allows users to interactively select an appointment outcome and update its
+   * associated diagnosis, treatment, and prescriptions if applicable. The updates are noted by
+   * appending " - Updated:" to the current entries.
    *
-   * - Users can select an appointment outcome from a list of records.
-   * - Users can update the diagnosis details for the selected appointment.
-   * - Users can update the treatment details for the selected appointment.
-   * - If the prescription status of the appointment is "PENDING," users are prompted to update its prescription details.
+   * <p>- Users can select an appointment outcome from a list of records. - Users can update the
+   * diagnosis details for the selected appointment. - Users can update the treatment details for
+   * the selected appointment. - If the prescription status of the appointment is "PENDING," users
+   * are prompted to update its prescription details.
    *
-   * The method reads data from various CSV sources, such as appointment outcomes, diagnoses, treatments, and medications.
-   * It then interacts with the user to make the necessary updates.
+   * <p>The method reads data from various CSV sources, such as appointment outcomes, diagnoses,
+   * treatments, and medications. It then interacts with the user to make the necessary updates.
    */
   @Override
   public void updateMedicalRecord() {
@@ -511,9 +512,7 @@ public class MedicalRecordManager implements MedicalRecordManagerInterface {
     return new MedicalRecordManagerBuilder();
   }
 
-  /**
-   * Builder class for creating instances of MedicalRecordManager.
-   */
+  /** Builder class for creating instances of MedicalRecordManager. */
   // Static inner Builder class
   public static class MedicalRecordManagerBuilder {
     private ScannerWrapper scanner;

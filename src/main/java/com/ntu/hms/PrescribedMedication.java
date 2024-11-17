@@ -1,8 +1,6 @@
 package com.ntu.hms;
 
-/**
- * Represents a medication prescribed during an appointment.
- */
+/** Represents a medication prescribed during an appointment. */
 public class PrescribedMedication {
   private String appointmentID;
   private String medicationName;
@@ -97,13 +95,13 @@ public class PrescribedMedication {
 
   /**
    * Constructs a new PrescribedMedication with default values.
-   * <p>
-   * This constructor is intended to create an instance of PrescribedMedication
-   * without initializing its fields. It is useful in scenarios where the fields
-   * will be set at a later time using setter methods.
-   * <p>
-   * Note: This constructor currently throws UnsupportedOperationException
-   * indicating that it is not yet implemented.
+   *
+   * <p>This constructor is intended to create an instance of PrescribedMedication without
+   * initializing its fields. It is useful in scenarios where the fields will be set at a later time
+   * using setter methods.
+   *
+   * <p>Note: This constructor currently throws UnsupportedOperationException indicating that it is
+   * not yet implemented.
    */
   public PrescribedMedication() {
     // TODO - implement com.ntu.hms.PrescribedMedication.com.ntu.hms.PrescribedMedication

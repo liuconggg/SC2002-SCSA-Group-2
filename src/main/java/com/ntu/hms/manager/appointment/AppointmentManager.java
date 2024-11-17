@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * The AppointmentManager class is responsible for managing patient appointments.
- * It includes methods for scheduling, rescheduling, and canceling appointments,
- * as well as displaying appointment outcomes.
+ * The AppointmentManager class is responsible for managing patient appointments. It includes
+ * methods for scheduling, rescheduling, and canceling appointments, as well as displaying
+ * appointment outcomes.
  */
 public class AppointmentManager implements AppointmentManagerInterface {
   private final DateTimeFormatter dateFormatter;
@@ -44,8 +44,8 @@ public class AppointmentManager implements AppointmentManagerInterface {
   }
 
   /**
-   * Schedules an appointment for a patient by allowing the patient to select a doctor,
-   * choose an available date, and book a session.
+   * Schedules an appointment for a patient by allowing the patient to select a doctor, choose an
+   * available date, and book a session.
    *
    * @param patient The patient for whom the appointment is being scheduled.
    */
@@ -186,8 +186,8 @@ public class AppointmentManager implements AppointmentManagerInterface {
   }
 
   /**
-   * Reschedules an existing appointment for a patient. The patient can choose from a list of
-   * their pending or confirmed appointments and select a new date and session for the appointment.
+   * Reschedules an existing appointment for a patient. The patient can choose from a list of their
+   * pending or confirmed appointments and select a new date and session for the appointment.
    *
    * @param patient The patient for whom the appointment is being rescheduled.
    */
@@ -199,13 +199,13 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
     // Filter to show only pending or confirmed appointments
     List<Appointment> reschedulableAppointments =
-            getAppointmentsForPatient(patient.getHospitalID())
-                    .stream()
-                    .filter(
-                            appointment ->
-                                    appointment.getStatus().equalsIgnoreCase(PENDING.name())
-                                            || appointment.getStatus().equalsIgnoreCase(CONFIRMED.name()))
-                    .collect(Collectors.toList());
+        getAppointmentsForPatient(patient.getHospitalID())
+            .stream()
+            .filter(
+                appointment ->
+                    appointment.getStatus().equalsIgnoreCase(PENDING.name())
+                        || appointment.getStatus().equalsIgnoreCase(CONFIRMED.name()))
+            .collect(Collectors.toList());
 
     // Check if there are any appointments to reschedule
     if (reschedulableAppointments.isEmpty()) {
@@ -220,12 +220,12 @@ public class AppointmentManager implements AppointmentManagerInterface {
       Doctor doctor = getDoctorById(appt.getDoctorID());
       if (doctor != null) {
         System.out.printf(
-                "%d. Appointment with Dr. %s on %s at %s - Status: %s\n",
-                ++apptCounter,
-                doctor.getName(),
-                appt.getDate().format(dateFormatter),
-                sessionTimings[appt.getSession() - 1],
-                appt.getStatus());
+            "%d. Appointment with Dr. %s on %s at %s - Status: %s\n",
+            ++apptCounter,
+            doctor.getName(),
+            appt.getDate().format(dateFormatter),
+            sessionTimings[appt.getSession() - 1],
+            appt.getStatus());
       }
     }
 
@@ -273,27 +273,27 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
     // Find or create schedule for the new date
     Optional<Schedule> optionalSchedule =
-            schedules
-                    .stream()
-                    .filter(schedule -> schedule.getDoctorID().equals(selectedDoctor.getHospitalID()))
-                    .filter(schedule -> schedule.getDate().equals(newAppointmentDate))
-                    .findFirst();
+        schedules
+            .stream()
+            .filter(schedule -> schedule.getDoctorID().equals(selectedDoctor.getHospitalID()))
+            .filter(schedule -> schedule.getDate().equals(newAppointmentDate))
+            .findFirst();
     Schedule newScheduleForDate =
-            optionalSchedule.orElseGet(
-                    () -> {
-                      Schedule schedule =
-                              createDefaultSchedule(selectedDoctor.getHospitalID(), newAppointmentDate);
-                      schedules.add(schedule);
-                      return schedule;
-                    });
+        optionalSchedule.orElseGet(
+            () -> {
+              Schedule schedule =
+                  createDefaultSchedule(selectedDoctor.getHospitalID(), newAppointmentDate);
+              schedules.add(schedule);
+              return schedule;
+            });
 
     // Display available sessions for new date
     System.out.println(
-            "\nAvailable sessions for Dr. "
-                    + selectedDoctor.getName()
-                    + " on "
-                    + newAppointmentDate.format(dateFormatter)
-                    + ":");
+        "\nAvailable sessions for Dr. "
+            + selectedDoctor.getName()
+            + " on "
+            + newAppointmentDate.format(dateFormatter)
+            + ":");
     String[] newSession = newScheduleForDate.getSession();
     boolean hasAvailableSession = false;
     for (int i = 0; i < newSession.length; i++) {
@@ -311,11 +311,11 @@ public class AppointmentManager implements AppointmentManagerInterface {
     // Select a new session
     System.out.print("Select a session number for the new date: ");
     int newSessionNumber = scanner.nextInt();
-    //scanner.nextLine(); // consume newline character
+    // scanner.nextLine(); // consume newline character
 
     if (newSessionNumber < 1
-            || newSessionNumber > newSession.length
-            || !newSession[newSessionNumber - 1].equals("Available")) {
+        || newSessionNumber > newSession.length
+        || !newSession[newSessionNumber - 1].equals("Available")) {
       System.out.println("Invalid session selection or session not available.");
       return;
     }
@@ -326,7 +326,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
     int oldSessionNumber = chosenAppointment.getSession();
     for (Schedule schedule : schedules) {
       if (schedule.getDoctorID().equals(doctorID)
-              && schedule.getDate().equals(oldAppointmentDate)) {
+          && schedule.getDate().equals(oldAppointmentDate)) {
         String[] oldSessionSlots = schedule.getSession();
         oldSessionSlots[oldSessionNumber - 1] = "Available";
         schedule.setSession(oldSessionSlots);
@@ -341,7 +341,8 @@ public class AppointmentManager implements AppointmentManagerInterface {
       chosenAppointment.setStatus(PENDING.name()); // Change confirmed to pending if rescheduled
     }
 
-    newSession[newSessionNumber - 1] = patient.getHospitalID() + "-" + ScheduleStatus.PENDING.name();
+    newSession[newSessionNumber - 1] =
+        patient.getHospitalID() + "-" + ScheduleStatus.PENDING.name();
     newScheduleForDate.setSession(newSession);
 
     // Update the original appointments list with the chosen appointment's new details
@@ -357,13 +358,13 @@ public class AppointmentManager implements AppointmentManagerInterface {
     CsvDB.saveSchedules(schedules);
 
     System.out.printf(
-            "Your appointment with Dr. %s has been rescheduled to %s, Session %d.\n",
-            selectedDoctor.getName(), newAppointmentDate.format(dateFormatter), newSessionNumber);
+        "Your appointment with Dr. %s has been rescheduled to %s, Session %d.\n",
+        selectedDoctor.getName(), newAppointmentDate.format(dateFormatter), newSessionNumber);
   }
 
-
   /**
-   * Cancels a patient's appointment by allowing the patient to select from their pending or confirmed appointments.
+   * Cancels a patient's appointment by allowing the patient to select from their pending or
+   * confirmed appointments.
    *
    * @param patient The patient for whom the appointment is being cancelled.
    */
@@ -450,7 +451,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
       chosenAppointment.setStatus(CANCELLED.name());
 
-// Update the original appointments list with the chosen appointment's new status
+      // Update the original appointments list with the chosen appointment's new status
       for (int i = 0; i < appointments.size(); i++) {
         if (appointments.get(i).getAppointmentID().equals(chosenAppointment.getAppointmentID())) {
           appointments.set(i, chosenAppointment);
@@ -559,11 +560,10 @@ public class AppointmentManager implements AppointmentManagerInterface {
   /**
    * Displays the outcomes of all completed appointments.
    *
-   * This method reads appointment outcome records from a CSV database,
-   * and prints to the console each appointment's ID and prescription status.
-   * For each appointment, it lists the prescribed medications if available,
-   * including the medication ID, name, and quantity. If no prescriptions are
-   * available, it indicates that there are none.
+   * <p>This method reads appointment outcome records from a CSV database, and prints to the console
+   * each appointment's ID and prescription status. For each appointment, it lists the prescribed
+   * medications if available, including the medication ID, name, and quantity. If no prescriptions
+   * are available, it indicates that there are none.
    */
   @Override
   public void showAppointmentOutcome() {
@@ -593,10 +593,10 @@ public class AppointmentManager implements AppointmentManagerInterface {
   /**
    * Displays the user's chosen type of appointments.
    *
-   * This method prompts the user for the type of appointments they wish to view
-   * from a set of predefined categories: Completed, Cancelled, Pending, No Show,
-   * and View All. Based on the user's input, it filters appointments from the database and
-   * displays them accordingly. If the input is invalid or empty, it returns to the main menu.
+   * <p>This method prompts the user for the type of appointments they wish to view from a set of
+   * predefined categories: Completed, Cancelled, Pending, No Show, and View All. Based on the
+   * user's input, it filters appointments from the database and displays them accordingly. If the
+   * input is invalid or empty, it returns to the main menu.
    */
   public void showAppointment() {
     // Prompt the user for the type of appointment they want to view
@@ -655,9 +655,9 @@ public class AppointmentManager implements AppointmentManagerInterface {
   /**
    * Displays the scheduled appointments for a specific patient.
    *
-   * This method filters the confirmed and pending appointments for the specified patient
-   * and prints the details of each appointment. If no appointments are found, a message
-   * is displayed indicating that no scheduled appointments exist.
+   * <p>This method filters the confirmed and pending appointments for the specified patient and
+   * prints the details of each appointment. If no appointments are found, a message is displayed
+   * indicating that no scheduled appointments exist.
    *
    * @param patient The patient whose scheduled appointments are to be shown.
    */
@@ -698,10 +698,9 @@ public class AppointmentManager implements AppointmentManagerInterface {
   /**
    * Displays the upcoming confirmed appointments for a given doctor.
    *
-   * This method retrieves the doctor's schedule, filters out past dates,
-   * and prints the upcoming confirmed appointments, organized by dates.
-   * If no upcoming confirmed appointments are found, it displays a message
-   * indicating the absence of such appointments.
+   * <p>This method retrieves the doctor's schedule, filters out past dates, and prints the upcoming
+   * confirmed appointments, organized by dates. If no upcoming confirmed appointments are found, it
+   * displays a message indicating the absence of such appointments.
    *
    * @param doctor The doctor for whom the upcoming appointments are to be shown.
    */
@@ -765,12 +764,12 @@ public class AppointmentManager implements AppointmentManagerInterface {
   }
 
   /**
-   * Updates the outcome for a doctor's appointment, allowing the doctor to record whether
-   * the appointment was completed or a no-show, add consultation notes, prescribe medications,
-   * and save these records to the database.
+   * Updates the outcome for a doctor's appointment, allowing the doctor to record whether the
+   * appointment was completed or a no-show, add consultation notes, prescribe medications, and save
+   * these records to the database.
    *
-   * @param doctor The doctor who is updating the appointment outcome.
-   * Contains the hospital ID needed to filter the appointments.
+   * @param doctor The doctor who is updating the appointment outcome. Contains the hospital ID
+   *     needed to filter the appointments.
    */
   @Override
   public void updateAppointmentOutcome(Doctor doctor) {
@@ -952,13 +951,11 @@ public class AppointmentManager implements AppointmentManagerInterface {
 
             // saveAppointmentOutcomeRecords(apptOutcomeRecords);
             selectedAppointment.setStatus(AppointmentStatus.COMPLETED.name());
-            System.out.println(
-                "\nAppointment outcome recorded successfully as 'Completed'.");
+            System.out.println("\nAppointment outcome recorded successfully as 'Completed'.");
 
           } else if (outcome.equals("N")) {
             selectedAppointment.setStatus(AppointmentStatus.NO_SHOW.name());
-            System.out.println(
-                "\nAppointment outcome recorded successfully as 'No-Show'.");
+            System.out.println("\nAppointment outcome recorded successfully as 'No-Show'.");
           } else {
             System.out.println(
                 "\nInvalid input. Please enter either 'Y' for Completed or 'N' for No-Show.");
@@ -1014,10 +1011,10 @@ public class AppointmentManager implements AppointmentManagerInterface {
   /**
    * Filters and displays appointments based on their status.
    *
-   * This method filters appointments by the given status and prints the
-   * appointment details. If the status is "Completed", it also retrieves and
-   * displays the relevant appointment outcome records. If no appointments
-   * are found with the specified status, a corresponding message is displayed.
+   * <p>This method filters appointments by the given status and prints the appointment details. If
+   * the status is "Completed", it also retrieves and displays the relevant appointment outcome
+   * records. If no appointments are found with the specified status, a corresponding message is
+   * displayed.
    *
    * @param appointments the list of all appointments to be filtered and displayed
    * @param status the status by which to filter the appointments (e.g., "Completed", "Pending")
@@ -1080,10 +1077,9 @@ public class AppointmentManager implements AppointmentManagerInterface {
   }
 
   /**
-   * Displays all appointments from the provided list.
-   * If the list is empty, a message indicating no appointments will be shown.
-   * Otherwise, it prints the details of each appointment including appointment ID,
-   * patient ID, doctor ID, date, session, and status.
+   * Displays all appointments from the provided list. If the list is empty, a message indicating no
+   * appointments will be shown. Otherwise, it prints the details of each appointment including
+   * appointment ID, patient ID, doctor ID, date, session, and status.
    *
    * @param appointments the list of appointments to be displayed
    */
@@ -1126,9 +1122,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
     return new AppointmentManagerBuilder();
   }
 
-  /**
-   * Builder class to construct instances of `AppointmentManager`.
-   */
+  /** Builder class to construct instances of `AppointmentManager`. */
   // Static inner Builder class
   public static class AppointmentManagerBuilder {
     private DateTimeFormatter dateTimeFormatter;

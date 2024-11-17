@@ -26,8 +26,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * The CsvDB class provides methods for reading and writing data to and from various CSV files.
- * The class includes methods for handling different entities such as Users, Patients, Doctors,
+ * The CsvDB class provides methods for reading and writing data to and from various CSV files. The
+ * class includes methods for handling different entities such as Users, Patients, Doctors,
  * Pharmacists, Administrators, Appointments, Treatments, Diagnoses, Schedules, Medications,
  * AppointmentOutcomeRecords, and ReplenishmentRequests.
  */
@@ -47,9 +47,10 @@ public class CsvDB {
       "Medication ID,Medication Name,Stock Status,Alert,Quantity";
   private static final String DIAGNOSIS_HEADER = "Appointment ID,Patient ID,Diagnosis";
   private static final String TREATMENT_HEADER = "Appointment ID,Patient ID,Treatment";
-  private static final String APPOINTMENT_OUTCOME_RECORD_HEADER = "Appointment ID,Type of Service,Consultation Notes,Prescriptions,Prescription Status";
-  private static final String REPLENISHMENT_REQUEST_HEADER = "Request ID,Medication Batch,Status,Pharmacist ID";
-
+  private static final String APPOINTMENT_OUTCOME_RECORD_HEADER =
+      "Appointment ID,Type of Service,Consultation Notes,Prescriptions,Prescription Status";
+  private static final String REPLENISHMENT_REQUEST_HEADER =
+      "Request ID,Medication Batch,Status,Pharmacist ID";
 
   private static final String PATIENT_CSV_PATH = "csvdb/Patient.csv";
   private static final String DOCTOR_CSV_PATH = "csvdb/Doctor.csv";
@@ -85,7 +86,8 @@ public class CsvDB {
    * @param <T> the type of the class to which each line of the CSV should be mapped
    * @param csvPath the path to the CSV file
    * @param clazz the class type to which each line of the CSV should be mapped
-   * @return a list of instances of the specified class, where each instance represents a line in the CSV, excluding the header
+   * @return a list of instances of the specified class, where each instance represents a line in
+   *     the CSV, excluding the header
    * @throws RuntimeException if the specified CSV file cannot be read
    */
   private static <T> List<T> readCsv(String csvPath, Class<T> clazz) {
@@ -112,8 +114,8 @@ public class CsvDB {
    * @param <T> the type of the class to be instantiated
    * @param line the CSV line containing the data
    * @param clazz the class type to which the CSV line should be mapped
-   * @return an instance of the specified class type, populated with data from the CSV line,
-   *         or null if an error occurs during instantiation or data mapping
+   * @return an instance of the specified class type, populated with data from the CSV line, or null
+   *     if an error occurs during instantiation or data mapping
    */
   private static <T> T mapToInstance(String line, Class<T> clazz) {
     try {
@@ -207,7 +209,8 @@ public class CsvDB {
   }
 
   /**
-   * Retrieves all fields that are not marked as CSV fields from the specified class and its superclasses.
+   * Retrieves all fields that are not marked as CSV fields from the specified class and its
+   * superclasses.
    *
    * @param clazz the class from which to retrieve non-CSV fields
    * @return an array of Fields that are not designated as CSV fields
@@ -244,8 +247,8 @@ public class CsvDB {
   /**
    * Parses a CSV formatted string containing medication data into a list of MedicationItem objects.
    *
-   * @param medicationData the CSV string containing medication data, where each medication entry is separated by a semicolon (;) and fields within each entry are separated by a colon
-   *  (:)
+   * @param medicationData the CSV string containing medication data, where each medication entry is
+   *     separated by a semicolon (;) and fields within each entry are separated by a colon (:)
    * @return a list of MedicationItem objects parsed from the CSV string
    */
   // Helper method to parse a CSV value into a list of Medication objects
@@ -273,7 +276,8 @@ public class CsvDB {
   }
 
   /**
-   * Reads and aggregates users from various sources (patients, doctors, pharmacists, and administrators).
+   * Reads and aggregates users from various sources (patients, doctors, pharmacists, and
+   * administrators).
    *
    * @return a list of all users, including patients, doctors, pharmacists, and administrators.
    */
@@ -395,10 +399,10 @@ public class CsvDB {
   /**
    * Writes a list of objects to a CSV file.
    *
-   * @param <T>        the type of objects in the modelList
+   * @param <T> the type of objects in the modelList
    * @param csvPathString the path to the CSV file as a string
-   * @param header     the header row for the CSV file
-   * @param modelList  the list of objects to write to the CSV file
+   * @param header the header row for the CSV file
+   * @param modelList the list of objects to write to the CSV file
    */
   private static <T> void writeCsv(String csvPathString, String header, List<T> modelList) {
     Path csvPath = Paths.get("target", "classes", csvPathString);
@@ -472,12 +476,11 @@ public class CsvDB {
   }
 
   /**
-   * Saves a list of users by categorizing them into their respective roles
-   * (Patient, Doctor, Pharmacist, Administrator) and then saving each
-   * category separately.
+   * Saves a list of users by categorizing them into their respective roles (Patient, Doctor,
+   * Pharmacist, Administrator) and then saving each category separately.
    *
-   * @param users the list of users to be saved, where users can be of types
-   *              Patient, Doctor, Pharmacist, or Administrator.
+   * @param users the list of users to be saved, where users can be of types Patient, Doctor,
+   *     Pharmacist, or Administrator.
    */
   public static void saveUsers(List<User> users) {
     List<Patient> patients = new ArrayList<>();
@@ -502,8 +505,8 @@ public class CsvDB {
   }
 
   /**
-   * Saves a list of treatments to a CSV file by writing them to the specified
-   * path with the appropriate CSV header.
+   * Saves a list of treatments to a CSV file by writing them to the specified path with the
+   * appropriate CSV header.
    *
    * @param treatments the list of Treatment objects to be saved
    */
@@ -512,7 +515,8 @@ public class CsvDB {
   }
 
   /**
-   * Saves a list of Diagnosis objects to a CSV file by writing them to the specified path with the appropriate CSV header.
+   * Saves a list of Diagnosis objects to a CSV file by writing them to the specified path with the
+   * appropriate CSV header.
    *
    * @param diagnoses the list of Diagnosis objects to be saved
    */

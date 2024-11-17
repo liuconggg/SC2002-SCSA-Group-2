@@ -6,8 +6,8 @@ import com.ntu.hms.util.ScannerWrapper;
 import java.util.List;
 
 /**
- * UserManager is responsible for managing user-related operations.
- * It allows adding, showing, and updating users from the system.
+ * UserManager is responsible for managing user-related operations. It allows adding, showing, and
+ * updating users from the system.
  */
 public class UserManager implements UserManagerInterface {
   private final ScannerWrapper scanner;
@@ -22,16 +22,11 @@ public class UserManager implements UserManagerInterface {
   }
 
   /**
-   * Adds a new user to the system based on the user type selected from the menu.
-   * The method prompts the user to select the type and then collects
-   * the necessary details to create an instance of that user type.
-   * Supported user types are:
-   * - Patient
-   * - Doctor
-   * - Pharmacist
-   * - Administrator
-   * If the user decides to go back to the previous menu, the method exits without adding a user.
-   * After successfully creating the user, it is saved to the CSV database.
+   * Adds a new user to the system based on the user type selected from the menu. The method prompts
+   * the user to select the type and then collects the necessary details to create an instance of
+   * that user type. Supported user types are: - Patient - Doctor - Pharmacist - Administrator If
+   * the user decides to go back to the previous menu, the method exits without adding a user. After
+   * successfully creating the user, it is saved to the CSV database.
    */
   @Override
   public void addUser() {
@@ -145,18 +140,16 @@ public class UserManager implements UserManagerInterface {
   }
 
   /**
-   * Displays a list of users based on selection criteria provided by the user.
-   * The method allows filtering by role (Patients, Pharmacists, Doctors, Administrators),
-   * gender (Male, Female, No Filter), and age range.
+   * Displays a list of users based on selection criteria provided by the user. The method allows
+   * filtering by role (Patients, Pharmacists, Doctors, Administrators), gender (Male, Female, No
+   * Filter), and age range.
    *
-   * The process involves:
-   * 1. Prompting the user to select the type of staff they want to view.
-   * 2. Asking the user if they want to filter by gender.
-   * 3. Asking the user if they want to filter by age range.
-   * 4. Displaying the filtered list of users who match the specified criteria.
+   * <p>The process involves: 1. Prompting the user to select the type of staff they want to view.
+   * 2. Asking the user if they want to filter by gender. 3. Asking the user if they want to filter
+   * by age range. 4. Displaying the filtered list of users who match the specified criteria.
    *
-   * The user is prompted for their choices using console input. If invalid choices are made,
-   * the method will return and inform the user, directing them back to the main menu.
+   * <p>The user is prompted for their choices using console input. If invalid choices are made, the
+   * method will return and inform the user, directing them back to the main menu.
    */
   @Override
   public void showUsers() {
@@ -264,17 +257,16 @@ public class UserManager implements UserManagerInterface {
   /**
    * Updates an existing user's details in the system based on their Hospital ID.
    *
-   * The method performs the following steps:
-   * 1. Reads the current list of users from a CSV database.
-   * 2. Prompts the user to enter the Hospital ID of the user to update.
-   * 3. Allows updating of common fields such as password, name, age, and gender.
-   * 4. If the user is a Patient, allows updating additional fields like date of birth, phone number, email, and blood type.
-   * 5. Saves the updated user details back to the CSV database.
+   * <p>The method performs the following steps: 1. Reads the current list of users from a CSV
+   * database. 2. Prompts the user to enter the Hospital ID of the user to update. 3. Allows
+   * updating of common fields such as password, name, age, and gender. 4. If the user is a Patient,
+   * allows updating additional fields like date of birth, phone number, email, and blood type. 5.
+   * Saves the updated user details back to the CSV database.
    *
-   * If the entered Hospital ID is not found, an appropriate message is displayed.
-   * If the Hospital ID input is empty, the method returns to the main menu.
+   * <p>If the entered Hospital ID is not found, an appropriate message is displayed. If the
+   * Hospital ID input is empty, the method returns to the main menu.
    *
-   * This method is an overridden implementation from the UserManagerInterface.
+   * <p>This method is an overridden implementation from the UserManagerInterface.
    */
   @Override
   public void updateUser() {
@@ -396,8 +388,8 @@ public class UserManager implements UserManagerInterface {
   }
 
   /**
-   * Provides a static method to access the UserManagerBuilder, which is used to
-   * configure and build instances of UserManager.
+   * Provides a static method to access the UserManagerBuilder, which is used to configure and build
+   * instances of UserManager.
    *
    * @return a new instance of UserManagerBuilder
    */
@@ -407,8 +399,8 @@ public class UserManager implements UserManagerInterface {
   }
 
   /**
-   * The UserManagerBuilder class is used to construct instances of the UserManager class
-   * with the appropriate configurations and settings.
+   * The UserManagerBuilder class is used to construct instances of the UserManager class with the
+   * appropriate configurations and settings.
    */
   // Static inner Builder class
   public static class UserManagerBuilder {

@@ -12,13 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The InventoryManager class is responsible for managing the inventory operations
- * within a healthcare system. It provides methods to display, update, add, and
- * delete inventory items, as well as to handle replenishment requests.
- * This class implements the InventoryManagerInterface.
+ * The InventoryManager class is responsible for managing the inventory operations within a
+ * healthcare system. It provides methods to display, update, add, and delete inventory items, as
+ * well as to handle replenishment requests. This class implements the InventoryManagerInterface.
  *
- * Fields:
- * - scanner: A ScannerWrapper instance used to read input.
+ * <p>Fields: - scanner: A ScannerWrapper instance used to read input.
  */
 public class InventoryManager implements InventoryManagerInterface {
   private final ScannerWrapper scanner;
@@ -35,13 +33,13 @@ public class InventoryManager implements InventoryManagerInterface {
   /**
    * Displays the current inventory of medications in the system.
    *
-   * This method reads the list of medications from the database and prints each medication's ID,
+   * <p>This method reads the list of medications from the database and prints each medication's ID,
    * name, stock status, and quantity to the standard output.
    *
-   * The expected output is formatted with tab separators for clarity. Each medication's details
+   * <p>The expected output is formatted with tab separators for clarity. Each medication's details
    * are printed on a separate line.
    *
-   * This method overrides a method in the superclass/interface.
+   * <p>This method overrides a method in the superclass/interface.
    */
   @Override
   public void showInventory() {
@@ -61,7 +59,8 @@ public class InventoryManager implements InventoryManagerInterface {
    *
    * @param medication The Medication object to be updated.
    * @param stockStatus The current stock status of the medication (e.g., LOW, MEDIUM, HIGH).
-   * @param alert Indicates if there is an alert for stocking (true if stock is low, false otherwise).
+   * @param alert Indicates if there is an alert for stocking (true if stock is low, false
+   *     otherwise).
    * @param quantity The total quantity of the medication in stock.
    */
   public void updateInventory(
@@ -74,26 +73,24 @@ public class InventoryManager implements InventoryManagerInterface {
   /**
    * Updates the inventory by modifying the quantity of a specified medication.
    *
-   * <p> This method prompts the user to enter the name of a medication and the quantity to add.
-   * If the medication exists in the inventory, its quantity is updated, and the stock status is
-   * recalculated based on the new quantity. The method handles invalid input for quantity
-   * by repeatedly prompting the user until a valid integer is entered. After updating,
-   * the inventory is saved back to the CSV file.
+   * <p>This method prompts the user to enter the name of a medication and the quantity to add. If
+   * the medication exists in the inventory, its quantity is updated, and the stock status is
+   * recalculated based on the new quantity. The method handles invalid input for quantity by
+   * repeatedly prompting the user until a valid integer is entered. After updating, the inventory
+   * is saved back to the CSV file.
    *
-   * The following steps are performed in this method:
-   * 1. The user is prompted to enter the medication name and quantity to add.
-   * 2. The method searches for the medication in the current inventory.
-   * 3. If the medication exists, its quantity is updated, and the stock status
-   *    is recalculated based on the new quantity.
-   * 4. If the medication does not exist, a message is displayed to inform the user about adding it.
-   * 5. The updated inventory is then saved back to the storage.
+   * <p>The following steps are performed in this method: 1. The user is prompted to enter the
+   * medication name and quantity to add. 2. The method searches for the medication in the current
+   * inventory. 3. If the medication exists, its quantity is updated, and the stock status is
+   * recalculated based on the new quantity. 4. If the medication does not exist, a message is
+   * displayed to inform the user about adding it. 5. The updated inventory is then saved back to
+   * the storage.
    *
-   * This method utilizes:
-   * - CsvDB.readMedications() to read the current inventory from a CSV file.
-   * - CsvDB.saveMedications() to save the updated inventory back to the CSV file.
+   * <p>This method utilizes: - CsvDB.readMedications() to read the current inventory from a CSV
+   * file. - CsvDB.saveMedications() to save the updated inventory back to the CSV file.
    *
-   * Note: The medication's stock status is categorized as LOW, MEDIUM, or HIGH based on
-   * the new quantity to manage inventory efficiently.
+   * <p>Note: The medication's stock status is categorized as LOW, MEDIUM, or HIGH based on the new
+   * quantity to manage inventory efficiently.
    */
   @Override
   public void updateInventory() {
@@ -157,18 +154,16 @@ public class InventoryManager implements InventoryManagerInterface {
   /**
    * Adds a new medication to the inventory.
    *
-   * This method prompts the user to enter the name and quantity of the medication to be added.
-   * It validates the input and determines the stock status based on the quantity provided.
-   * The new medication is then created and added to the inventory list, which is saved back to the CSV file.
+   * <p>This method prompts the user to enter the name and quantity of the medication to be added.
+   * It validates the input and determines the stock status based on the quantity provided. The new
+   * medication is then created and added to the inventory list, which is saved back to the CSV
+   * file.
    *
-   * The following steps are performed:
-   * 1. Prompt the user for the medication name.
-   * 2. If the input is empty, return to the main menu.
-   * 3. Prompt the user for a valid integer quantity.
-   * 4. Determine the stock status (LOW, MEDIUM, HIGH) and alert status based on the quantity.
-   * 5. Create a new Medication object with the provided details.
-   * 6. Add the new medication to the inventory list.
-   * 7. Save the updated inventory to the CSV file.
+   * <p>The following steps are performed: 1. Prompt the user for the medication name. 2. If the
+   * input is empty, return to the main menu. 3. Prompt the user for a valid integer quantity. 4.
+   * Determine the stock status (LOW, MEDIUM, HIGH) and alert status based on the quantity. 5.
+   * Create a new Medication object with the provided details. 6. Add the new medication to the
+   * inventory list. 7. Save the updated inventory to the CSV file.
    */
   @Override
   public void addInventory() {
@@ -220,22 +215,18 @@ public class InventoryManager implements InventoryManagerInterface {
   /**
    * Deletes a specified medication from the inventory.
    *
-   * This method prompts the user to enter the name of the medication to delete.
-   * If the user doesn't provide any input, the method will return to the main menu.
-   * The method then iterates through the inventory list to find a matching medication.
-   * If a match is found, the medication is removed from the inventory.
-   * The updated inventory is saved back to the CSV file.
+   * <p>This method prompts the user to enter the name of the medication to delete. If the user
+   * doesn't provide any input, the method will return to the main menu. The method then iterates
+   * through the inventory list to find a matching medication. If a match is found, the medication
+   * is removed from the inventory. The updated inventory is saved back to the CSV file.
    *
-   * The following steps are performed:
-   * 1. Prompt the user to enter the medication name.
-   * 2. If the input is empty, return to the main menu.
-   * 3. Search for the medication in the inventory list.
-   * 4. If found, remove the medication from the list.
-   * 5. Save the updated inventory back to the CSV file.
+   * <p>The following steps are performed: 1. Prompt the user to enter the medication name. 2. If
+   * the input is empty, return to the main menu. 3. Search for the medication in the inventory
+   * list. 4. If found, remove the medication from the list. 5. Save the updated inventory back to
+   * the CSV file.
    *
-   * This method uses:
-   * - CsvDB.readMedications() to read the current inventory from a CSV file.
-   * - CsvDB.saveMedications(List<Medication>) to save the updated inventory back to the CSV file.
+   * <p>This method uses: - CsvDB.readMedications() to read the current inventory from a CSV file. -
+   * CsvDB.saveMedications(List<Medication>) to save the updated inventory back to the CSV file.
    */
   @Override
   public void deleteInventory() {
@@ -274,10 +265,10 @@ public class InventoryManager implements InventoryManagerInterface {
   /**
    * Processes a replenishment request for medications.
    *
-   * This method allows a pharmacist to create a replenishment request for medications that are low on stock.
-   * It reads the current medications and replenishment requests from the database,
-   * displays medications that need replenishment, and facilitates the addition of these to a new request.
-   * The new replenishment request is then saved to the database.
+   * <p>This method allows a pharmacist to create a replenishment request for medications that are
+   * low on stock. It reads the current medications and replenishment requests from the database,
+   * displays medications that need replenishment, and facilitates the addition of these to a new
+   * request. The new replenishment request is then saved to the database.
    *
    * @param pharmacist The pharmacist initiating the replenishment request.
    */
@@ -381,24 +372,20 @@ public class InventoryManager implements InventoryManagerInterface {
   }
 
   /**
-   * Handles the replenishment request process by reading the current pending requests,
-   * prompting the user to approve or decline a selected request, updating the inventory accordingly,
-   * and saving the changes.
+   * Handles the replenishment request process by reading the current pending requests, prompting
+   * the user to approve or decline a selected request, updating the inventory accordingly, and
+   * saving the changes.
    *
-   * The method follows these steps:
-   * 1. Reads the current pending replenishment requests and inventory from the CSV database.
-   * 2. Displays all pending requests to the user.
-   * 3. Prompts the user to select a request ID to process.
-   * 4. Validates the selected request and asks the user to approve or decline it.
-   * 5. If approved, updates the inventory based on the request details.
-   * 6. Updates the status of the replenishment request to either "APPROVED" or "DECLINED".
-   * 7. Saves the updated requests and inventory back to the CSV database.
+   * <p>The method follows these steps: 1. Reads the current pending replenishment requests and
+   * inventory from the CSV database. 2. Displays all pending requests to the user. 3. Prompts the
+   * user to select a request ID to process. 4. Validates the selected request and asks the user to
+   * approve or decline it. 5. If approved, updates the inventory based on the request details. 6.
+   * Updates the status of the replenishment request to either "APPROVED" or "DECLINED". 7. Saves
+   * the updated requests and inventory back to the CSV database.
    *
-   * The method ensures that:
-   * - The user can return to the main menu at any time by pressing Enter.
-   * - Only pending requests can be processed.
-   * - The inventory is updated correctly if the request is approved.
-   * - Appropriate messages are displayed for invalid inputs and actions taken.
+   * <p>The method ensures that: - The user can return to the main menu at any time by pressing
+   * Enter. - Only pending requests can be processed. - The inventory is updated correctly if the
+   * request is approved. - Appropriate messages are displayed for invalid inputs and actions taken.
    */
   @Override
   public void handleReplenishmentRequest() {
@@ -527,9 +514,7 @@ public class InventoryManager implements InventoryManagerInterface {
     return new InventoryManagerBuilder();
   }
 
-  /**
-   * Builder class for creating instances of InventoryManager.
-   */
+  /** Builder class for creating instances of InventoryManager. */
   // Static inner Builder class
   public static class InventoryManagerBuilder {
     private ScannerWrapper scanner;

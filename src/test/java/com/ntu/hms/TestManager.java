@@ -9,44 +9,41 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * The type Test manager.
- * This class provides utility methods for managing tests, such as starting and stopping the application,
- * refreshing CSV files, and capturing or providing system input/output.
+ * The type Test manager. This class provides utility methods for managing tests, such as starting
+ * and stopping the application, refreshing CSV files, and capturing or providing system
+ * input/output.
  */
 public class TestManager {
   private static final Path TARGET_FOLDER_PATH = Paths.get("target/classes/csvdb");
   private static final Path SOURCE_FOLDER_PATH = Paths.get("src/main/resources/csvdb");
 
-  /**
-   * Start the application.
-   * Invokes the main method of the App class to start the application.
-   */
+  /** Start the application. Invokes the main method of the App class to start the application. */
   public static void startApplication() {
     App.main(new String[] {});
   }
 
   /**
-   * Stop the application.
-   * Invokes the stopApplication method of the App class to stop the application.
+   * Stop the application. Invokes the stopApplication method of the App class to stop the
+   * application.
    */
   public static void stopApplication() {
     App.stopApplication();
   }
 
   /**
-   * Refresh CSV files.
-   * Deletes existing CSV files in the target folder and copies new CSV files from the source folder.
+   * Refresh CSV files. Deletes existing CSV files in the target folder and copies new CSV files
+   * from the source folder.
    */
   public static void refreshCsvFiles() {
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(TARGET_FOLDER_PATH, "*.csv")) {
       stream.forEach(
-              file -> {
-                try {
-                  Files.deleteIfExists(file);
-                } catch (IOException e) {
-                  throw new RuntimeException(e);
-                }
-              });
+          file -> {
+            try {
+              Files.deleteIfExists(file);
+            } catch (IOException e) {
+              throw new RuntimeException(e);
+            }
+          });
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -62,8 +59,7 @@ public class TestManager {
   }
 
   /**
-   * Provide input to the system.
-   * Sets the System input stream to the provided string.
+   * Provide input to the system. Sets the System input stream to the provided string.
    *
    * @param input the input string to be provided.
    */
@@ -72,8 +68,8 @@ public class TestManager {
   }
 
   /**
-   * Parse the output of the system.
-   * Splits the output captured in the ByteArrayOutputStream by the system line separator.
+   * Parse the output of the system. Splits the output captured in the ByteArrayOutputStream by the
+   * system line separator.
    *
    * @param byteArrayOutputStream the output stream from which the output is parsed.
    * @return an array of strings, where each string is a line of the output.
@@ -83,8 +79,8 @@ public class TestManager {
   }
 
   /**
-   * Get an output listener.
-   * Creates and returns a new ByteArrayOutputStream to capture system output.
+   * Get an output listener. Creates and returns a new ByteArrayOutputStream to capture system
+   * output.
    *
    * @return a ByteArrayOutputStream for capturing system output.
    */
@@ -93,8 +89,8 @@ public class TestManager {
   }
 
   /**
-   * Set the system output consumer.
-   * Sets the system output stream to the provided ByteArrayOutputStream.
+   * Set the system output consumer. Sets the system output stream to the provided
+   * ByteArrayOutputStream.
    *
    * @param byteArrayOutputStream the output stream to be set as the system output stream.
    */

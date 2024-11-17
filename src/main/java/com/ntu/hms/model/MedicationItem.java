@@ -1,8 +1,6 @@
 package com.ntu.hms.model;
 
-/**
- * Represents an item of medication with its ID, name, and quantity.
- */
+/** Represents an item of medication with its ID, name, and quantity. */
 public class MedicationItem {
   private String medicationID;
   private String medicationName;

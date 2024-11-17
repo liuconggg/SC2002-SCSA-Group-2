@@ -3,9 +3,7 @@ package com.ntu.hms.model;
 import com.ntu.hms.enums.ScheduleStatus;
 import java.time.LocalDate;
 
-/**
- * Represents a schedule for a doctor, including their ID, date, and session statuses.
- */
+/** Represents a schedule for a doctor, including their ID, date, and session statuses. */
 public class Schedule {
   private String doctorID;
   private LocalDate date;
@@ -81,11 +79,13 @@ public class Schedule {
   }
 
   /**
-   * Creates a default schedule for a specified doctor on a given date with all sessions marked as "Available".
+   * Creates a default schedule for a specified doctor on a given date with all sessions marked as
+   * "Available".
    *
    * @param doctorID the unique identifier of the doctor for whom the schedule is created
    * @param date the date for which the schedule is applicable
-   * @return a Schedule object with specified doctor ID, date, and all sessions marked as "Available"
+   * @return a Schedule object with specified doctor ID, date, and all sessions marked as
+   *     "Available"
    */
   public static Schedule createDefaultSchedule(String doctorID, LocalDate date) {
     String[] defaultSessions = new String[8];
@@ -99,8 +99,9 @@ public class Schedule {
    * Retrieves the status of a session at the given index.
    *
    * @param sessionIndex the index of the session whose status is to be retrieved.
-   * @return the status of the session as a String, which could be "Available", "Unavailable", or specific status extracted from session info. Returns "Unknown" if the status cannot
-   *  be determined.
+   * @return the status of the session as a String, which could be "Available", "Unavailable", or
+   *     specific status extracted from session info. Returns "Unknown" if the status cannot be
+   *     determined.
    */
   // Helper Methods to Handle Session Status and com.ntu.hms.users.Patient ID
   public String getSessionStatus(int sessionIndex) {
@@ -127,9 +128,9 @@ public class Schedule {
   }
 
   /**
-   * Sets the status of a specific session identified by the given session index.
-   * If the session at the specified index contains a patient ID, the status is appended to it.
-   * Otherwise, if the status is "Available", it sets the session to "Available".
+   * Sets the status of a specific session identified by the given session index. If the session at
+   * the specified index contains a patient ID, the status is appended to it. Otherwise, if the
+   * status is "Available", it sets the session to "Available".
    *
    * @param sessionIndex the index of the session to update
    * @param status the new status for the session

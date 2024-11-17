@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Pharmacist class represents a user with the role of a pharmacist in the hospital management system.
- * It extends the User class and implements the PharmacistInterface.
- * A Pharmacist can prescribe and update medications, manage inventory, and view appointment outcomes.
+ * The Pharmacist class represents a user with the role of a pharmacist in the hospital management
+ * system. It extends the User class and implements the PharmacistInterface. A Pharmacist can
+ * prescribe and update medications, manage inventory, and view appointment outcomes.
  */
 public class Pharmacist extends User implements PharmacistInterface {
   private ScannerWrapper scanner;
@@ -27,9 +27,8 @@ public class Pharmacist extends User implements PharmacistInterface {
   private AppointmentManager appointmentManager;
 
   /**
-   * Default constructor for the Pharmacist class.
-   * This constructor initializes a new instance of the Pharmacist
-   * class with default values and dependencies.
+   * Default constructor for the Pharmacist class. This constructor initializes a new instance of
+   * the Pharmacist class with default values and dependencies.
    */
   public Pharmacist() {}
 
@@ -47,11 +46,10 @@ public class Pharmacist extends User implements PharmacistInterface {
   }
 
   /**
-   * Displays the menu options available to a pharmacist.
-   * Delegates the task to the static method displayPharmacistMenu
-   * which includes options for viewing appointment outcomes,
-   * updating prescription statuses, viewing medication inventory,
-   * submitting replenishment requests, and logging out.
+   * Displays the menu options available to a pharmacist. Delegates the task to the static method
+   * displayPharmacistMenu which includes options for viewing appointment outcomes, updating
+   * prescription statuses, viewing medication inventory, submitting replenishment requests, and
+   * logging out.
    */
   public void displayMenu() {
     displayPharmacistMenu();
@@ -60,9 +58,9 @@ public class Pharmacist extends User implements PharmacistInterface {
   /**
    * Views the outcome of appointments.
    *
-   * This method initiates the process of displaying the appointment outcomes
-   * by utilizing the appointment manager. The outcomes include details such
-   * as appointment IDs, prescription statuses, and a list of prescribed medications.
+   * <p>This method initiates the process of displaying the appointment outcomes by utilizing the
+   * appointment manager. The outcomes include details such as appointment IDs, prescription
+   * statuses, and a list of prescribed medications.
    */
   public void viewAppointmentOutcome() {
     appointmentManager.showAppointmentOutcome();
@@ -71,16 +69,16 @@ public class Pharmacist extends User implements PharmacistInterface {
   /**
    * Prescribes and updates the inventory based on pending appointment outcome records.
    *
-   * This method performs the following tasks:
-   * 1. Reads appointment outcome records and medication data from the CSV database.
-   * 2. Displays pending appointment outcome records for the pharmacist to select.
-   * 3. Prompts the pharmacist to select an appointment outcome record to dispense medication for.
-   * 4. Validates the selected record and checks if sufficient stock is available for the prescribed medications.
-   * 5. Updates the prescription status to dispensed if sufficient stock is available.
-   * 6. Updates the inventory quantities and statuses for the dispensed medications.
-   * 7. Saves the updated appointment outcome records and medication data back to the CSV database.
+   * <p>This method performs the following tasks: 1. Reads appointment outcome records and
+   * medication data from the CSV database. 2. Displays pending appointment outcome records for the
+   * pharmacist to select. 3. Prompts the pharmacist to select an appointment outcome record to
+   * dispense medication for. 4. Validates the selected record and checks if sufficient stock is
+   * available for the prescribed medications. 5. Updates the prescription status to dispensed if
+   * sufficient stock is available. 6. Updates the inventory quantities and statuses for the
+   * dispensed medications. 7. Saves the updated appointment outcome records and medication data
+   * back to the CSV database.
    *
-   * If there are no pending appointment outcome records or if the pharmacist decides to exit,
+   * <p>If there are no pending appointment outcome records or if the pharmacist decides to exit,
    * the method will return to the main menu.
    */
   @Override
@@ -96,7 +94,9 @@ public class Pharmacist extends User implements PharmacistInterface {
       ArrayList<AppointmentOutcomeRecord> pendingRecords = new ArrayList<>();
       int index = 1;
       for (AppointmentOutcomeRecord record : appointmentOutcomeRecords) {
-        if (record.getPrescriptionStatus().equalsIgnoreCase(PENDING.name()) && record.getPrescriptions() != null && !record.getPrescriptions().isEmpty()){
+        if (record.getPrescriptionStatus().equalsIgnoreCase(PENDING.name())
+            && record.getPrescriptions() != null
+            && !record.getPrescriptions().isEmpty()) {
           System.out.printf(
               "%d. Appointment ID: %s, Prescription: %s\n",
               index, record.getAppointmentID(), record.getPrescriptions());
@@ -202,10 +202,9 @@ public class Pharmacist extends User implements PharmacistInterface {
   /**
    * Displays the current medication inventory information.
    *
-   * This method delegates the task of showing the inventory
-   * details to the inventory manager. It provides a listing
-   * of all medications including their IDs, names, stock statuses,
-   * and quantities.
+   * <p>This method delegates the task of showing the inventory details to the inventory manager. It
+   * provides a listing of all medications including their IDs, names, stock statuses, and
+   * quantities.
    */
   public void viewInventory() {
     inventoryManager.showInventory();
@@ -214,9 +213,9 @@ public class Pharmacist extends User implements PharmacistInterface {
   /**
    * Submits a request to replenish medication inventory.
    *
-   * This method is responsible for initiating the process of creating a replenishment
-   * request for medications that are low in stock. It interacts with the inventory manager
-   * to handle the specifics of the replenishment request.
+   * <p>This method is responsible for initiating the process of creating a replenishment request
+   * for medications that are low in stock. It interacts with the inventory manager to handle the
+   * specifics of the replenishment request.
    */
   public void submitReplenishmentRequest() {
     inventoryManager.processReplenishmentRequest(this);

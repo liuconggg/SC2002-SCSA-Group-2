@@ -1,9 +1,9 @@
 package com.ntu.hms.model.users;
 
 /**
- * Represents an abstract user in the hospital management system with basic attributes such
- * as hospital ID, password, name, age, and gender.
- * Subclasses of User must implement the displayMenu method to provide specific menu options.
+ * Represents an abstract user in the hospital management system with basic attributes such as
+ * hospital ID, password, name, age, and gender. Subclasses of User must implement the displayMenu
+ * method to provide specific menu options.
  */
 public abstract class User {
   private String hospitalID;
@@ -13,8 +13,8 @@ public abstract class User {
   private String gender;
 
   /**
-   * Default constructor for the User class. This constructor initializes
-   * a new instance of the User class with default values.
+   * Default constructor for the User class. This constructor initializes a new instance of the User
+   * class with default values.
    */
   public User() {}
 
@@ -128,8 +128,8 @@ public abstract class User {
   /**
    * Abstract method to display the menu specific to the user type.
    *
-   * <p>Subclasses of User should implement this method to provide a menu with
-   * options relevant to the user's role (e.g., Patient, Doctor, Pharmacist).
+   * <p>Subclasses of User should implement this method to provide a menu with options relevant to
+   * the user's role (e.g., Patient, Doctor, Pharmacist).
    */
   public abstract void displayMenu();
 }

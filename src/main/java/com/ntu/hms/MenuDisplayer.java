@@ -1,17 +1,16 @@
 package com.ntu.hms;
 
 /**
- * The MenuDisplayer class provides static methods to display various
- * menus for different types of users in the hospital management system.
+ * The MenuDisplayer class provides static methods to display various menus for different types of
+ * users in the hospital management system.
  */
 public final class MenuDisplayer {
 
   /**
-   * Displays the menu options available to a patient.
-   * The menu includes options to view medical records,
-   * update personal information, view available appointment slots,
-   * schedule an appointment, reschedule or cancel an appointment,
-   * view scheduled appointments, view past appointment outcomes, and logout.
+   * Displays the menu options available to a patient. The menu includes options to view medical
+   * records, update personal information, view available appointment slots, schedule an
+   * appointment, reschedule or cancel an appointment, view scheduled appointments, view past
+   * appointment outcomes, and logout.
    */
   public static void displayPatientMenu() {
     System.out.println("\n=== Patient Menu ===");
@@ -28,11 +27,10 @@ public final class MenuDisplayer {
   }
 
   /**
-   * Displays the menu options available to a doctor.
-   * The menu includes options to view and update patient medical records,
-   * view personal schedule, set availability for appointments,
-   * accept or decline appointment requests, view upcoming appointments,
-   * record appointment outcomes, and logout.
+   * Displays the menu options available to a doctor. The menu includes options to view and update
+   * patient medical records, view personal schedule, set availability for appointments, accept or
+   * decline appointment requests, view upcoming appointments, record appointment outcomes, and
+   * logout.
    */
   public static void displayDoctorMenu() {
     System.out.println("\n=== Doctor Menu ===");
@@ -48,10 +46,9 @@ public final class MenuDisplayer {
   }
 
   /**
-   * Displays the menu options available to a pharmacist.
-   * The menu includes options to view appointment outcome records,
-   * update prescription status, view medication inventory,
-   * submit replenishment requests, and logout.
+   * Displays the menu options available to a pharmacist. The menu includes options to view
+   * appointment outcome records, update prescription status, view medication inventory, submit
+   * replenishment requests, and logout.
    */
   public static void displayPharmacistMenu() {
     System.out.println("\n=== Pharmacist Menu ===");
@@ -64,10 +61,9 @@ public final class MenuDisplayer {
   }
 
   /**
-   * Displays the menu options available to an administrator.
-   * The menu includes options to view and manage hospital staff,
-   * view appointment details, view and manage medication inventory,
-   * approve replenishment requests, and logout.
+   * Displays the menu options available to an administrator. The menu includes options to view and
+   * manage hospital staff, view appointment details, view and manage medication inventory, approve
+   * replenishment requests, and logout.
    */
   public static void displayAdministratorMenu() {
     System.out.println("=== Administrator Menu ===");

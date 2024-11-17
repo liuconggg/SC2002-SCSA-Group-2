@@ -1,8 +1,6 @@
 package com.ntu.hms.model;
 
-/**
- * Represents a medication with its details and inventory status.
- */
+/** Represents a medication with its details and inventory status. */
 public class Medication {
   private String medicationID;
   private String medicationName;
@@ -11,8 +9,8 @@ public class Medication {
   private int totalQuantity;
 
   /**
-   * Default constructor for the Medication class.
-   * Initializes a new instance of the Medication class with default field values.
+   * Default constructor for the Medication class. Initializes a new instance of the Medication
+   * class with default field values.
    */
   public Medication() {}
 
@@ -22,7 +20,8 @@ public class Medication {
    * @param medicationID The unique identifier for the medication.
    * @param medicationName The name of the medication.
    * @param stockStatus The current stock status of the medication (e.g., LOW, MEDIUM, HIGH).
-   * @param alert Indicates if there is an alert for stocking (true if stock is low, false otherwise).
+   * @param alert Indicates if there is an alert for stocking (true if stock is low, false
+   *     otherwise).
    * @param totalQuantity The total quantity of the medication in stock.
    */
   public Medication(
@@ -104,7 +103,8 @@ public class Medication {
   /**
    * Sets the alert status for the medication.
    *
-   * @param alert Indicates if there is an alert for stocking (true if stock is low, false otherwise).
+   * @param alert Indicates if there is an alert for stocking (true if stock is low, false
+   *     otherwise).
    */
   public void setAlert(boolean alert) {
     this.alert = alert;
@@ -131,7 +131,8 @@ public class Medication {
   /**
    * Returns a string representation of the Medication object.
    *
-   * @return a string containing the medication ID, name, stock status, alert status, and total quantity, separated by commas.
+   * @return a string containing the medication ID, name, stock status, alert status, and total
+   *     quantity, separated by commas.
    */
   @Override
   public String toString() {

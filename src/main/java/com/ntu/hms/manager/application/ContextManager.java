@@ -5,10 +5,12 @@ import com.ntu.hms.util.ScannerWrapper;
 import java.util.InputMismatchException;
 
 /**
- * ContextManager is a class that handles the main workflow for different types of users in a medical system.
- * It provides methods to manage sessions for Patients, Doctors, Pharmacists, and Administrators.
+ * ContextManager is a class that handles the main workflow for different types of users in a
+ * medical system. It provides methods to manage sessions for Patients, Doctors, Pharmacists, and
+ * Administrators.
  *
- * It implements the ContextManagerInterface which defines the methods for user session management.
+ * <p>It implements the ContextManagerInterface which defines the methods for user session
+ * management.
  */
 public class ContextManager implements ContextManagerInterface {
   private final ScannerWrapper scanner;
@@ -32,9 +34,8 @@ public class ContextManager implements ContextManagerInterface {
   }
 
   /**
-   * Begins interaction with the patient, providing a menu for various actions
-   * including viewing and updating medical records, managing appointments,
-   * and viewing schedules.
+   * Begins interaction with the patient, providing a menu for various actions including viewing and
+   * updating medical records, managing appointments, and viewing schedules.
    *
    * @param patient the Patient object representing the currently logged-in patient
    */
@@ -113,10 +114,9 @@ public class ContextManager implements ContextManagerInterface {
   }
 
   /**
-   * Facilitates the interaction for doctor users by presenting a menu of actions such as
-   * viewing and updating medical records, managing schedules, and handling appointments.
-   * This method includes a loop that continually displays the menu until the doctor chooses
-   * to log out.
+   * Facilitates the interaction for doctor users by presenting a menu of actions such as viewing
+   * and updating medical records, managing schedules, and handling appointments. This method
+   * includes a loop that continually displays the menu until the doctor chooses to log out.
    *
    * @param doctor the Doctor object representing the currently logged-in doctor
    */
@@ -168,10 +168,9 @@ public class ContextManager implements ContextManagerInterface {
   }
 
   /**
-   * Facilitates the interaction for pharmacist users by providing a menu
-   * of actions such as viewing appointment outcomes, prescribing medications,
-   * viewing inventory, and submitting replenishment requests. This method
-   * runs in a continuous loop until the pharmacist chooses to log out.
+   * Facilitates the interaction for pharmacist users by providing a menu of actions such as viewing
+   * appointment outcomes, prescribing medications, viewing inventory, and submitting replenishment
+   * requests. This method runs in a continuous loop until the pharmacist chooses to log out.
    *
    * @param pharmacist the Pharmacist object representing the currently logged-in pharmacist
    */
@@ -226,13 +225,13 @@ public class ContextManager implements ContextManagerInterface {
   }
 
   /**
-   * Facilitates the interaction for administrator users by presenting
-   * a menu of actions such as managing staff, viewing appointments,
-   * handling inventory, and managing replenishment requests. This method
-   * includes a loop that continually displays the menu until the administrator
-   * chooses to log out.
+   * Facilitates the interaction for administrator users by presenting a menu of actions such as
+   * managing staff, viewing appointments, handling inventory, and managing replenishment requests.
+   * This method includes a loop that continually displays the menu until the administrator chooses
+   * to log out.
    *
-   * @param administrator the Administrator object representing the currently logged-in administrator
+   * @param administrator the Administrator object representing the currently logged-in
+   *     administrator
    */
   // All Administrator functions and logic
   @Override
@@ -337,9 +336,7 @@ public class ContextManager implements ContextManagerInterface {
     }
   }
 
-  /**
-   * Builder class for constructing an instance of ContextManager.
-   */
+  /** Builder class for constructing an instance of ContextManager. */
   public static class ContextManagerBuilder {
     private ScannerWrapper scanner;
 

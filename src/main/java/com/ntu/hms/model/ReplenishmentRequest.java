@@ -3,10 +3,9 @@ package com.ntu.hms.model;
 import java.util.List;
 
 /**
- * This class represents a replenishment request for medications.
- * It contains details about the request such as the request ID,
- * the batch of medications to be replenished, the status of the request,
- * and the ID of the pharmacist who created the request.
+ * This class represents a replenishment request for medications. It contains details about the
+ * request such as the request ID, the batch of medications to be replenished, the status of the
+ * request, and the ID of the pharmacist who created the request.
  */
 public class ReplenishmentRequest {
   private String requestID;
@@ -20,10 +19,10 @@ public class ReplenishmentRequest {
   /**
    * Constructs a new ReplenishmentRequest with the given details.
    *
-   * @param requestID       The unique identifier for the replenishment request.
+   * @param requestID The unique identifier for the replenishment request.
    * @param medicationBatch The list of medication items that are to be replenished.
-   * @param status          The current status of the replenishment request.
-   * @param pharmacistID    The identifier of the pharmacist who created the request.
+   * @param status The current status of the replenishment request.
+   * @param pharmacistID The identifier of the pharmacist who created the request.
    */
   public ReplenishmentRequest(
       String requestID, List<MedicationItem> medicationBatch, String status, String pharmacistID) {
@@ -54,8 +53,8 @@ public class ReplenishmentRequest {
   /**
    * Retrieves the batch of medications required for the replenishment request.
    *
-   * @return a list of MedicationItem objects that represents the batch of medications
-   *         to be replenished.
+   * @return a list of MedicationItem objects that represents the batch of medications to be
+   *     replenished.
    */
   public List<MedicationItem> getMedicationBatch() {
     return this.medicationBatch;
