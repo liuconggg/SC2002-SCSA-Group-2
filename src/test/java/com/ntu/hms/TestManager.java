@@ -16,11 +16,6 @@ import java.nio.file.Paths;
 public class TestManager {
   private static final Path TARGET_FOLDER_PATH = Paths.get("target/classes/csvdb");
   private static final Path SOURCE_FOLDER_PATH = Paths.get("src/main/resources/csvdb");
-  /**
-   * The constant originalSystemIn.
-   * Stores the original System input stream.
-   */
-  public static final InputStream originalSystemIn = System.in;
 
   /**
    * Start the application.
@@ -74,7 +69,6 @@ public class TestManager {
    */
   public static void provideInput(String input) {
     System.setIn(new ByteArrayInputStream(input.getBytes()));
-    System.out.println(System.in);
   }
 
   /**

@@ -311,7 +311,7 @@ public class AppointmentManager implements AppointmentManagerInterface {
     // Select a new session
     System.out.print("Select a session number for the new date: ");
     int newSessionNumber = scanner.nextInt();
-    scanner.nextLine(); // consume newline character
+    //scanner.nextLine(); // consume newline character
 
     if (newSessionNumber < 1
             || newSessionNumber > newSession.length
