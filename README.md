@@ -1,18 +1,15 @@
-## Getting Started
+## SC2002 - Health Management System (HMS)
+Lab Group: SCSA<br>
+Project Group: 2<br>
+Team Members: Alfred, Anthony, Liu Cong, Seow Jia Xian, Toh Hong<br>
+Project GitHub link: https://github.com/liuconggg/SC2002-SCSA-Group-2
+<br> <br>
+<b> Note: The CSV files in the src/main/resources/csvdb folder serve as the original data for initialization and will remain unchanged<b>
+<br><br>
+<b>Note: Any changes made will only be applied to the CSV files located in the target/classes/csvdb folder</b>
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
-
-## Folder Structure
-
-The workspace contains two folders by default, where:
-
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## Instruction
+1. Verify that Maven is installed on your computer<br>
+2. Clone the project using the GitHub link provided above<br>
+3. After cloning the project, open the terminal and run the command: mvn clean compile<br>
+4. Go to the src/main/java/com/ntu/hms directory, right-click on the App.java file, and select "Run Java" to start the HMS program
