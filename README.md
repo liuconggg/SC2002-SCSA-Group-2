@@ -13,3 +13,8 @@ Project GitHub link: https://github.com/liuconggg/SC2002-SCSA-Group-2
 2. Clone the project using the GitHub link provided above<br>
 3. After cloning the project, open the terminal and run the command: mvn clean compile<br>
 4. Go to the src/main/java/com/ntu/hms directory, right-click on the App.java file, and select "Run Java" to start the HMS program
+
+
+## Additional Feature
+#### Unit Test
+1. Run command in terminal: mvn clean test
